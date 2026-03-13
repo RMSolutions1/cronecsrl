@@ -10,6 +10,8 @@ export const metadata = {
     "Explore nuestro portfolio de proyectos de construcción civil, instalaciones eléctricas e infraestructura industrial en Salta y el NOA.",
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function ProyectosPage() {
   let projects: Awaited<ReturnType<typeof getProjectsPublic>> = []
   try {

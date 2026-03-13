@@ -8,6 +8,9 @@ import { SettingsProvider } from "@/lib/settings-context"
 import { getCompanyInfo } from "@/lib/data-read"
 import "./globals.css"
 
+/** Datos de empresa siempre actuales (configuración del dashboard) */
+export const dynamic = "force-dynamic"
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -73,21 +76,8 @@ export const metadata: Metadata = {
     images: ["https://images.unsplash.com/photo-1504309092620-4d0e8a54959e?w=1200&h=630&fit=crop&q=80"],
   },
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: "/icon.svg",
   },
   robots: {
     index: true,

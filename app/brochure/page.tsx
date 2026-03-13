@@ -28,6 +28,8 @@ export const metadata: Metadata = {
     "Brochure corporativo de CRONEC SRL - Construcción, ingeniería e infraestructura de excelencia en Salta desde 2009.",
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function BrochurePage() {
   let companyName = "CRONEC SRL"
   let tagline = "Construcciones Eléctricas y Civiles"

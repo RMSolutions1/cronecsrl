@@ -42,7 +42,9 @@ export const images = {
     U("1472099645785-5658abf4ff4e", 200), // Hombre profesional
     U("1580489944761-15a19d654956", 200), // Mujer profesional 2
   ],
-  whyCronec: U("1504309092620-4d0e8a54959e", 1200), // Construcción
+  /** Sección "Por qué elegir CRONEC": imagen conec4 (en public/) + fallback si falla */
+  whyCronec: local("conec4.jpeg"),
+  whyCronecFallback: local("placeholder.svg"),
   ctaBackground: U("1503387762-592deb58ef4e", 1920),   // Planos técnicos
   clients: [
     U("1486406146926-c627a92ad1ab", 200), // Edificio

@@ -41,6 +41,12 @@ try {
   }
   Write-Host "Usando páginas estáticas (sin BD)..." -ForegroundColor Cyan
   Set-Location $projectRoot
+  # Limpiar caché .next para evitar errores de tipos con /admin excluido
+  $nextDir = Join-Path $projectRoot ".next"
+  if (Test-Path $nextDir) {
+    Remove-Item $nextDir -Recurse -Force
+    Write-Host "Caché .next eliminada para build limpio." -ForegroundColor Cyan
+  }
   $env:BUILD_FTP = "1"
   $env:NEXT_PUBLIC_HIDE_ADMIN_LINK = "1"
   # NEXT_PUBLIC_FORMSPREE_ID: configuralo en .env.local para que el formulario use Formspree en el sitio estático

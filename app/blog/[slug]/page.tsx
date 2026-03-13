@@ -27,6 +27,8 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return defaultBlogSlugs.map((slug) => ({ slug }))
 }
 
+export const dynamic = "force-dynamic"
+
 type Props = { params: Promise<{ slug: string }> }
 
 type PostShape = { title?: string; category?: string; author_name?: string; published_at?: string; created_at?: string; image_url?: string; content?: string; excerpt?: string }

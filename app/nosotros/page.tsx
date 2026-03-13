@@ -6,6 +6,8 @@ export const metadata = {
   description: "Conozca la historia, valores, equipo directivo y certificaciones de CRONEC SRL.",
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function NosotrosPage() {
   let data = {}
   let mission: string | null = null

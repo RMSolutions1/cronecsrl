@@ -9,42 +9,14 @@ import { Menu, X, Phone, Mail, ChevronDown, Building2, Zap, Factory, Ruler, Wren
 import { cn } from "@/lib/utils"
 
 const services = [
-  { 
-    href: "/servicios/obras-civiles", 
-    label: "Obras Civiles", 
-    icon: HardHat,
-    description: "Construccion y mantenimiento de infraestructura"
-  },
-  { 
-    href: "/servicios/obras-electricas", 
-    label: "Obras Electricas", 
-    icon: Zap,
-    description: "Instalaciones de baja, media y alta tension"
-  },
-  { 
-    href: "/servicios/arquitectura-ingenieria", 
-    label: "Arquitectura e Ingenieria", 
-    icon: Ruler,
-    description: "Diseño, proyecto y dirección de obras"
-  },
-  { 
-    href: "/servicios/instalaciones-industriales", 
-    label: "Instalaciones Industriales", 
-    icon: Factory,
-    description: "Naves industriales y montajes"
-  },
-  { 
-    href: "/servicios/obras-generales", 
-    label: "Obras Generales", 
-    icon: Building2,
-    description: "Infraestructura ferroviaria y transporte"
-  },
-  { 
-    href: "/servicios/servicios-especiales", 
-    label: "Servicios Especiales", 
-    icon: Wrench,
-    description: "Reparacion de puentes y estructuras"
-  },
+  { href: "/servicios/obras-civiles", label: "Construcción Civil", icon: HardHat, description: "Construcción y mantenimiento de infraestructura" },
+  { href: "/servicios/obras-electricas", label: "Obras Eléctricas", icon: Zap, description: "Instalaciones de baja, media y alta tensión" },
+  { href: "/servicios/instalaciones-industriales", label: "Instalaciones Industriales", icon: Factory, description: "Naves industriales y montajes" },
+  { href: "/servicios/arquitectura-ingenieria", label: "Arquitectura e Ingeniería", icon: Ruler, description: "Diseño, proyecto y dirección de obras" },
+  { href: "/servicios/mantenimiento", label: "Mantenimiento", icon: Wrench, description: "Mantenimiento preventivo y correctivo" },
+  { href: "/servicios/consultoria", label: "Consultoría", icon: Ruler, description: "Asesoramiento técnico y dirección de obra" },
+  { href: "/servicios/obras-generales", label: "Obras Generales", icon: Building2, description: "Infraestructura ferroviaria y transporte" },
+  { href: "/servicios/servicios-especiales", label: "Servicios Especiales", icon: Wrench, description: "Reparación de puentes y estructuras" },
 ]
 
 const navItems = [

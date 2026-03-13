@@ -6,6 +6,8 @@ export const metadata = {
   description: "Servicios integrales de construcción civil, obras eléctricas, arquitectura e ingeniería, instalaciones industriales y más. Salta, Argentina.",
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function ServiciosPage() {
   let servicesFromDb: ServiceFromDb[] = []
   try {

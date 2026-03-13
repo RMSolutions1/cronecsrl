@@ -10,6 +10,8 @@ import Link from "next/link"
 import { images } from "@/lib/images"
 import type { Metadata } from "next"
 
+export const dynamic = "force-dynamic"
+
 const defaultImgs: Record<string, string> = {
   "obras-civiles": images.services.obrasCiviles,
   "obras-electricas": images.services.obrasElectricas,

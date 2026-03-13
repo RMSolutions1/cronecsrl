@@ -10,8 +10,13 @@ export interface SessionUser {
   role: string
 }
 
+const defaultSecret = "cronec-session-secret-min-32-chars-long"
+const sessionSecret = process.env.SESSION_SECRET ?? defaultSecret
+if (process.env.NODE_ENV === "production" && sessionSecret === defaultSecret) {
+  console.error("CRÍTICO: Definid SESSION_SECRET en producción (min. 32 caracteres aleatorios). Ver .env.local.example")
+}
 export const sessionOptions: SessionOptions = {
-  password: process.env.SESSION_SECRET ?? "cronec-session-secret-min-32-chars-long",
+  password: sessionSecret,
   cookieName: "cronec_session",
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",

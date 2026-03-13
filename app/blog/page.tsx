@@ -10,6 +10,8 @@ import Image from "next/image"
 import { images } from "@/lib/images"
 import { getBlogPostsPublic } from "@/lib/data-read"
 
+export const dynamic = "force-dynamic"
+
 const heroImages = [
   { src: images.heroBlog[0], alt: "Construccion CRONEC" },
   { src: images.heroBlog[1], alt: "Obra civil CRONEC" },

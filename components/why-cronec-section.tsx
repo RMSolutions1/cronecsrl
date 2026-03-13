@@ -4,6 +4,7 @@ import { Award, Users, Clock, Shield, Wrench, TrendingUp, CheckCircle2 } from "l
 import { SectionWrapper } from "@/components/section-wrapper"
 import { AnimatedCounter } from "@/components/animated-counter"
 import Image from "next/image"
+import { useState } from "react"
 import { images } from "@/lib/images"
 
 export type WhyCronecData = {
@@ -31,6 +32,7 @@ const defaultStats = [
 ]
 
 export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
+  const [imgError, setImgError] = useState(false)
   const title = data?.title ?? "Por qué elegir CRONEC"
   const subtitle = data?.subtitle ?? "Experiencia, profesionalismo y compromiso en cada proyecto."
   const stats = (data?.stats?.length ? data.stats : defaultStats) as Array<{ value: number; suffix: string; label: string }>
@@ -39,14 +41,22 @@ export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
     ? featuresFromData.slice(0, 6).map((f, i) => ({ ...defaultFeatures[i], ...f, icon: defaultFeatures[i]?.icon ?? Award }))
     : defaultFeatures
   const highlights = (data?.highlights?.length ? data.highlights : defaultHighlights) as string[]
+  const whyImgSrc = imgError ? images.whyCronecFallback : images.whyCronec
 
   return (
     <SectionWrapper className="py-24 md:py-32" background="default" animationType="fade-up">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <Image src={images.whyCronec} alt="CRONEC SRL - Servicios profesionales" width={600} height={500} className="w-full h-auto object-cover" />
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-muted min-h-[300px]">
+              <Image
+                src={whyImgSrc}
+                alt="CRONEC SRL - Servicios profesionales"
+                width={600}
+                height={500}
+                className="w-full h-auto object-cover"
+                onError={() => setImgError(true)}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
             </div>
             <div className="absolute -bottom-8 -right-8 bg-card rounded-2xl p-6 shadow-2xl border border-border max-w-[280px]">
