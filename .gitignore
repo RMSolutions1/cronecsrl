@@ -14,3 +14,6 @@ out/
 .vercel
 # No subir lista de admins (crear en el servidor)
 data/admins.json
+
+# Usar solo npm (package-lock.json) para que Vercel no tome pnpm
+pnpm-lock.yaml
