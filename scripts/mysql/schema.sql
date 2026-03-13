@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `company_info` (
   `founded_year` INT DEFAULT NULL,
   `cuit` VARCHAR(50) DEFAULT NULL,
   `logo_url` VARCHAR(500) DEFAULT NULL,
+  `extra` JSON DEFAULT NULL COMMENT 'Campos adicionales: footer_cta_title, heroSlides, meta_*, etc.',
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

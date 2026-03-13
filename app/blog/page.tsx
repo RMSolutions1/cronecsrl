@@ -8,7 +8,7 @@ import { ArrowRight, Calendar, Clock, Building2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { images } from "@/lib/images"
-import { getBlogPostsPublic } from "@/app/actions/db/blog"
+import { getBlogPostsPublic } from "@/lib/data-read"
 
 const heroImages = [
   { src: images.heroBlog[0], alt: "Construccion CRONEC" },
@@ -43,16 +43,16 @@ export default async function BlogPage() {
   const articles: ArticleItem[] =
     postsFromDb.length > 0
       ? postsFromDb.map((p, i) => ({
-          id: p.id,
-          title: p.title,
-          excerpt: p.excerpt ?? p.title,
-          category: p.category ?? "Noticias",
-          date: p.published_at ?? p.created_at ?? new Date().toISOString().slice(0, 10),
+          id: String(p.id ?? i),
+          title: String(p.title ?? ""),
+          excerpt: String(p.excerpt ?? p.title ?? ""),
+          category: String(p.category ?? "Noticias"),
+          date: String(p.published_at ?? p.created_at ?? new Date().toISOString().slice(0, 10)),
           readTime: "3 min",
-          author: p.author_name ?? "Equipo CRONEC",
-          image: p.image_url ?? blogImages[i % blogImages.length],
+          author: String(p.author_name ?? "Equipo CRONEC"),
+          image: (p.image_url as string) ?? blogImages[i % blogImages.length],
           featured: !!p.featured,
-          slug: p.slug ?? p.id,
+          slug: String(p.slug ?? p.id ?? i),
         }))
       : defaultArticles
 

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getServiceBySlug } from "@/app/actions/db/services"
+import { getServiceBySlug, getServicesPublic } from "@/lib/data-read"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -21,21 +21,38 @@ const defaultImgs: Record<string, string> = {
   "consultoria": images.services.arquitectura,
 }
 
+const defaultServiceSlugs = Object.keys(defaultImgs)
+
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const services = await getServicesPublic()
+    const slugs = services.map((s) => s.slug).filter((s): s is string => Boolean(s))
+    if (slugs.length > 0) return slugs.map((slug) => ({ slug }))
+  } catch {
+    // Build estático sin BD: usar slugs por defecto
+  }
+  return defaultServiceSlugs.map((slug) => ({ slug }))
+}
+
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const service = await getServiceBySlug(slug)
   if (!service) return { title: "Servicio | CRONEC SRL" }
+  const title = String(service.title ?? "Servicio")
+  const desc = service.short_description ?? service.description
   return {
-    title: `${service.title} | CRONEC SRL`,
-    description: service.short_description ?? service.description ?? `Servicio ${service.title} - CRONEC SRL Salta`,
+    title: `${title} | CRONEC SRL`,
+    description: typeof desc === "string" ? desc : `Servicio ${title} - CRONEC SRL Salta`,
   }
 }
 
+type ServiceShape = { title?: string; description?: string; short_description?: string; image_url?: string; features?: unknown; benefits?: unknown }
+
 export default async function ServicioSlugPage({ params }: Props) {
   const { slug } = await params
-  const service = await getServiceBySlug(slug)
+  const service = await getServiceBySlug(slug) as ServiceShape | null
   if (!service) notFound()
 
   const imageSrc = (service.image_url && service.image_url.trim()) ? service.image_url : (defaultImgs[slug] ?? images.services.obrasCiviles)

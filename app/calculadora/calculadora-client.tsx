@@ -19,7 +19,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { images } from "@/lib/images"
-import type { CalculadoraData } from "@/app/actions/db/calculadora"
+import type { CalculadoraData } from "@/lib/data-read"
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   civil: Building2,

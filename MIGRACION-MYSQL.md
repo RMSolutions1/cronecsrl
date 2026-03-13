@@ -4,8 +4,9 @@ El proyecto quedó migrado de **Supabase** a **MySQL** para poder alojarlo en tu
 
 ## 1. Base de datos MySQL
 
-- Crea una base de datos MySQL en tu hosting (por ejemplo `cronec`).
+- Crea una base de datos MySQL en tu hosting (por ejemplo en **CyberPanel** o tu proveedor).
 - Ejecuta el esquema: **`scripts/mysql/schema.sql`** (todas las tablas e insert inicial de `company_info`).
+- **Si ya tenías el esquema aplicado antes:** ejecuta también `scripts/mysql/migrate-company-info-extra.sql` para añadir la columna `extra` en `company_info` (configuración adicional del sitio).
 
 ## 2. Variables de entorno
 
@@ -50,9 +51,9 @@ Las imágenes se guardan en **`public/uploads/`** (no hay Supabase Storage). La 
 
 ## 6. Resumen de cambios
 
-- **Auth:** sesiones con **iron-session** y tabla **users** (email + password_hash).
-- **Datos:** todas las tablas en MySQL; consultas desde **Server Actions** en `app/actions/db/`.
+- **Auth:** sesiones con **iron-session** y tabla **users** (email + password_hash). Con MySQL configurado, el login usa la tabla `users`; si no, usa `data/admins.json`.
+- **Datos:** si defines `MYSQL_HOST`, `MYSQL_USER` y `MYSQL_DATABASE`, la app usa MySQL para proyectos, servicios, blog, mensajes de contacto, testimonios, configuración de empresa, imágenes hero y usuarios. Si no, sigue usando solo los archivos JSON en `data/`.
 - **Archivos:** subida a `public/uploads` vía **`/api/upload`**.
 - **Supabase:** eliminado (paquetes y `lib/supabase`).
 
-Para ver el proyecto en local: configura `.env.local`, ejecuta el esquema MySQL, corre `npm run db:seed-admin` y luego `npm run dev`.
+Para ver el proyecto en local: configura `.env.local` con las variables `MYSQL_*` (y opcionalmente `SESSION_SECRET`), crea la BD y ejecuta el esquema MySQL, corre `npm run db:seed-admin` y luego `npm run dev`.

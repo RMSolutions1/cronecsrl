@@ -20,7 +20,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { images } from "@/lib/images"
-import { getCompanyInfo } from "@/app/actions/db/company-info"
+import { getCompanyInfo } from "@/lib/data-read"
 
 export const metadata: Metadata = {
   title: "Brochure Corporativo | CRONEC SRL",

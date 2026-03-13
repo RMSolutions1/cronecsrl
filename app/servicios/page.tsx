@@ -1,5 +1,5 @@
-import { ServiciosPageContent } from "@/components/servicios-page-content"
-import { getServicesPublic } from "@/app/actions/db/services"
+import { ServiciosPageContent, type ServiceFromDb } from "@/components/servicios-page-content"
+import { getServicesPublic } from "@/lib/data-read"
 
 export const metadata = {
   title: "Servicios | CRONEC SRL - Obras Civiles, Electricas e Industriales",
@@ -7,9 +7,9 @@ export const metadata = {
 }
 
 export default async function ServiciosPage() {
-  let servicesFromDb: Awaited<ReturnType<typeof getServicesPublic>> = []
+  let servicesFromDb: ServiceFromDb[] = []
   try {
-    servicesFromDb = await getServicesPublic()
+    servicesFromDb = (await getServicesPublic()) as unknown as ServiceFromDb[]
   } catch {
     // fallback: el componente usa datos por defecto
   }

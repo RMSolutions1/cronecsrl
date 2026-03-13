@@ -1,7 +1,7 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProyectosClient } from "./proyectos-client"
-import { getProjectsPublic } from "@/app/actions/db/projects"
+import { getProjectsPublic } from "@/lib/data-read"
 import { staticProjects } from "@/lib/static-data"
 
 export const metadata = {

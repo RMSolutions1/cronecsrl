@@ -3,13 +3,25 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $app = Join-Path $projectRoot "app"
 $adminPath = Join-Path $app "admin"
-$adminBak = Join-Path $app "_admin_bak"
 $pageOrig = Join-Path $app "page.tsx"
 $pageFtp = Join-Path $app "page.ftp.tsx"
 $pageBak = Join-Path $app "page.tsx.bak"
 $proyectosPage = Join-Path $app "proyectos\page.tsx"
 $proyectosFtp = Join-Path $app "proyectos\page.ftp.tsx"
 $proyectosBak = Join-Path $app "proyectos\page.tsx.bak"
+$contactPage = Join-Path $app "contacto\page.tsx"
+$contactFtp = Join-Path $app "contacto\page.ftp.tsx"
+$contactBak = Join-Path $app "contacto\page.tsx.bak"
+
+# Comprobar que existen las páginas FTP antes de sustituir
+if (-not (Test-Path $pageFtp)) {
+  Write-Error "No se encuentra $pageFtp. No se puede hacer el build estático."
+  exit 1
+}
+if (-not (Test-Path $proyectosFtp)) {
+  Write-Error "No se encuentra $proyectosFtp. No se puede hacer el build estático."
+  exit 1
+}
 
 $adminTemp = Join-Path $env:TEMP "cronec_admin_bak"
 try {
@@ -22,6 +34,11 @@ try {
   Copy-Item $pageFtp $pageOrig -Force
   Copy-Item $proyectosPage $proyectosBak -Force
   Copy-Item $proyectosFtp $proyectosPage -Force
+  if (Test-Path $contactFtp) {
+    Copy-Item $contactPage $contactBak -Force
+    Copy-Item $contactFtp $contactPage -Force
+    Write-Host "Usando contacto estático (Formspree)..." -ForegroundColor Cyan
+  }
   Write-Host "Usando páginas estáticas (sin BD)..." -ForegroundColor Cyan
   Set-Location $projectRoot
   $env:BUILD_FTP = "1"
@@ -44,6 +61,10 @@ try {
   if (Test-Path $proyectosBak) {
     Copy-Item $proyectosBak $proyectosPage -Force
     Remove-Item $proyectosBak -Force
+  }
+  if (Test-Path $contactBak) {
+    Copy-Item $contactBak $contactPage -Force
+    Remove-Item $contactBak -Force
   }
   if (Test-Path $adminTemp) {
     if (Test-Path $adminPath) { Remove-Item $adminPath -Recurse -Force }

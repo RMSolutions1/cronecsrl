@@ -8,13 +8,7 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { ClientsSection } from "@/components/clients-section"
 import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
-import { getServicesPublic } from "@/app/actions/db/services"
-import { getProjectsPublic } from "@/app/actions/db/projects"
-import { getCompanyInfo } from "@/app/actions/db/company-info"
-import { getTestimonialsPublic } from "@/app/actions/db/testimonials"
-import { getCertificationsPublic } from "@/app/actions/db/certifications"
-import { getClientsPublic } from "@/app/actions/db/clients"
-import { getSectionsPublic } from "@/app/actions/db/sections"
+import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic } from "@/lib/data-read"
 
 export default async function HomePage() {
   let servicesFromDb: ServiceFromDb[] = []

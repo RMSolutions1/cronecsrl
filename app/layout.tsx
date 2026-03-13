@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { SettingsProvider } from "@/lib/settings-context"
-import { getCompanyInfo } from "@/app/actions/db/company-info"
+import { getCompanyInfo } from "@/lib/data-read"
 import "./globals.css"
 
 const inter = Inter({

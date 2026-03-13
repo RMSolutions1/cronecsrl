@@ -1,4 +1,4 @@
-import { getCalculadoraPublic } from "@/app/actions/db/calculadora"
+import { getCalculadoraPublic } from "@/lib/data-read"
 import CalculadoraPageClient from "./calculadora-client"
 
 export const metadata = {

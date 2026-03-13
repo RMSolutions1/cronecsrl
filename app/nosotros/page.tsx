@@ -1,5 +1,4 @@
-import { getNosotrosPublic } from "@/app/actions/db/nosotros"
-import { getCompanyInfo } from "@/app/actions/db/company-info"
+import { getNosotrosPublic, getCompanyInfo } from "@/lib/data-read"
 import { NosotrosPageContent } from "@/components/nosotros-page-content"
 
 export const metadata = {

@@ -20,6 +20,9 @@
     "start": "next start",
     "start:lowmem": "node --max-old-space-size=512 ./node_modules/next/dist/bin/next start",
     "start:minimal": "node --max-old-space-size=256 ./node_modules/next/dist/bin/next start",
+    "db:init": "node scripts/mysql/init-db.js",
+    "db:ping": "node scripts/mysql/verify-connection.js",
+    "db:query": "node scripts/mysql/run-query.js",
     "db:seed-admin": "node scripts/mysql/seed-admin.js",
     "seed:admin": "node scripts/seed-admin-json.js"
   },
