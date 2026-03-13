@@ -2,10 +2,10 @@ import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { ServicesSection, type ServiceFromDb } from "@/components/services-section"
 import { PortfolioSection } from "@/components/portfolio-section"
-import { WhyCronecSection } from "@/components/why-cronec-section"
-import { ProcessSection } from "@/components/process-section"
-import { TestimonialsSection } from "@/components/testimonials-section"
-import { ClientsSection } from "@/components/clients-section"
+import { WhyCronecSection, type WhyCronecData } from "@/components/why-cronec-section"
+import { ProcessSection, type ProcessData } from "@/components/process-section"
+import { TestimonialsSection, type TestimonialFromDb } from "@/components/testimonials-section"
+import { ClientsSection, type CertificationFromDb, type ClientFromDb } from "@/components/clients-section"
 import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
 import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic } from "@/lib/data-read"
@@ -17,9 +17,9 @@ export default async function HomePage() {
   let servicesFromDb: ServiceFromDb[] = []
   let projectsFromDb: Awaited<ReturnType<typeof getProjectsPublic>> = []
   let heroSlidesFromSettings: { title: string; paragraph: string }[] | undefined
-  let testimonialsFromDb: Awaited<ReturnType<typeof getTestimonialsPublic>> = []
-  let certificationsFromDb: Awaited<ReturnType<typeof getCertificationsPublic>> = []
-  let clientsFromDb: Awaited<ReturnType<typeof getClientsPublic>> = []
+  let testimonialsFromDb: TestimonialFromDb[] = []
+  let certificationsFromDb: CertificationFromDb[] = []
+  let clientsFromDb: ClientFromDb[] = []
   let sectionsData: Awaited<ReturnType<typeof getSectionsPublic>> = {}
   try {
     const [services, projects, settings, testimonials, certs, clis, sections] = await Promise.all([
@@ -31,11 +31,11 @@ export default async function HomePage() {
       getClientsPublic(),
       getSectionsPublic(),
     ])
-    servicesFromDb = services
+    servicesFromDb = services as unknown as ServiceFromDb[]
     projectsFromDb = projects
-    testimonialsFromDb = testimonials
-    certificationsFromDb = certs
-    clientsFromDb = clis
+    testimonialsFromDb = testimonials as unknown as TestimonialFromDb[]
+    certificationsFromDb = certs as unknown as CertificationFromDb[]
+    clientsFromDb = clis as unknown as ClientFromDb[]
     sectionsData = sections ?? {}
     if (settings?.heroSlides && Array.isArray(settings.heroSlides) && settings.heroSlides.length >= 3) {
       heroSlidesFromSettings = settings.heroSlides as { title: string; paragraph: string }[]
@@ -51,8 +51,8 @@ export default async function HomePage() {
         <HeroSection heroSlidesFromSettings={heroSlidesFromSettings} />
         <ServicesSection servicesFromDb={servicesFromDb} />
         <PortfolioSection projectsFromDb={projectsFromDb} />
-        <WhyCronecSection data={sectionsData.whyCronec} />
-        <ProcessSection data={sectionsData.process} />
+        <WhyCronecSection data={sectionsData.whyCronec as WhyCronecData | null | undefined} />
+        <ProcessSection data={sectionsData.process as ProcessData | null | undefined} />
         <TestimonialsSection testimonialsFromDb={testimonialsFromDb} />
         <ClientsSection certificationsFromDb={certificationsFromDb} clientsFromDb={clientsFromDb} />
         <CTASection />

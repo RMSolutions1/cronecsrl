@@ -17,3 +17,6 @@ data/admins.json
 
 # Usar solo npm (package-lock.json) para que Vercel no tome pnpm
 pnpm-lock.yaml
+
+# Build artifacts
+*.tsbuildinfo

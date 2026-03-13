@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...(process.env.BUILD_FTP === "1" ? { output: "export" } : {}),
+  turbopack: { root: process.cwd() },
   typescript: {
     ignoreBuildErrors: false,
   },
