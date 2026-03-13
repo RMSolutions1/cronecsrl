@@ -8,7 +8,7 @@ import { TestimonialsSection, type TestimonialFromDb } from "@/components/testim
 import { ClientsSection, type CertificationFromDb, type ClientFromDb } from "@/components/clients-section"
 import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
-import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic } from "@/lib/data-read"
+import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic, getHeroImagesPublic } from "@/lib/data-read"
 
 /** Sin caché: los cambios del dashboard se ven al recargar la página */
 export const dynamic = "force-dynamic"
@@ -21,8 +21,9 @@ export default async function HomePage() {
   let certificationsFromDb: CertificationFromDb[] = []
   let clientsFromDb: ClientFromDb[] = []
   let sectionsData: Awaited<ReturnType<typeof getSectionsPublic>> = {}
+  let heroImagesFromDb: { src: string; alt: string }[] = []
   try {
-    const [services, projects, settings, testimonials, certs, clis, sections] = await Promise.all([
+    const [services, projects, settings, testimonials, certs, clis, sections, heroImgs] = await Promise.all([
       getServicesPublic(),
       getProjectsPublic(),
       getCompanyInfo(),
@@ -30,6 +31,7 @@ export default async function HomePage() {
       getCertificationsPublic(),
       getClientsPublic(),
       getSectionsPublic(),
+      getHeroImagesPublic("home"),
     ])
     servicesFromDb = services as unknown as ServiceFromDb[]
     projectsFromDb = projects
@@ -40,6 +42,9 @@ export default async function HomePage() {
     if (settings?.heroSlides && Array.isArray(settings.heroSlides) && settings.heroSlides.length >= 3) {
       heroSlidesFromSettings = settings.heroSlides as { title: string; paragraph: string }[]
     }
+    if (Array.isArray(heroImgs) && heroImgs.length >= 1) {
+      heroImagesFromDb = heroImgs.map((h) => ({ src: h.image_url, alt: h.alt_text ?? h.page }))
+    }
   } catch {
     // Error leyendo data/*.json: se usan listas estáticas en las secciones
   }
@@ -48,7 +53,7 @@ export default async function HomePage() {
     <>
       <Header />
       <main>
-        <HeroSection heroSlidesFromSettings={heroSlidesFromSettings} />
+        <HeroSection heroSlidesFromSettings={heroSlidesFromSettings} heroImagesFromDb={heroImagesFromDb.length >= 1 ? heroImagesFromDb : undefined} />
         <ServicesSection servicesFromDb={servicesFromDb} />
         <PortfolioSection projectsFromDb={projectsFromDb} />
         <WhyCronecSection data={sectionsData.whyCronec as WhyCronecData | null | undefined} />

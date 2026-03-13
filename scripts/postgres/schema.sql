@@ -150,6 +150,26 @@ CREATE TABLE IF NOT EXISTS hero_images (
 );
 CREATE INDEX IF NOT EXISTS idx_hero_page ON hero_images(page);
 
+-- Certificaciones (ISO, etc.) - sección inicio
+CREATE TABLE IF NOT EXISTS certifications (
+  id VARCHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  logo_url VARCHAR(500) DEFAULT NULL,
+  order_index INT DEFAULT 0,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_certifications_order ON certifications(order_index);
+
+-- Clientes (logos en inicio)
+CREATE TABLE IF NOT EXISTS clients (
+  id VARCHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  logo_url VARCHAR(500) DEFAULT NULL,
+  order_index INT DEFAULT 0,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_clients_order ON clients(order_index);
+
 -- Fila por defecto company_info
 INSERT INTO company_info (id, company_name, tagline, address, phone, email, whatsapp, founded_year, cuit)
 VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Santa Fe 548 PB B, Salta Capital (4400)', '+54 9 387 536-1210', 'cronec@cronecsrl.com.ar', '5493875361210', 2009, '33-71090097-9')

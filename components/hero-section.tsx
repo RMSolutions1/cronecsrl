@@ -14,6 +14,9 @@ const defaultSlides = [
   { src: images.hero[2], alt: "Instalaciones industriales - CRONEC", title: "Instalaciones eléctricas y soluciones industriales", paragraph: "Desde baja tensión hasta subestaciones y redes. Ingenieros matriculados y equipamiento certificado para cada tipo de proyecto." },
 ]
 
+/** Imágenes del hero desde admin (hero-images por página). Si se pasan, se usan para el carrusel. */
+export type HeroImageFromDb = { src: string; alt: string }
+
 function formatTitle(text: string) {
   const parts = text.split(/(Futuro|infraestructura|eléctricas)/i)
   return (
@@ -26,13 +29,34 @@ function formatTitle(text: string) {
   )
 }
 
-export function HeroSection({ heroSlidesFromSettings }: { heroSlidesFromSettings?: { title: string; paragraph: string }[] }) {
+export function HeroSection({
+  heroSlidesFromSettings,
+  heroImagesFromDb,
+}: {
+  heroSlidesFromSettings?: { title: string; paragraph: string }[]
+  heroImagesFromDb?: HeroImageFromDb[]
+}) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const heroSlides = heroSlidesFromSettings && heroSlidesFromSettings.length >= 3
-    ? defaultSlides.map((s, i) => ({ ...s, title: heroSlidesFromSettings[i].title, paragraph: heroSlidesFromSettings[i].paragraph }))
-    : defaultSlides
+  const baseSlides =
+    heroImagesFromDb && heroImagesFromDb.length >= 1
+      ? heroImagesFromDb.map((img, i) => ({
+          src: img.src,
+          alt: img.alt,
+          title: defaultSlides[i]?.title ?? "",
+          paragraph: defaultSlides[i]?.paragraph ?? "",
+        }))
+      : defaultSlides
+
+  const heroSlides =
+    heroSlidesFromSettings && heroSlidesFromSettings.length >= 3
+      ? baseSlides.map((s, i) => ({
+          ...s,
+          title: heroSlidesFromSettings[i]?.title ?? s.title,
+          paragraph: heroSlidesFromSettings[i]?.paragraph ?? s.paragraph,
+        }))
+      : baseSlides
 
   useEffect(() => {
     setIsLoaded(true)

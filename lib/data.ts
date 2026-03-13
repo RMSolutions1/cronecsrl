@@ -18,6 +18,8 @@ const DB_FILES = new Set([
   "testimonials.json",
   "settings.json",
   "hero-images.json",
+  "certifications.json",
+  "clients.json",
   "admins.json",
 ])
 
@@ -58,7 +60,7 @@ async function writeToFile(filename: string, data: unknown): Promise<void> {
 }
 
 /** Archivos que son listas; si la BD devuelve array vacío, hacemos fallback a JSON */
-const LIST_FILES = new Set(["projects.json", "services.json", "blog.json", "messages.json", "testimonials.json", "hero-images.json"])
+const LIST_FILES = new Set(["projects.json", "services.json", "blog.json", "messages.json", "testimonials.json", "hero-images.json", "certifications.json", "clients.json"])
 
 async function readFromDb<T>(filename: string): Promise<T | null> {
   const db = usePostgres() ? pgData : mysqlData
@@ -82,6 +84,12 @@ async function readFromDb<T>(filename: string): Promise<T | null> {
       if (data && typeof data === "object") return (data ?? {}) as T
     } else if (filename === "hero-images.json") {
       const data = await db.readHeroImages()
+      if (Array.isArray(data) && data.length > 0) return data as T
+    } else if (filename === "certifications.json") {
+      const data = await db.readCertifications()
+      if (Array.isArray(data) && data.length > 0) return data as T
+    } else if (filename === "clients.json") {
+      const data = await db.readClients()
       if (Array.isArray(data) && data.length > 0) return data as T
     } else if (filename === "admins.json") {
       return (await db.readAdmins()) as T
@@ -113,6 +121,8 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "testimonials.json") { await pgData.writeTestimonials(data as unknown[]); return }
       if (filename === "settings.json") { await pgData.writeSettings(data as Record<string, unknown>); return }
       if (filename === "hero-images.json") { await pgData.writeHeroImages(data as unknown[]); return }
+      if (filename === "certifications.json") { await pgData.writeCertifications(data as unknown[]); return }
+      if (filename === "clients.json") { await pgData.writeClients(data as unknown[]); return }
       return
     } catch (e) {
       throw e
@@ -127,6 +137,8 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "testimonials.json") { await mysqlData.writeTestimonials(data as unknown[]); return }
       if (filename === "settings.json") { await mysqlData.writeSettings(data as Record<string, unknown>); return }
       if (filename === "hero-images.json") { await mysqlData.writeHeroImages(data as unknown[]); return }
+      if (filename === "certifications.json") { await mysqlData.writeCertifications(data as unknown[]); return }
+      if (filename === "clients.json") { await mysqlData.writeClients(data as unknown[]); return }
       return
     } catch (e) {
       throw e

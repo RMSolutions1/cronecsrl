@@ -36,6 +36,17 @@ export async function addHeroImage(data: { page: string; image_url: string; alt_
   return list[list.length - 1].id
 }
 
+export async function updateHeroImage(id: string, data: { image_url?: string; alt_text?: string }) {
+  const user = await getCurrentUser()
+  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  const list = await readData<HeroImage[]>("hero-images.json")
+  const idx = list.findIndex((h) => h.id === id)
+  if (idx < 0) throw new Error("Imagen no encontrada")
+  if (data.image_url !== undefined) list[idx].image_url = data.image_url
+  if (data.alt_text !== undefined) list[idx].alt_text = data.alt_text
+  await writeData("hero-images.json", list)
+}
+
 export async function deleteHeroImage(id: string) {
   const user = await getCurrentUser()
   if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")

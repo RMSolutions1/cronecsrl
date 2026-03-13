@@ -166,6 +166,26 @@ CREATE TABLE IF NOT EXISTS `hero_images` (
   KEY `idx_hero_page` (`page`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Certificaciones (ISO, etc.) - sección inicio
+CREATE TABLE IF NOT EXISTS `certifications` (
+  `id` CHAR(36) PRIMARY KEY,
+  `name` VARCHAR(255) NOT NULL,
+  `logo_url` VARCHAR(500) DEFAULT NULL,
+  `order_index` INT DEFAULT 0,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `idx_certifications_order` (`order_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Clientes (logos en inicio)
+CREATE TABLE IF NOT EXISTS `clients` (
+  `id` CHAR(36) PRIMARY KEY,
+  `name` VARCHAR(255) NOT NULL,
+  `logo_url` VARCHAR(500) DEFAULT NULL,
+  `order_index` INT DEFAULT 0,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `idx_clients_order` (`order_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Biblioteca de medios (opcional)
 CREATE TABLE IF NOT EXISTS `media_library` (
   `id` CHAR(36) PRIMARY KEY,

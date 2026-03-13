@@ -4,6 +4,17 @@
  */
 import { readData } from "@/lib/data"
 
+export type HeroImagePublic = { id: string; page: string; image_url: string; alt_text?: string | null; order_index: number }
+
+export async function getHeroImagesPublic(page: string): Promise<HeroImagePublic[]> {
+  try {
+    const list = await readData<HeroImagePublic[]>("hero-images.json")
+    return (list || []).filter((h) => h.page === page).sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0))
+  } catch {
+    return []
+  }
+}
+
 export async function getProjectsPublic() {
   try {
     const list = await readData<{ id: string; title: string; description: string; category: string; location?: string | null; year?: number | null; area?: string | number | null; budget?: string | null; duration?: string | null; client?: string | null; image_url: string; status: string; featured: boolean; created_at?: string; updated_at?: string; created_by?: string }[]>("projects.json")

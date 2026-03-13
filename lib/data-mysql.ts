@@ -347,6 +347,54 @@ export async function writeHeroImages(list: unknown[]): Promise<void> {
   }
 }
 
+// --- certifications
+export async function readCertifications(): Promise<unknown[]> {
+  const rows = await query<RowDataPacket[]>("SELECT * FROM certifications ORDER BY order_index ASC")
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    logo_url: r.logo_url ?? null,
+    order_index: r.order_index ?? 0,
+    updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
+  }))
+}
+
+export async function writeCertifications(list: unknown[]): Promise<void> {
+  const p = getPool()
+  await p.query("DELETE FROM certifications")
+  for (const r of list as Record<string, unknown>[]) {
+    await p.query(
+      `INSERT INTO certifications (id, name, logo_url, order_index, updated_at)
+       VALUES (?, ?, ?, ?, ?)`,
+      [r.id, r.name, r.logo_url ?? null, r.order_index ?? 0, r.updated_at ?? new Date().toISOString()]
+    )
+  }
+}
+
+// --- clients
+export async function readClients(): Promise<unknown[]> {
+  const rows = await query<RowDataPacket[]>("SELECT * FROM clients ORDER BY order_index ASC")
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    logo_url: r.logo_url ?? null,
+    order_index: r.order_index ?? 0,
+    updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
+  }))
+}
+
+export async function writeClients(list: unknown[]): Promise<void> {
+  const p = getPool()
+  await p.query("DELETE FROM clients")
+  for (const r of list as Record<string, unknown>[]) {
+    await p.query(
+      `INSERT INTO clients (id, name, logo_url, order_index, updated_at)
+       VALUES (?, ?, ?, ?, ?)`,
+      [r.id, r.name, r.logo_url ?? null, r.order_index ?? 0, r.updated_at ?? new Date().toISOString()]
+    )
+  }
+}
+
 // --- admins (users) - solo para listado; login se hace en auth
 export async function readAdmins(): Promise<unknown[]> {
   const rows = await query<RowDataPacket[]>("SELECT id, email, full_name, role, password_hash FROM users ORDER BY email")
