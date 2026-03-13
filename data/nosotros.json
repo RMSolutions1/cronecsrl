@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "badge": "Sobre CRONEC SRL",
+    "title": "Construyendo el Futuro desde 2009",
+    "subtitle": "15+ años de experiencia nos respaldan como especialistas en construcción civil, instalaciones eléctricas e infraestructura industrial en el noroeste argentino."
+  },
+  "stats": [
+    { "value": "15+", "label": "Años de Experiencia" },
+    { "value": "500+", "label": "Proyectos Completados" },
+    { "value": "50+", "label": "Profesionales" },
+    { "value": "98%", "label": "Satisfacción del Cliente" }
+  ],
+  "historySection": {
+    "title": "Nuestra Historia",
+    "subtitle": "Desde 2009, CRONEC SRL mantiene su compromiso con la excelencia en construcción y servicios técnicos."
+  },
+  "timeline": [
+    { "year": "2009", "title": "Fundación de CRONEC SRL", "description": "Iniciamos operaciones como empresa Salteña dedicada a Obras Públicas y Eléctricas en general." },
+    { "year": "2012", "title": "Expansión de Servicios", "description": "Incorporamos obras de saneamiento e infraestructura, consolidando nuestra presencia regional." },
+    { "year": "2015", "title": "Áreas Especializadas", "description": "Constituimos cuatro áreas principales: Gerencia General, Administrativa, Informática, Legal y Obras." },
+    { "year": "2018", "title": "Equipo Multidisciplinario", "description": "Incorporamos profesionales especializados: Ingenieros, Arquitectos, Geólogos, Topógrafos." },
+    { "year": "2021", "title": "Certificaciones de Calidad", "description": "Obtuvimos certificaciones en Medio Ambiente, Higiene y Seguridad Industrial." },
+    { "year": "2024", "title": "15 Años de Trayectoria", "description": "Celebramos 15 años de compromiso con la calidad y excelencia en cada proyecto." }
+  ],
+  "valuesSection": {
+    "title": "Nuestros Valores",
+    "subtitle": "Los principios que guían cada decisión y acción en nuestra organización."
+  },
+  "values": [
+    { "title": "Compromiso con la Calidad", "description": "Mantenemos los más altos estándares en cada proyecto, garantizando resultados excepcionales y duraderos." },
+    { "title": "Integridad y Transparencia", "description": "Actuamos con honestidad y transparencia en todas nuestras relaciones comerciales y profesionales." },
+    { "title": "Trabajo en Equipo", "description": "Fomentamos la colaboración y el respeto mutuo entre nuestro personal y colaboradores." },
+    { "title": "Innovación Constante", "description": "Incorporamos las últimas tecnologías y metodologías para optimizar nuestros procesos." },
+    { "title": "Orientación a Resultados", "description": "Enfocamos nuestros esfuerzos en cumplir y superar las expectativas de nuestros clientes." },
+    { "title": "Responsabilidad Social", "description": "Contribuimos al desarrollo sostenible de las comunidades donde operamos." }
+  ],
+  "teamSection": {
+    "title": "Equipo Directivo",
+    "subtitle": "Profesionales experimentados liderando cada área de nuestra organización."
+  },
+  "team": [
+    { "name": "Tomas Zamorano", "position": "Socio Gerente", "description": "Liderazgo estratégico y dirección general de la empresa." },
+    { "name": "Cr. Carlos Zamorano", "position": "Socio Apoderado", "description": "Gestión administrativa y representación legal de la empresa." },
+    { "name": "Ing. Pedro Padilla", "position": "Representante Técnico", "description": "Responsable de la gestión técnica y coordinación de proyectos." },
+    { "name": "Ing. Daniel Vaca", "position": "Director Técnico", "description": "Supervisión técnica de obras y cumplimiento de estándares." },
+    { "name": "Ing. Raúl Pagani", "position": "Asesor Técnico", "description": "Asesoramiento especializado en proyectos de ingeniería." },
+    { "name": "Ing. Rubén Gabini", "position": "Asesor Técnico", "description": "Consultoría técnica en instalaciones y sistemas complejos." },
+    { "name": "Arq. Rolando Cardozo", "position": "Proyectos Civiles", "description": "Diseño y dirección de proyectos de arquitectura y obras civiles." },
+    { "name": "Tp. Raúl Escarsy", "position": "Topografía y Planimetría", "description": "Relevamientos topográficos y planimetría de proyectos." }
+  ],
+  "certSection": {
+    "title": "Certificaciones y Reconocimientos",
+    "subtitle": "Comprometidos con los más altos estándares internacionales de calidad y seguridad."
+  },
+  "certifications": [
+    { "title": "ISO 9001:2015", "description": "Sistema de Gestión de Calidad" },
+    { "title": "ISO 14001:2015", "description": "Gestión Ambiental" },
+    { "title": "ISO 45001:2018", "description": "Seguridad y Salud Ocupacional" },
+    { "title": "IRAM 3800", "description": "Gestión de Seguridad e Higiene" }
+  ],
+  "cta": {
+    "title": "Construyamos Juntos el Futuro",
+    "paragraph": "Únase a los cientos de clientes que confían en CRONEC SRL para sus proyectos más importantes."
+  }
+}

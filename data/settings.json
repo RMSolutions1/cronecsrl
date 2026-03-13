@@ -1,0 +1,19 @@
+{
+  "company_name": "CRONEC SRL",
+  "tagline": "Construcciones eléctricas y civiles",
+  "description": "Empresa Salteña dedicada a Obras Públicas, obras de saneamiento, infraestructura y Obras Eléctricas. Calidad y compromiso desde 2009.",
+  "address": "",
+  "phone": "",
+  "email": "cronec@cronecsrl.com.ar",
+  "whatsapp": "",
+  "facebook_url": "https://www.facebook.com/cronecsrl",
+  "instagram_url": "https://www.instagram.com/cronecsrl",
+  "linkedin_url": "https://www.linkedin.com/company/cronecsrl",
+  "founded_year": 2009,
+  "logo_url": "",
+  "heroSlides": [
+    { "title": "Construimos el Futuro de Salta", "paragraph": "Especialistas en construcción civil, instalaciones eléctricas e infraestructura industrial. Calidad certificada y compromiso con cada proyecto." },
+    { "title": "Obras civiles e infraestructura que transforman la región", "paragraph": "Puentes, vialidad y edificaciones con los más altos estándares de seguridad y durabilidad. Más de 15 años ejecutando proyectos en Salta y el NOA." },
+    { "title": "Instalaciones eléctricas y soluciones industriales", "paragraph": "Desde baja tensión hasta subestaciones y redes. Ingenieros matriculados y equipamiento certificado para cada tipo de proyecto." }
+  ]
+}

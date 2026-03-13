@@ -1,0 +1,22 @@
+-- Insert initial company info
+INSERT INTO public.company_info (key, value, category, description) VALUES
+('company_name', 'CRONEC S.R.L.', 'basic', 'Nombre de la empresa'),
+('company_address', 'Santa Fe 548 PB "B", Salta Capital (4400), Salta, Argentina', 'contact', 'Dirección física'),
+('company_phone', '+54 9 387 536-1210', 'contact', 'Teléfono principal'),
+('company_email', 'cronec@cronecsrl.com', 'contact', 'Email principal'),
+('company_cuit', '33-71090097-9', 'legal', 'CUIT'),
+('company_founded', '2009', 'basic', 'Año de fundación'),
+('company_years_experience', '15+', 'stats', 'Años de experiencia'),
+('company_projects_completed', '500+', 'stats', 'Proyectos completados'),
+('company_professionals', '50+', 'stats', 'Profesionales en equipo')
+ON CONFLICT (key) DO NOTHING;
+
+-- Insert initial services
+INSERT INTO public.services (title, slug, description, short_description, icon, features, benefits, order_index, status) VALUES
+('Obras en General', 'obras-generales', 'Desarrollamos proyectos de construcción integral que abarcan desde edificios residenciales y comerciales hasta complejos industriales. Nuestro equipo garantiza calidad, cumplimiento de plazos y excelencia en cada fase del proyecto.', 'Construcción integral de edificios residenciales, comerciales e industriales', 'Building2', ARRAY['Construcción de edificios nuevos', 'Ampliaciones y remodelaciones', 'Gestión integral de proyectos', 'Control de calidad certificado'], ARRAY['Experiencia en proyectos de gran envergadura', 'Cumplimiento estricto de normativas', 'Equipamiento moderno y especializado'], 1, 'active'),
+('Arquitectura e Ingeniería', 'arquitectura-ingenieria', 'Ofrecemos servicios completos de diseño arquitectónico y cálculo de ingeniería estructural. Nuestro equipo multidisciplinario desarrolla soluciones innovadoras, funcionales y sostenibles para proyectos de cualquier escala.', 'Diseño arquitectónico y cálculo de ingeniería estructural', 'Compass', ARRAY['Proyectos arquitectónicos completos', 'Cálculo estructural certificado', 'Diseño de instalaciones', 'Modelado 3D y renders'], ARRAY['Profesionales matriculados', 'Tecnología BIM', 'Diseños optimizados'], 2, 'active'),
+('Instalaciones Industriales', 'instalaciones-industriales', 'Especializados en la ejecución de instalaciones eléctricas industriales de media y baja tensión. Implementamos sistemas eléctricos robustos y seguros para plantas industriales, garantizando eficiencia energética y cumplimiento normativo.', 'Instalaciones eléctricas industriales de media y baja tensión', 'Factory', ARRAY['Tableros eléctricos industriales', 'Tendido de líneas de MT y BT', 'Puesta a tierra y protecciones', 'Automatización industrial'], ARRAY['Certificación en seguridad eléctrica', 'Experiencia en sectores críticos', 'Mantenimiento preventivo'], 3, 'active'),
+('Obra Civil', 'obra-civil', 'Ejecutamos proyectos de infraestructura que incluyen movimientos de suelo, excavaciones, fundaciones, estructuras de hormigón y pavimentación. Contamos con maquinaria especializada y personal altamente capacitado.', 'Infraestructura civil, fundaciones y movimientos de suelo', 'HardHat', ARRAY['Movimiento de suelos', 'Excavaciones y fundaciones', 'Estructuras de hormigón', 'Pavimentación y vialidad'], ARRAY['Equipamiento propio de última generación', 'Supervisión técnica permanente', 'Experiencia en terrenos complejos'], 4, 'active'),
+('Otros Servicios', 'servicios-especiales', 'Brindamos servicios complementarios especializados que incluyen inspección técnica, asesoramiento en obra, estudios de factibilidad, auditorías de seguridad y mantenimiento preventivo de instalaciones.', 'Servicios complementarios y especializados', 'Wrench', ARRAY['Inspección técnica de obras', 'Estudios de factibilidad', 'Auditorías de seguridad', 'Mantenimiento preventivo'], ARRAY['Asesoramiento especializado', 'Informes técnicos detallados', 'Respuesta rápida'], 5, 'active'),
+('Obras Eléctricas', 'obras-electricas', 'Realizamos instalaciones eléctricas completas para edificios residenciales, comerciales y públicos. Desde el diseño hasta la puesta en marcha, garantizamos sistemas eléctricos seguros, eficientes y certificados.', 'Instalaciones eléctricas residenciales, comerciales y públicas', 'Zap', ARRAY['Instalaciones eléctricas internas', 'Sistemas de iluminación LED', 'Tableros y protecciones eléctricas', 'Certificación de instalaciones'], ARRAY['Cumplimiento normativa AEA', 'Garantía de trabajos', 'Materiales certificados'], 6, 'active')
+ON CONFLICT (slug) DO NOTHING;

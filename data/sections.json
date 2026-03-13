@@ -1,0 +1,32 @@
+{
+  "whyCronec": {
+    "title": "Por qué elegir CRONEC",
+    "subtitle": "Experiencia, profesionalismo y compromiso en cada proyecto de construcción e infraestructura.",
+    "stats": [
+      { "value": 15, "suffix": "+", "label": "Años" },
+      { "value": 500, "suffix": "+", "label": "Proyectos" },
+      { "value": 150, "suffix": "+", "label": "Clientes" },
+      { "value": 50, "suffix": "+", "label": "Equipo" }
+    ],
+    "features": [
+      { "title": "Experiencia Comprobada", "description": "Más de 15 años liderando proyectos de infraestructura compleja en toda la región de Salta." },
+      { "title": "Equipo Profesional", "description": "Ingenieros, arquitectos y técnicos certificados en todas las áreas de construcción." },
+      { "title": "Certificaciones ISO", "description": "Cumplimiento estricto de normativas de calidad, seguridad y medio ambiente." },
+      { "title": "Tecnología Moderna", "description": "Maquinaria de última generación y metodologías constructivas innovadoras." },
+      { "title": "Compromiso con Plazos", "description": "Gestión eficiente de tiempos con planificación rigurosa de cada etapa." },
+      { "title": "Mejora Continua", "description": "Innovación constante en procesos y técnicas constructivas." }
+    ],
+    "highlights": ["Obras públicas y privadas", "Atención personalizada", "Presupuestos competitivos", "Garantía de calidad"]
+  },
+  "process": {
+    "title": "Nuestro Proceso de Trabajo",
+    "subtitle": "Metodología probada que garantiza resultados excepcionales en cada etapa de su proyecto.",
+    "steps": [
+      { "number": "01", "title": "Consulta Inicial", "description": "Análisis detallado de sus necesidades, objetivos y requisitos técnicos del proyecto." },
+      { "number": "02", "title": "Evaluación Técnica", "description": "Estudio de factibilidad, inspección del sitio y desarrollo de anteproyecto." },
+      { "number": "03", "title": "Propuesta Personalizada", "description": "Presentación de solución técnica, cronograma detallado y presupuesto ajustado." },
+      { "number": "04", "title": "Ejecución Profesional", "description": "Construcción con control de calidad continuo, gestión de seguridad y comunicación constante." },
+      { "number": "05", "title": "Entrega y Garantía", "description": "Inspección final, documentación completa y servicio de garantía post-entrega." }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+[
+  { "id": "cert-1", "name": "ISO 9001", "logo_url": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=120&q=80", "order_index": 0 },
+  { "id": "cert-2", "name": "ISO 14001", "logo_url": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=120&q=80", "order_index": 1 },
+  { "id": "cert-3", "name": "ISO 45001", "logo_url": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=120&q=80", "order_index": 2 }
+]

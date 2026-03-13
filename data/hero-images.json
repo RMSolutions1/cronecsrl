@@ -1,0 +1,20 @@
+[
+  { "id": "hero-home-0", "page": "home", "image_url": "/hero-construction-1.jpeg", "alt_text": "Construcción CRONEC", "order_index": 0 },
+  { "id": "hero-home-1", "page": "home", "image_url": "/hero-construction-2.jpeg", "alt_text": "Obra civil CRONEC", "order_index": 1 },
+  { "id": "hero-home-2", "page": "home", "image_url": "/hero-construction-3.jpeg", "alt_text": "Infraestructura CRONEC", "order_index": 2 },
+  { "id": "hero-servicios-0", "page": "servicios", "image_url": "/hero-services-1.jpeg", "alt_text": "Servicios CRONEC", "order_index": 0 },
+  { "id": "hero-servicios-1", "page": "servicios", "image_url": "/hero-services-2.jpeg", "alt_text": "Obras y servicios", "order_index": 1 },
+  { "id": "hero-servicios-2", "page": "servicios", "image_url": "/hero-services-3.jpeg", "alt_text": "Construcción", "order_index": 2 },
+  { "id": "hero-proyectos-0", "page": "proyectos", "image_url": "/hero-projects-1.jpeg", "alt_text": "Proyectos CRONEC", "order_index": 0 },
+  { "id": "hero-proyectos-1", "page": "proyectos", "image_url": "/hero-projects-2.jpeg", "alt_text": "Portfolio", "order_index": 1 },
+  { "id": "hero-proyectos-2", "page": "proyectos", "image_url": "/hero-projects-3.jpeg", "alt_text": "Obras realizadas", "order_index": 2 },
+  { "id": "hero-nosotros-0", "page": "nosotros", "image_url": "/hero-nosotros-1.jpeg", "alt_text": "Nosotros CRONEC", "order_index": 0 },
+  { "id": "hero-nosotros-1", "page": "nosotros", "image_url": "/hero-nosotros-2.jpeg", "alt_text": "Equipo", "order_index": 1 },
+  { "id": "hero-nosotros-2", "page": "nosotros", "image_url": "/hero-nosotros-3.jpeg", "alt_text": "Empresa", "order_index": 2 },
+  { "id": "hero-contacto-0", "page": "contacto", "image_url": "/hero-contacto-1.jpeg", "alt_text": "Contacto CRONEC", "order_index": 0 },
+  { "id": "hero-contacto-1", "page": "contacto", "image_url": "/hero-contacto-2.jpeg", "alt_text": "Oficinas", "order_index": 1 },
+  { "id": "hero-contacto-2", "page": "contacto", "image_url": "/hero-contacto-3.jpeg", "alt_text": "Construcción", "order_index": 2 },
+  { "id": "hero-blog-0", "page": "blog", "image_url": "/hero-blog-1.jpeg", "alt_text": "Blog CRONEC", "order_index": 0 },
+  { "id": "hero-blog-1", "page": "blog", "image_url": "/hero-blog-2.jpeg", "alt_text": "Noticias", "order_index": 1 },
+  { "id": "hero-blog-2", "page": "blog", "image_url": "/hero-blog-3.jpeg", "alt_text": "Actualidad", "order_index": 2 }
+]

@@ -1,0 +1,8 @@
+[
+  { "id": "client-1", "name": "Gobierno de Salta", "logo_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200&q=80", "order_index": 0 },
+  { "id": "client-2", "name": "YPF", "logo_url": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=200&q=80", "order_index": 1 },
+  { "id": "client-3", "name": "Techint", "logo_url": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&q=80", "order_index": 2 },
+  { "id": "client-4", "name": "Pan American Energy", "logo_url": "https://images.unsplash.com/photo-1504309092620-4d0e8a54959e?w=200&q=80", "order_index": 3 },
+  { "id": "client-5", "name": "Minera Lindero", "logo_url": "https://images.unsplash.com/photo-1510812431401-41d2d2c9b5c9?w=200&q=80", "order_index": 4 },
+  { "id": "client-6", "name": "Arcor", "logo_url": "https://images.unsplash.com/photo-1541888946425-81bb3d4f723f?w=200&q=80", "order_index": 5 }
+]
