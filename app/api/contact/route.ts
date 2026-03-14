@@ -1,29 +1,36 @@
 import { NextResponse } from "next/server"
 import { readData, writeData, generateId } from "@/lib/data"
+import { validateContactInput } from "@/lib/contact-validation"
+import { checkContactRateLimit } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const name = String(body.nombre ?? "").trim()
-    const email = String(body.email ?? "").trim()
-    const phone = String(body.telefono ?? "").trim()
-    const service = String(body.servicio ?? "").trim()
-    const message = String(body.mensaje ?? "").trim()
-    const company = body.empresa ? String(body.empresa).trim() : undefined
+    const rate = checkContactRateLimit(request)
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { success: false, message: "Demasiados envíos. Intente más tarde." },
+        { status: 429, headers: rate.retryAfter ? { "Retry-After": String(rate.retryAfter) } : undefined }
+      )
+    }
 
-    if (!name || !email || !phone || !service || !message) {
+    const body = await request.json()
+    const validation = validateContactInput({
+      nombre: body.nombre,
+      email: body.email,
+      telefono: body.telefono,
+      servicio: body.servicio,
+      mensaje: body.mensaje,
+      empresa: body.empresa,
+    })
+
+    if (!validation.ok || !validation.data) {
       return NextResponse.json(
-        { success: false, message: "Por favor complete todos los campos requeridos." },
+        { success: false, message: validation.message ?? "Datos inválidos." },
         { status: 400 }
       )
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { success: false, message: "Por favor ingrese un email válido." },
-        { status: 400 }
-      )
-    }
+
+    const { name, email, phone, service, message, company } = validation.data
 
     const list = await readData<{ id: string; name: string; email: string; phone?: string; company?: string; service: string; message: string; is_read: boolean; created_at: string }[]>("messages.json")
     list.unshift({

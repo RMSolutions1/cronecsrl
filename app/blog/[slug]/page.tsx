@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import DOMPurify from "isomorphic-dompurify"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { getBlogPostBySlug, getBlogPostsPublic } from "@/lib/data-read"
@@ -76,7 +77,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
           <div
             className="prose prose-neutral dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: post.content || post.excerpt || "" }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content || post.excerpt || "") }}
           />
           {!post.content && post.excerpt && <p className="text-muted-foreground">{post.excerpt}</p>}
         </article>

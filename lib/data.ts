@@ -134,6 +134,7 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "hero-images.json") { await pgData.writeHeroImages(data as unknown[]); return }
       if (filename === "certifications.json") { await pgData.writeCertifications(data as unknown[]); return }
       if (filename === "clients.json") { await pgData.writeClients(data as unknown[]); return }
+      if (filename === "admins.json") { await pgData.writeAdmins(data as unknown[]); return }
       return
     } catch (e) {
       throw e
@@ -150,6 +151,7 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "hero-images.json") { await mysqlData.writeHeroImages(data as unknown[]); return }
       if (filename === "certifications.json") { await mysqlData.writeCertifications(data as unknown[]); return }
       if (filename === "clients.json") { await mysqlData.writeClients(data as unknown[]); return }
+      if (filename === "admins.json") { await mysqlData.writeAdmins(data as unknown[]); return }
       return
     } catch (e) {
       throw e

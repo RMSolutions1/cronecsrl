@@ -1,34 +1,32 @@
 "use server"
 
 import { createContactSubmission } from "@/app/actions/db/contact"
+import { validateContactInput } from "@/lib/contact-validation"
 
 export async function submitContactForm(formData: FormData) {
-  const data = {
-    nombre: (formData.get("nombre") as string)?.trim(),
-    empresa: (formData.get("empresa") as string)?.trim(),
-    email: (formData.get("email") as string)?.trim(),
-    telefono: (formData.get("telefono") as string)?.trim(),
-    servicio: (formData.get("servicio") as string)?.trim(),
-    mensaje: (formData.get("mensaje") as string)?.trim(),
+  const validation = validateContactInput({
+    nombre: (formData.get("nombre") as string) ?? "",
+    email: (formData.get("email") as string) ?? "",
+    telefono: (formData.get("telefono") as string) ?? "",
+    servicio: (formData.get("servicio") as string) ?? "",
+    mensaje: (formData.get("mensaje") as string) ?? "",
+    empresa: (formData.get("empresa") as string) ?? undefined,
+  })
+
+  if (!validation.ok || !validation.data) {
+    return { success: false, message: validation.message ?? "Datos inválidos." }
   }
 
-  if (!data.nombre || !data.email || !data.telefono || !data.servicio || !data.mensaje) {
-    return { success: false, message: "Por favor complete todos los campos requeridos." }
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(data.email)) {
-    return { success: false, message: "Por favor ingrese un email válido." }
-  }
+  const { name, email, phone, service, message, company } = validation.data
 
   try {
     await createContactSubmission({
-      name: data.nombre,
-      email: data.email,
-      phone: data.telefono,
-      company: data.empresa || undefined,
-      service: data.servicio,
-      message: data.mensaje,
+      name,
+      email,
+      phone,
+      company,
+      service,
+      message,
     })
     return { success: true, message: "Gracias por contactarnos. Responderemos a la brevedad." }
   } catch (error) {

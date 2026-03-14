@@ -1,9 +1,9 @@
 /**
  * Verificación de conexión y tablas para diagnóstico.
  * GET /api/db-verify → { backend, tables, ok }
- * Protegido: solo en desarrollo o con header X-Admin-Key (opcional).
+ * En producción: requiere header X-Admin-Key con valor DB_VERIFY_KEY o solo en desarrollo.
  */
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { isPostgresConfigured } from "@/lib/db-pg"
 import { isMySQLConfigured } from "@/lib/db"
 import { getPool, query } from "@/lib/db-pg"
@@ -41,8 +41,15 @@ async function getPostgresTableCounts(): Promise<TableStatus> {
   return result
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const isProduction = process.env.NODE_ENV === "production"
+    const expectedKey = process.env.DB_VERIFY_KEY
+    const providedKey = request.headers.get("x-admin-key")
+    if (isProduction && (!expectedKey || providedKey !== expectedKey)) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    }
+
     const backend = isPostgresConfigured() ? "postgres" : isMySQLConfigured() ? "mysql" : "json"
     let tables: TableStatus = {}
 

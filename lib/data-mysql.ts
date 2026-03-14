@@ -407,6 +407,27 @@ export async function readAdmins(): Promise<unknown[]> {
   }))
 }
 
+export async function writeAdmins(list: unknown[]): Promise<void> {
+  const p = getPool()
+  await p.query("DELETE FROM users")
+  const now = new Date().toISOString().slice(0, 19).replace("T", " ")
+  for (const r of list as Record<string, unknown>[]) {
+    await p.query(
+      `INSERT INTO users (id, email, password_hash, full_name, role, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        r.id,
+        r.email,
+        r.password_hash ?? "",
+        r.full_name ?? null,
+        r.role ?? "admin",
+        now,
+        now,
+      ]
+    )
+  }
+}
+
 // Actualizar is_read en un mensaje (contact_submissions)
 export async function markContactRead(id: string): Promise<void> {
   await query("UPDATE contact_submissions SET is_read = 1 WHERE id = ?", [id])
