@@ -111,13 +111,40 @@ async function readFromDb<T>(filename: string): Promise<T | null> {
   return null
 }
 
+/** Si la BD devuelve lista/objeto vacío, usar JSON para que el admin vea los datos existentes de la web (data/*.json). */
+function hasContent(value: unknown, isList: boolean): boolean {
+  if (value == null) return false
+  if (isList) return Array.isArray(value) && value.length > 0
+  return typeof value === "object" && !Array.isArray(value) && Object.keys(value).length > 0
+}
+
 export async function readData<T>(filename: string): Promise<T> {
   if ((usePostgres() || useMySQL()) && DB_FILES.has(filename)) {
     const fromDb = await readFromDb<T>(filename)
-    if (fromDb !== null) return fromDb
-    if (LIST_FILES.has(filename) || filename === "settings.json" || filename === "admins.json") {
-      return readFromFile<T>(filename)
+    const isList = LIST_FILES.has(filename)
+    const isSettingsOrAdmins = filename === "settings.json" || filename === "admins.json"
+    if (fromDb !== null && hasContent(fromDb, isList)) {
+      if (filename === "settings.json" && typeof fromDb === "object" && !Array.isArray(fromDb)) {
+        try {
+          const fromFile = await readFromFile<Record<string, unknown>>(filename)
+          if (typeof fromFile === "object" && fromFile !== null && !Array.isArray(fromFile))
+            return { ...fromFile, ...fromDb } as T
+        } catch {
+          // ignorar
+        }
+      }
+      return fromDb
     }
+    if (!hasContent(fromDb, isList) && (isList || isSettingsOrAdmins)) {
+      try {
+        const fromFile = await readFromFile<T>(filename)
+        if (hasContent(fromFile, isList)) return fromFile
+      } catch {
+        // seguir con fromDb o vacío
+      }
+    }
+    if (fromDb !== null) return fromDb
+    if (LIST_FILES.has(filename) || isSettingsOrAdmins) return readFromFile<T>(filename)
   }
   return readFromFile<T>(filename)
 }
