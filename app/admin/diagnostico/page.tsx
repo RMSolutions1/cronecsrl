@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle2 } from "lucide-react"
 import { redirect } from "next/navigation"
+import { DbVerifyCard } from "@/components/admin/db-verify-card"
 
 export default async function DiagnosticoPage() {
   const user = await getCurrentUser()
@@ -19,7 +20,9 @@ export default async function DiagnosticoPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-3xl font-bold">Diagnóstico del sistema (almacenamiento en archivos)</h1>
+        <h1 className="mb-8 text-3xl font-bold">Diagnóstico del sistema</h1>
+
+        <DbVerifyCard />
 
         <Card className="mb-6">
           <CardHeader>
@@ -48,7 +51,7 @@ export default async function DiagnosticoPage() {
         <Card>
           <CardHeader>
             <CardTitle>Archivos de datos (carpeta data/)</CardTitle>
-            <CardDescription>Todo el contenido se gestiona desde el dashboard y se guarda en JSON.</CardDescription>
+            <CardDescription>Con BD configurada se usa Postgres/MySQL; si no, se usan archivos en data/.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {["projects.json", "services.json", "messages.json", "blog.json", "testimonials.json", "certifications.json", "clients.json", "hero-images.json", "settings.json", "admins.json"].map((t) => (

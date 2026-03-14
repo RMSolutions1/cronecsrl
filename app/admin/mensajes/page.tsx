@@ -1,7 +1,11 @@
 import { Suspense } from "react"
+import { getCurrentUser } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { MessagesManager } from "@/components/admin/messages-manager"
 
-export default function MensajesAdminPage() {
+export default async function MensajesAdminPage() {
+  const user = await getCurrentUser()
+  if (!user || !["admin", "superadmin"].includes(user.role)) redirect("/admin/login")
   return (
     <div className="space-y-6">
       <div>

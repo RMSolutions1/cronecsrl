@@ -1,6 +1,10 @@
+import { getCurrentUser } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { HeroImagesManager } from "@/components/admin/hero-images-manager"
 
-export default function ImagenesAdminPage() {
+export default async function ImagenesAdminPage() {
+  const user = await getCurrentUser()
+  if (!user || !["admin", "superadmin"].includes(user.role)) redirect("/admin/login")
   return (
     <div className="space-y-6">
       <div>

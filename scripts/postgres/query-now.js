@@ -38,15 +38,16 @@ async function main() {
     console.log("=== Conexión OK ===\n")
 
     const company = await client.query("SELECT id, company_name, tagline, phone, email FROM company_info LIMIT 1")
-    const counts = await client.query(`
-      SELECT
-        (SELECT COUNT(*) FROM users) AS users,
-        (SELECT COUNT(*) FROM projects) AS projects,
-        (SELECT COUNT(*) FROM services) AS services,
-        (SELECT COUNT(*) FROM blog_posts) AS blog_posts,
-        (SELECT COUNT(*) FROM contact_submissions) AS messages,
-        (SELECT COUNT(*) FROM testimonials) AS testimonials
-    `)
+    const tables = ["users", "projects", "services", "blog_posts", "contact_submissions", "testimonials", "hero_images", "certifications", "clients"]
+    const counts = {}
+    for (const t of tables) {
+      try {
+        const r = await client.query(`SELECT COUNT(*) AS c FROM ${t}`)
+        counts[t] = r.rows[0]?.c ?? 0
+      } catch (e) {
+        counts[t] = e.message?.includes("does not exist") ? "FALTA TABLA" : "error"
+      }
+    }
     const services = await client.query("SELECT id, title, slug, status FROM services ORDER BY display_order, order_index LIMIT 10")
 
     console.log("--- company_info ---")
@@ -57,7 +58,7 @@ async function main() {
     }
 
     console.log("\n--- Conteo por tabla ---")
-    console.log(counts.rows[0])
+    console.log(counts)
 
     console.log("\n--- services (primeros 10) ---")
     console.table(services.rows)

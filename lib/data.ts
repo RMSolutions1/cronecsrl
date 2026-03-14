@@ -67,35 +67,46 @@ async function readFromDb<T>(filename: string): Promise<T | null> {
   try {
     if (filename === "projects.json") {
       const data = await db.readProjects()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "services.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "services.json") {
       const data = await db.readServices()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "blog.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "blog.json") {
       const data = await db.readBlog()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "messages.json") {
-      return (await db.readMessages()) as T
-    } else if (filename === "testimonials.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "messages.json") {
+      const data = await db.readMessages()
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "testimonials.json") {
       const data = await db.readTestimonials()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "settings.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "settings.json") {
       const data = await db.readSettings()
-      if (data && typeof data === "object") return (data ?? {}) as T
-    } else if (filename === "hero-images.json") {
+      return (data && typeof data === "object" ? data : {}) as T
+    }
+    if (filename === "hero-images.json") {
       const data = await db.readHeroImages()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "certifications.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "certifications.json") {
       const data = await db.readCertifications()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "clients.json") {
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "clients.json") {
       const data = await db.readClients()
-      if (Array.isArray(data) && data.length > 0) return data as T
-    } else if (filename === "admins.json") {
-      return (await db.readAdmins()) as T
+      return (Array.isArray(data) ? data : []) as T
+    }
+    if (filename === "admins.json") {
+      const data = await db.readAdmins()
+      return (Array.isArray(data) ? data : []) as T
     }
   } catch {
-    // BD falló: fallback a JSON
+    // BD falló (ej. tabla no existe): fallback a JSON
   }
   return null
 }
@@ -103,7 +114,7 @@ async function readFromDb<T>(filename: string): Promise<T | null> {
 export async function readData<T>(filename: string): Promise<T> {
   if ((usePostgres() || useMySQL()) && DB_FILES.has(filename)) {
     const fromDb = await readFromDb<T>(filename)
-    if (fromDb != null) return fromDb
+    if (fromDb !== null) return fromDb
     if (LIST_FILES.has(filename) || filename === "settings.json" || filename === "admins.json") {
       return readFromFile<T>(filename)
     }

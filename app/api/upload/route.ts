@@ -13,7 +13,8 @@ export async function POST(request: Request) {
 
   const formData = await request.formData()
   const file = formData.get("file") as File | null
-  const subdir = (formData.get("path") as string) || "general"
+  const rawPath = (formData.get("path") as string) || "general"
+  const subdir = /^[a-zA-Z0-9_-]+$/.test(rawPath) ? rawPath : "general"
 
   if (!file || !file.size) {
     return NextResponse.json({ error: "No se envió ningún archivo" }, { status: 400 })
