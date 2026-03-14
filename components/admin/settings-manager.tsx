@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { getCompanyInfo, saveCompanyInfo } from "@/app/actions/db/company-info"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -34,6 +35,7 @@ interface CompanyInfo {
   cuit?: string
   logo_url?: string
   heroSlides?: HeroSlide[]
+  hero_badge?: string
   footer_cta_title?: string
   footer_cta_subtitle?: string
   cta_badge?: string
@@ -43,7 +45,28 @@ interface CompanyInfo {
   meta_description?: string
   brochure_pdf_url?: string
   brochure_cta_text?: string
+  nav_links?: { href: string; label: string }[]
+  /** Textos de botones y CTAs del sitio (editables sin tocar código) */
+  site_cta_ver_proyectos?: string
+  site_cta_solicitar_cotizacion?: string
+  site_cta_ver_todos_servicios?: string
+  site_cta_contactenos?: string
+  site_hero_scroll_label?: string
+  /** Páginas legales: contenido HTML (opcional; si está vacío se usa el contenido por defecto) */
+  legal_politica_calidad?: string
+  legal_politica_privacidad?: string
+  legal_terminos_condiciones?: string
 }
+
+const DEFAULT_NAV_LINKS: { href: string; label: string }[] = [
+  { href: "/", label: "Inicio" },
+  { href: "/proyectos", label: "Proyectos" },
+  { href: "/nosotros", label: "Nosotros" },
+  { href: "/blog", label: "Noticias" },
+  { href: "/calculadora", label: "Cotizador" },
+  { href: "/contacto", label: "Contacto" },
+  { href: "/brochure", label: "Brochure" },
+]
 
 export function SettingsManager() {
   const [info, setInfo] = useState<Partial<CompanyInfo>>({})
@@ -94,17 +117,28 @@ export function SettingsManager() {
     ? info.heroSlides.slice(0, 3)
     : defaultHeroSlides
 
+  const searchParams = useSearchParams()
+  const tabFromUrl = searchParams.get("tab") || "general"
+  const validTabs = ["general", "hero", "menu", "textos", "contacto", "footer", "redes", "empresa", "brochure", "legal", "seo"]
+  const defaultTab = validTabs.includes(tabFromUrl) ? tabFromUrl : "general"
+  const navLinks: { href: string; label: string }[] = Array.isArray(info.nav_links) && info.nav_links.length > 0
+    ? info.nav_links
+    : DEFAULT_NAV_LINKS
+
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="general" className="space-y-4">
+      <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
         <TabsList className="flex flex-wrap gap-1">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="hero">Hero (Inicio)</TabsTrigger>
+          <TabsTrigger value="menu">Menú y enlaces</TabsTrigger>
+          <TabsTrigger value="textos">Textos del sitio</TabsTrigger>
           <TabsTrigger value="contacto">Contacto</TabsTrigger>
           <TabsTrigger value="footer">Footer y CTA</TabsTrigger>
           <TabsTrigger value="redes">Redes Sociales</TabsTrigger>
           <TabsTrigger value="empresa">Sobre la Empresa</TabsTrigger>
           <TabsTrigger value="brochure">Brochure</TabsTrigger>
+          <TabsTrigger value="legal">Páginas legales</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
         </TabsList>
 
@@ -182,6 +216,15 @@ export function SettingsManager() {
               <CardDescription>Textos del carrusel principal (título y párrafo por cada diapositiva)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div>
+                <label className="text-sm font-medium">Texto del badge (sobre el título)</label>
+                <Input
+                  value={info.hero_badge ?? ""}
+                  onChange={(e) => setInfo({ ...info, hero_badge: e.target.value })}
+                  placeholder="Desde 2009 - Más de 15 años de excelencia"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Ej: &quot;Desde 2009 - Más de 15 años de excelencia&quot;</p>
+              </div>
               {[0, 1, 2].map((i) => (
                 <div key={i} className="rounded-lg border p-4 space-y-3">
                   <p className="text-sm font-medium text-muted-foreground">Diapositiva {i + 1}</p>
@@ -210,6 +253,94 @@ export function SettingsManager() {
                       rows={2}
                     />
                   </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="menu" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Menú principal y enlaces del sitio</CardTitle>
+              <CardDescription>
+                Enlaces que aparecen en el header y en el footer (Inicio, Servicios, Proyectos, Nosotros, Noticias, Cotizador, Contacto, Brochure). Puede agregar, quitar o cambiar el orden.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {navLinks.map((link, i) => (
+                <div key={i} className="flex gap-2 items-center rounded-lg border p-3">
+                  <Input
+                    placeholder="Ruta (ej: /contacto)"
+                    value={link.href}
+                    onChange={(e) => {
+                      const next = [...navLinks]
+                      next[i] = { ...next[i], href: e.target.value }
+                      setInfo({ ...info, nav_links: next })
+                    }}
+                    className="flex-1 max-w-[200px]"
+                  />
+                  <Input
+                    placeholder="Texto (ej: Contacto)"
+                    value={link.label}
+                    onChange={(e) => {
+                      const next = [...navLinks]
+                      next[i] = { ...next[i], label: e.target.value }
+                      setInfo({ ...info, nav_links: next })
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      const next = navLinks.filter((_, j) => j !== i)
+                      setInfo({ ...info, nav_links: next.length ? next : DEFAULT_NAV_LINKS })
+                    }}
+                  >
+                    ×
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setInfo({ ...info, nav_links: [...navLinks, { href: "/", label: "Nuevo" }] })}
+              >
+                + Agregar enlace
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                Los ítem &quot;Servicios&quot; del menú se generan automáticamente desde Admin → Servicios. Para cambiar nombres o rutas de servicios, edite allí.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="textos" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Textos de botones y CTAs</CardTitle>
+              <CardDescription>
+                Todos los textos que aparecen en botones y llamados a la acción del sitio. Así puede cambiar &quot;Solicitar Cotización&quot;, &quot;Ver Proyectos&quot;, etc. sin tocar código.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { key: "site_cta_ver_proyectos", label: "Botón «Ver Proyectos» (hero e inicio)", placeholder: "Ver Proyectos" },
+                { key: "site_cta_solicitar_cotizacion", label: "Botón «Solicitar Cotización» (header y hero)", placeholder: "Solicitar Cotización" },
+                { key: "site_cta_ver_todos_servicios", label: "Enlace «Ver todos los servicios» (menú)", placeholder: "Ver todos los servicios" },
+                { key: "site_cta_contactenos", label: "Botón «Contáctenos» (footer y CTA)", placeholder: "Contáctenos" },
+                { key: "site_hero_scroll_label", label: "Texto del scroll del hero («Descubrir»)", placeholder: "Descubrir" },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label className="text-sm font-medium">{label}</label>
+                  <Input
+                    value={(info as Record<string, string>)[key] ?? ""}
+                    onChange={(e) => setInfo({ ...info, [key]: e.target.value })}
+                    placeholder={placeholder}
+                    className="mt-1"
+                  />
                 </div>
               ))}
             </CardContent>
@@ -452,6 +583,49 @@ export function SettingsManager() {
                   value={info.brochure_cta_text || ""}
                   onChange={(e) => setInfo({ ...info, brochure_cta_text: e.target.value })}
                   placeholder="Descargar Brochure PDF"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="legal" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Páginas legales</CardTitle>
+              <CardDescription>
+                Contenido de Política de Calidad, Política de Privacidad y Términos y Condiciones. Si deja un campo vacío, se muestra el contenido por defecto del sitio. Puede usar HTML básico (párrafos, negrita, listas).
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <label className="text-sm font-medium">Política de Calidad (HTML)</label>
+                <Textarea
+                  value={(info as Record<string, string>).legal_politica_calidad ?? ""}
+                  onChange={(e) => setInfo({ ...info, legal_politica_calidad: e.target.value })}
+                  placeholder="Deje vacío para usar el contenido por defecto..."
+                  rows={8}
+                  className="font-mono text-sm mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Política de Privacidad (HTML)</label>
+                <Textarea
+                  value={(info as Record<string, string>).legal_politica_privacidad ?? ""}
+                  onChange={(e) => setInfo({ ...info, legal_politica_privacidad: e.target.value })}
+                  placeholder="Deje vacío para usar el contenido por defecto..."
+                  rows={8}
+                  className="font-mono text-sm mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Términos y Condiciones (HTML)</label>
+                <Textarea
+                  value={(info as Record<string, string>).legal_terminos_condiciones ?? ""}
+                  onChange={(e) => setInfo({ ...info, legal_terminos_condiciones: e.target.value })}
+                  placeholder="Deje vacío para usar el contenido por defecto..."
+                  rows={8}
+                  className="font-mono text-sm mt-1"
                 />
               </div>
             </CardContent>

@@ -5,12 +5,36 @@ import Image from "next/image"
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Clock, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSettings } from "@/lib/settings-context"
+import { useServicesNav } from "@/lib/services-nav-context"
 
 const DEFAULT_LOGO = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo_mini-CRONEC-pjPMvEYWU2s5qGxTrNDnxIWWufI0oB.png"
+
+const FALLBACK_NAV_LINKS = [
+  { href: "/", label: "Inicio" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/proyectos", label: "Proyectos" },
+  { href: "/nosotros", label: "Nosotros" },
+  { href: "/blog", label: "Noticias" },
+  { href: "/calculadora", label: "Cotizador" },
+  { href: "/contacto", label: "Contacto" },
+  { href: "/brochure", label: "Brochure" },
+]
+
+const FALLBACK_SERVICE_LABELS = [
+  "Construcción Civil",
+  "Obras Eléctricas",
+  "Instalaciones Industriales",
+  "Arquitectura e Ingeniería",
+  "Mantenimiento",
+  "Consultoria",
+]
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
   const s = useSettings()
+  const servicesNav = useServicesNav()
+  const footerNavLinks = (Array.isArray(s?.nav_links) && s.nav_links.length > 0 ? s.nav_links : FALLBACK_NAV_LINKS) as { href: string; label: string }[]
+  const footerServiceLabels = servicesNav.length > 0 ? servicesNav.map((x) => x.title) : FALLBACK_SERVICE_LABELS
   const companyName = (s?.company_name as string) ?? "CRONEC SRL"
   const tagline = (s?.tagline as string) ?? "Construcciones eléctricas y civiles"
   const description = (s?.description as string) ?? "Empresa Salteña dedicada a Obras Públicas, obras de saneamiento, infraestructura y Obras Eléctricas. Calidad y compromiso desde 2009."
@@ -25,6 +49,7 @@ export function Footer() {
   const cuit = (s?.cuit as string) ?? "33-71090097-9"
   const ctaTitle = (s?.footer_cta_title as string) ?? "Inicia tu proyecto con nosotros"
   const ctaSubtitle = (s?.footer_cta_subtitle as string) ?? "Más de 15 años de experiencia en construcción civil y eléctrica"
+  const ctaContactenos = (s?.site_cta_contactenos as string) || "Contáctenos"
 
   return (
     <footer className="relative bg-[oklch(0.15_0.02_240)] text-white overflow-hidden">
@@ -45,7 +70,7 @@ export function Footer() {
             </div>
             <Link href="/contacto">
               <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2 shadow-lg">
-                Contáctenos
+                {ctaContactenos}
                 <ArrowUpRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -96,16 +121,7 @@ export function Footer() {
           <div className="space-y-5">
             <h3 className="font-semibold text-lg">Enlaces</h3>
             <nav className="flex flex-col space-y-3 text-sm">
-              {[
-                { href: "/", label: "Inicio" },
-                { href: "/servicios", label: "Servicios" },
-                { href: "/proyectos", label: "Proyectos" },
-                { href: "/nosotros", label: "Nosotros" },
-                { href: "/blog", label: "Noticias" },
-                { href: "/calculadora", label: "Cotizador" },
-                { href: "/contacto", label: "Contacto" },
-                { href: "/brochure", label: "Brochure" },
-              ].map((link) => (
+              {footerNavLinks.map((link) => (
                 <Link 
                   key={link.href}
                   href={link.href} 
@@ -122,21 +138,14 @@ export function Footer() {
           <div className="space-y-5">
             <h3 className="font-semibold text-lg">Servicios</h3>
             <nav className="flex flex-col space-y-3 text-sm">
-              {[
-                "Construcción Civil",
-                "Obras Eléctricas",
-                "Instalaciones Industriales",
-                "Arquitectura e Ingeniería",
-                "Mantenimiento",
-                "Consultoria",
-              ].map((service) => (
+              {footerServiceLabels.map((label, i) => (
                 <Link 
-                  key={service}
-                  href="/servicios" 
+                  key={label + i}
+                  href={servicesNav[i] ? `/servicios/${servicesNav[i].slug}` : "/servicios"} 
                   className="text-white/70 hover:text-accent transition-colors flex items-center gap-2 group"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-accent/50 group-hover:bg-accent transition-colors" />
-                  {service}
+                  {label}
                 </Link>
               ))}
             </nav>

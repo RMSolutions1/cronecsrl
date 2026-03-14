@@ -4,8 +4,9 @@ import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import { WhatsAppButton } from "@/components/whatsapp-button"
-import { SettingsProvider } from "@/lib/settings-context"
+import { Providers } from "@/components/providers"
 import { getCompanyInfo } from "@/lib/data-read"
+import { getServicesPublic } from "@/lib/data-read"
 import "./globals.css"
 
 /** Datos de empresa siempre actuales (configuración del dashboard) */
@@ -133,7 +134,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const settings = await getCompanyInfo()
+  const [settings, servicesList] = await Promise.all([getCompanyInfo(), getServicesPublic()])
+  const servicesNav = (servicesList || []).map((s) => ({
+    slug: (s.slug as string) ?? "",
+    title: (s.title as string) ?? "",
+  })).filter((s) => s.slug)
   const jsonLd = buildJsonLd(settings)
   return (
     <html lang="es" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
@@ -144,12 +149,12 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased`} suppressHydrationWarning>
-        <SettingsProvider value={settings}>
+        <Providers settings={settings} servicesNav={servicesNav}>
           {children}
           <WhatsAppButton />
           <Toaster position="top-center" richColors />
           <Analytics />
-        </SettingsProvider>
+        </Providers>
       </body>
     </html>
   )

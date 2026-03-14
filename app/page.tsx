@@ -53,7 +53,11 @@ export default async function HomePage() {
     <>
       <Header />
       <main>
-        <HeroSection heroSlidesFromSettings={heroSlidesFromSettings} heroImagesFromDb={heroImagesFromDb.length >= 1 ? heroImagesFromDb : undefined} />
+        <HeroSection
+          heroSlidesFromSettings={heroSlidesFromSettings}
+          heroImagesFromDb={heroImagesFromDb.length >= 1 ? heroImagesFromDb : undefined}
+          heroStats={(sectionsData?.whyCronec as { stats?: Array<{ value: number; suffix: string; label: string }> } | undefined)?.stats}
+        />
         <ServicesSection servicesFromDb={servicesFromDb} />
         <PortfolioSection projectsFromDb={projectsFromDb} />
         <WhyCronecSection data={sectionsData.whyCronec as WhyCronecData | null | undefined} />

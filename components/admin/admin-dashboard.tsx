@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FolderKanban, Briefcase, MessageSquare, Mail, TrendingUp, CheckCircle2, Clock, Users, Newspaper, Settings, Image, ExternalLink, Pencil, ImageIcon } from "lucide-react"
+import { FolderKanban, Briefcase, MessageSquare, Mail, TrendingUp, CheckCircle2, Clock, Users, Newspaper, Settings, Image, ExternalLink, Pencil, ImageIcon, Globe } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -94,6 +94,27 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
 
   return (
     <div className="space-y-8">
+      {/* Acceso rápido: Estado del sitio */}
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+              <Globe className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <p className="font-semibold">Ver estado actual del sitio</p>
+              <p className="text-sm text-muted-foreground">Todos los datos que muestra la web en un solo lugar. Edite, reemplace o actualice cualquier contenido sin tocar código.</p>
+            </div>
+          </div>
+          <Button asChild>
+            <Link href="/admin/estado-del-sitio" className="gap-2">
+              <Globe className="h-4 w-4" />
+              Estado del sitio
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

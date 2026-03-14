@@ -7,6 +7,7 @@ import { AnimatedCounter } from "@/components/animated-counter"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { useEffect, useState } from "react"
 import { images } from "@/lib/images"
+import { useSettings } from "@/lib/settings-context"
 
 const defaultSlides = [
   { src: images.hero[0], alt: "Obra de construcción con grúa - CRONEC", title: "Construimos el Futuro de Salta", paragraph: "Especialistas en construcción civil, instalaciones eléctricas e infraestructura industrial. Calidad certificada y compromiso con cada proyecto." },
@@ -16,6 +17,16 @@ const defaultSlides = [
 
 /** Imágenes del hero desde admin (hero-images por página). Si se pasan, se usan para el carrusel. */
 export type HeroImageFromDb = { src: string; alt: string }
+
+/** Estadísticas del hero "Nuestros números". Si se pasan, se editan desde Admin > Secciones de Inicio. */
+export type HeroStat = { value: number; suffix: string; label: string }
+
+const defaultHeroStats: HeroStat[] = [
+  { value: 15, suffix: "+", label: "Años de experiencia" },
+  { value: 500, suffix: "+", label: "Proyectos Completados" },
+  { value: 150, suffix: "+", label: "Clientes Satisfechos" },
+  { value: 50, suffix: "+", label: "Profesionales" },
+]
 
 function formatTitle(text: string) {
   const parts = text.split(/(Futuro|infraestructura|eléctricas)/i)
@@ -32,10 +43,19 @@ function formatTitle(text: string) {
 export function HeroSection({
   heroSlidesFromSettings,
   heroImagesFromDb,
+  heroStats: heroStatsFromProps,
 }: {
   heroSlidesFromSettings?: { title: string; paragraph: string }[]
   heroImagesFromDb?: HeroImageFromDb[]
+  /** Números del bloque "Nuestros números". Se editan en Admin > Secciones de Inicio > Por qué CRONEC > Estadísticas. */
+  heroStats?: HeroStat[]
 }) {
+  const settings = useSettings()
+  const heroBadge = (settings?.hero_badge as string) || "Desde 2009 - Más de 15 años de excelencia"
+  const ctaVerProyectos = (settings?.site_cta_ver_proyectos as string) || "Ver Proyectos"
+  const ctaSolicitarCotizacion = (settings?.site_cta_solicitar_cotizacion as string) || "Solicitar Cotización"
+  const scrollLabel = (settings?.site_hero_scroll_label as string) || "Descubrir"
+  const heroStats = (heroStatsFromProps?.length ? heroStatsFromProps : defaultHeroStats) as HeroStat[]
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -82,7 +102,7 @@ export function HeroSection({
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               >
                 <Award className="h-4 w-4 text-accent" />
-                <span className="text-sm font-medium text-white">Desde 2009 - Más de 15 años de excelencia</span>
+                <span className="text-sm font-medium text-white">{heroBadge}</span>
               </div>
 
               <h1 
@@ -108,7 +128,7 @@ export function HeroSection({
                     size="lg"
                     className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    Ver Proyectos
+                    {ctaVerProyectos}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -118,7 +138,7 @@ export function HeroSection({
                     variant="outline"
                     className="border-2 border-white/30 text-white hover:bg-white hover:text-primary font-semibold px-8 bg-white/5 backdrop-blur-sm"
                   >
-                    Solicitar Cotización
+                    {ctaSolicitarCotizacion}
                   </Button>
                 </Link>
               </div>
@@ -131,30 +151,17 @@ export function HeroSection({
               <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
                 <h3 className="text-lg font-semibold text-white mb-6">Nuestros números</h3>
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-white/70">Años de experiencia</span>
-                    <span className="text-3xl font-bold text-accent">
-                      <AnimatedCounter end={15} suffix="+" />
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-white/70">Proyectos Completados</span>
-                    <span className="text-3xl font-bold text-accent">
-                      <AnimatedCounter end={500} suffix="+" />
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-white/70">Clientes Satisfechos</span>
-                    <span className="text-3xl font-bold text-accent">
-                      <AnimatedCounter end={150} suffix="+" />
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-white/70">Profesionales</span>
-                    <span className="text-3xl font-bold text-accent">
-                      <AnimatedCounter end={50} suffix="+" />
-                    </span>
-                  </div>
+                  {heroStats.slice(0, 4).map((stat, i) => (
+                    <div
+                      key={i}
+                      className={i < 3 ? "flex items-center justify-between border-b border-white/10 pb-4" : "flex items-center justify-between"}
+                    >
+                      <span className="text-white/70">{stat.label}</span>
+                      <span className="text-3xl font-bold text-accent">
+                        <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 
                 {/* Trust badges */}
@@ -181,7 +188,7 @@ export function HeroSection({
       {/* Scroll indicator */}
       <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <a href="#servicios" className="flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors">
-          <span className="text-xs uppercase tracking-widest">Descubrir</span>
+          <span className="text-xs uppercase tracking-widest">{scrollLabel}</span>
           <ChevronDown className="h-5 w-5" />
         </a>
       </div>

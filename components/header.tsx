@@ -7,8 +7,10 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Phone, Mail, ChevronDown, Building2, Zap, Factory, Ruler, Wrench, HardHat, User } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSettings } from "@/lib/settings-context"
+import { useServicesNav } from "@/lib/services-nav-context"
 
-const services = [
+const FALLBACK_SERVICES: { href: string; label: string; icon: typeof Wrench; description?: string }[] = [
   { href: "/servicios/obras-civiles", label: "Construcción Civil", icon: HardHat, description: "Construcción y mantenimiento de infraestructura" },
   { href: "/servicios/obras-electricas", label: "Obras Eléctricas", icon: Zap, description: "Instalaciones de baja, media y alta tensión" },
   { href: "/servicios/instalaciones-industriales", label: "Instalaciones Industriales", icon: Factory, description: "Naves industriales y montajes" },
@@ -19,7 +21,7 @@ const services = [
   { href: "/servicios/servicios-especiales", label: "Servicios Especiales", icon: Wrench, description: "Reparación de puentes y estructuras" },
 ]
 
-const navItems = [
+const FALLBACK_NAV = [
   { href: "/", label: "Inicio" },
   { href: "/proyectos", label: "Proyectos" },
   { href: "/nosotros", label: "Nosotros" },
@@ -29,6 +31,19 @@ const navItems = [
 
 export function Header() {
   const pathname = usePathname()
+  const settings = useSettings()
+  const servicesFromDb = useServicesNav()
+  const navLinks = (Array.isArray(settings?.nav_links) && settings.nav_links.length > 0
+    ? settings.nav_links
+    : FALLBACK_NAV) as { href: string; label: string }[]
+  const services = servicesFromDb.length > 0
+    ? servicesFromDb.map((s) => ({ href: `/servicios/${s.slug}`, label: s.title, icon: Wrench as typeof HardHat, description: "" }))
+    : FALLBACK_SERVICES
+  const topPhone = (settings?.phone as string) || "+54 9 (387) 536-1210"
+  const topEmail = (settings?.email as string) || "cronec@cronecsrl.com.ar"
+  const topHorario = (settings?.horario as string) || "Lun - Vie: 8:00 - 18:00"
+  const ctaSolicitarCotizacion = (settings?.site_cta_solicitar_cotizacion as string) || "Solicitar Cotización"
+  const verTodosServicios = (settings?.site_cta_ver_todos_servicios as string) || "Ver todos los servicios"
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
@@ -87,23 +102,23 @@ export function Header() {
         >
           <div className="flex items-center gap-6">
             <a 
-              href="tel:+5493875361210" 
+              href={`tel:${topPhone.replace(/\s/g, "")}`}
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
             >
               <Phone className="h-3.5 w-3.5" />
-              <span>+54 9 (387) 536-1210</span>
+              <span>{topPhone}</span>
             </a>
             <a
-              href="mailto:cronec@cronecsrl.com.ar"
+              href={`mailto:${topEmail}`}
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
             >
               <Mail className="h-3.5 w-3.5" />
-              <span>cronec@cronecsrl.com.ar</span>
+              <span>{topEmail}</span>
             </a>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-muted-foreground text-xs">
-              Lun - Vie: 8:00 - 18:00
+              {topHorario}
             </span>
             {process.env.NEXT_PUBLIC_HIDE_ADMIN_LINK !== "1" && (
               <Link 
@@ -230,7 +245,9 @@ export function Header() {
                               "text-sm font-medium",
                               isServiceActive ? "text-accent" : "text-foreground"
                             )}>{service.label}</p>
-                            <p className="text-xs text-muted-foreground line-clamp-1">{service.description}</p>
+                            {"description" in service && service.description && (
+                              <p className="text-xs text-muted-foreground line-clamp-1">{service.description}</p>
+                            )}
                           </div>
                         </div>
                       </Link>
@@ -247,7 +264,7 @@ export function Header() {
                           ? "bg-accent/10 text-accent" 
                           : "hover:bg-accent/10 text-accent"
                       )}>
-                        <span className="text-sm font-medium">Ver todos los servicios</span>
+                        <span className="text-sm font-medium">{verTodosServicios}</span>
                         <ChevronDown className="h-4 w-4 -rotate-90" />
                       </div>
                     </Link>
@@ -256,7 +273,7 @@ export function Header() {
               </div>
             </div>
 
-            {navItems.slice(1).map((item) => (
+            {navLinks.filter((item) => item.href !== "/").map((item) => (
               <Link key={item.href} href={item.href}>
                 <Button 
                   variant="ghost" 
@@ -280,7 +297,7 @@ export function Header() {
                     : "bg-accent hover:bg-accent/90 text-accent-foreground"
                 )}
               >
-                Solicitar Cotización
+                {ctaSolicitarCotizacion}
               </Button>
             </Link>
           </nav>
@@ -369,14 +386,14 @@ export function Header() {
                       pathname === "/servicios" ? "text-accent bg-accent/10" : "text-accent"
                     )}
                   >
-                    Ver todos los servicios
+                    {verTodosServicios}
                   </Button>
                 </Link>
               </div>
             </div>
           </div>
 
-          {navItems.slice(1).map((item) => (
+          {navLinks.filter((item) => item.href !== "/").map((item) => (
             <Link key={item.href} href={item.href}>
               <Button 
                 variant="ghost" 
@@ -400,19 +417,19 @@ export function Header() {
                     : "bg-accent hover:bg-accent/90 text-accent-foreground"
                 )}
               >
-                Solicitar Cotización
+                {ctaSolicitarCotizacion}
               </Button>
             </Link>
           </div>
           
           <div className="pt-4 space-y-3 border-t border-border/50 mt-3">
-            <a href="tel:+5493875361210" className="flex items-center gap-3 text-muted-foreground text-sm">
+            <a href={`tel:${topPhone.replace(/\s/g, "")}`} className="flex items-center gap-3 text-muted-foreground text-sm">
               <Phone className="h-4 w-4 text-accent" />
-              <span>+54 9 (387) 536-1210</span>
+              <span>{topPhone}</span>
             </a>
-            <a href="mailto:cronec@cronecsrl.com.ar" className="flex items-center gap-3 text-muted-foreground text-sm">
+            <a href={`mailto:${topEmail}`} className="flex items-center gap-3 text-muted-foreground text-sm">
               <Mail className="h-4 w-4 text-accent" />
-              <span>cronec@cronecsrl.com.ar</span>
+              <span>{topEmail}</span>
             </a>
             {process.env.NEXT_PUBLIC_HIDE_ADMIN_LINK !== "1" && (
               <Link 

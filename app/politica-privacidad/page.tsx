@@ -1,11 +1,35 @@
 import { Shield, Lock, Eye, UserCheck, Database, FileCheck } from "lucide-react"
+import DOMPurify from "isomorphic-dompurify"
+import { getCompanyInfo } from "@/lib/data-read"
 
 export const metadata = {
   title: "Política de Privacidad | CRONEC SRL",
   description: "Política de privacidad y protección de datos personales de CRONEC SRL.",
 }
 
-export default function PoliticaPrivacidad() {
+export default async function PoliticaPrivacidad() {
+  const settings = await getCompanyInfo()
+  const customHtml = (settings?.legal_politica_privacidad as string)?.trim()
+  if (customHtml) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <section className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-20">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="h-8 w-8" />
+              <h1 className="text-4xl md:text-5xl font-bold">Política de Privacidad</h1>
+            </div>
+            <p className="text-xl text-blue-100">Protección y tratamiento de datos personales en CRONEC SRL</p>
+          </div>
+        </section>
+        <section className="py-16">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 prose prose-neutral max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(customHtml) }} />
+          </div>
+        </section>
+      </div>
+    )
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}

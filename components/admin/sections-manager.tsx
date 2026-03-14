@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { getSectionsAdmin, saveSections } from "@/app/actions/db/sections"
 import type { SectionsData, WhyCronecSection, ProcessSection } from "@/app/actions/db/sections"
 import { Button } from "@/components/ui/button"
@@ -90,11 +91,15 @@ export function SectionsManager() {
     setData((d) => ({ ...d, process: { ...defaultProcess, ...d.process, ...updates } }))
   }
 
+  const searchParams = useSearchParams()
+  const tabFromUrl = searchParams.get("tab") || "why"
+  const defaultTab = tabFromUrl === "process" ? "process" : "why"
+
   if (loading) return <div className="text-muted-foreground">Cargando...</div>
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="why" className="space-y-4">
+      <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="why" className="gap-2">
             <LayoutTemplate className="h-4 w-4" />

@@ -12,7 +12,7 @@ import { useSettings } from "@/lib/settings-context"
 
 export function CTASection() {
   const s = useSettings()
-  const badge = (s?.cta_badge as string) || "Contáctenos"
+  const badge = (s?.site_cta_contactenos as string) || (s?.cta_badge as string) || "Contáctenos"
   const ctaTitle = (s?.cta_title as string) || "Hagamos Realidad su Proyecto"
   const ctaParagraph = (s?.cta_paragraph as string) || "Estamos listos para transformar su visión en realidad. Solicite una cotización sin compromiso y descubra cómo podemos ayudarlo."
   const phone = (s?.phone as string) || "+54 9 387 536-1210"

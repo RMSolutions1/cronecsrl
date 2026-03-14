@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
+  Home,
+  Globe,
   FolderKanban,
   Briefcase,
   MessageSquare,
@@ -28,6 +30,8 @@ import Image from "next/image"
 
 const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
+  { href: "/admin/estado-del-sitio", icon: Globe, label: "Estado del sitio" },
+  { href: "/admin/inicio", icon: Home, label: "Contenido de Inicio" },
   { href: "/admin/proyectos", icon: FolderKanban, label: "Proyectos" },
   { href: "/admin/servicios", icon: Briefcase, label: "Servicios" },
   { href: "/admin/noticias", icon: Newspaper, label: "Noticias" },
