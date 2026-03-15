@@ -2,7 +2,8 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import { Toaster } from "sonner"
+import { Toaster as SonnerToaster } from "sonner"
+import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { Providers } from "@/components/providers"
 import { getCompanyInfo } from "@/lib/data-read"
@@ -129,16 +130,44 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
   }
 }
 
+/** Garantiza un objeto serializable para el cliente (evita errores de hidratación en Vercel). */
+function safeSettings(value: Record<string, unknown> | null): Record<string, unknown> | null {
+  if (value == null) return null
+  try {
+    return JSON.parse(JSON.stringify(value)) as Record<string, unknown>
+  } catch {
+    return null
+  }
+}
+
+/** Garantiza un array de ítems de menú serializable. */
+function safeServicesNav(
+  list: Awaited<ReturnType<typeof getServicesPublic>>
+): { slug: string; title: string }[] {
+  if (!Array.isArray(list)) return []
+  return list.map((s) => ({
+    slug: String((s as { slug?: string }).slug ?? ""),
+    title: String((s as { title?: string }).title ?? ""),
+  })).filter((s) => s.slug.length > 0)
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [settings, servicesList] = await Promise.all([getCompanyInfo(), getServicesPublic()])
-  const servicesNav = (servicesList || []).map((s) => ({
-    slug: (s.slug as string) ?? "",
-    title: (s.title as string) ?? "",
-  })).filter((s) => s.slug)
+  let settings: Record<string, unknown> | null = null
+  let servicesList: Awaited<ReturnType<typeof getServicesPublic>> = []
+  try {
+    const [info, services] = await Promise.all([getCompanyInfo(), getServicesPublic()])
+    settings = info ?? null
+    servicesList = Array.isArray(services) ? services : []
+  } catch {
+    settings = null
+    servicesList = []
+  }
+  const servicesNav = safeServicesNav(servicesList)
+  const settingsForClient = safeSettings(settings)
   const jsonLd = buildJsonLd(settings)
   return (
     <html lang="es" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
@@ -149,10 +178,11 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased`} suppressHydrationWarning>
-        <Providers settings={settings} servicesNav={servicesNav}>
+        <Providers settings={settingsForClient} servicesNav={servicesNav}>
           {children}
           <WhatsAppButton />
-          <Toaster position="top-center" richColors />
+          <ShadcnToaster />
+          <SonnerToaster position="top-center" richColors />
           <Analytics />
         </Providers>
       </body>

@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
   if (isAdminRoute && !isAdminPublic && !hasSessionCookie) {
     const url = request.nextUrl.clone()
     url.pathname = "/admin/login"
+    url.searchParams.set("next", path)
     return NextResponse.redirect(url)
   }
 

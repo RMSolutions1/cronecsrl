@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { AlertCircle, Lock } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -19,6 +19,9 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const nextUrl = searchParams.get("next")
+  const redirectTo = nextUrl && nextUrl.startsWith("/admin") && !nextUrl.startsWith("/admin/login") ? nextUrl : "/admin"
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +35,7 @@ export default function AdminLoginPage() {
       const result = await loginAction(formData)
 
       if (result.ok) {
-        router.push("/admin")
+        router.push(redirectTo)
         router.refresh()
       } else {
         setError(result.error ?? "Error al iniciar sesión")

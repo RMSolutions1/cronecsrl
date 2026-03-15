@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { logoutAction } from "@/app/actions/auth"
@@ -98,27 +98,19 @@ function getGroupContainingPath(pathname: string): number {
 
 interface AdminNavProps {
   user: { id: string; email: string; full_name?: string | null; role?: string }
+  collapsed?: boolean
+  onCollapsedChange?: (collapsed: boolean) => void
 }
 
-export function AdminNav({ user }: AdminNavProps) {
+export function AdminNav({ user, collapsed = false, onCollapsedChange }: AdminNavProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
-      if (stored !== null) setCollapsed(stored === "true")
-    } catch {
-      // ignore
-    }
-  }, [])
 
   const toggleCollapsed = () => {
     const next = !collapsed
-    setCollapsed(next)
+    onCollapsedChange?.(next)
     try {
       localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next))
     } catch {
@@ -188,8 +180,9 @@ export function AdminNav({ user }: AdminNavProps) {
       <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex flex-col bg-primary text-primary-foreground transition-[width] duration-200 ease-in-out lg:relative",
-          mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64 lg:translate-x-0 lg:w-16",
+          "fixed inset-y-0 left-0 z-40 flex flex-col bg-primary text-primary-foreground transition-[width] duration-200 ease-in-out",
+          mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64 lg:translate-x-0",
+          "lg:w-16",
           !collapsed && "lg:w-64",
         )}
       >

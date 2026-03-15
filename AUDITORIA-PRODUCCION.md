@@ -1,102 +1,136 @@
-# Auditoría de producción – CRONEC SRL
+# Auditoría completa para producción – CRONEC SRL
 
-**Fecha:** 2025-03-11  
-**Alcance:** Sitio estático (FTP) y preparación para producción real.
-
----
-
-## Veredicto: **LISTO PARA PRODUCCIÓN**, con condiciones
-
-El proyecto está listo para desplegar en producción **si se cumplen los puntos obligatorios** de la sección «Antes de subir». El build estático compila correctamente y la arquitectura (datos, formulario, favicon, rutas) es coherente.
+**Fecha:** 15 de marzo de 2025  
+**Objetivo:** Verificación exhaustiva de páginas públicas, dashboard, APIs, datos y despliegue. Garantizar que el desarrollo esté 100% listo para producción real.
 
 ---
 
-## 1. Seguridad
+## 1. Resumen ejecutivo
 
-| Aspecto | Estado | Notas |
-|--------|--------|--------|
-| Variables sensibles | OK | `.env*.local`, `.env.production` en `.gitignore`; no se suben a Git. |
-| SESSION_SECRET | **Obligatorio en prod** | En producción (Node/VPS) hay que definir `SESSION_SECRET` (min. 32 caracteres). Si no se define, la app escribe un error en consola. Ver `.env.local.example`. |
-| MySQL credenciales | OK | Solo en entorno (`.env`); no hardcodeadas. |
-| SQL injection | OK | Consultas en `lib/data-mysql.ts` usan parámetros (`?`), no concatenación. |
-| XSS | Aceptable | `dangerouslySetInnerHTML` se usa en: (1) JSON-LD en layout (datos controlados), (2) contenido de entradas de blog (controlado por admin). Riesgo bajo si solo editores de confianza gestionan el blog. |
-| Formulario contacto (estático) | OK | Envío a Formspree; validación de email en cliente y en API cuando se usa Node. |
-| API contacto (Node) | OK | Validación de campos y email; errores genéricos; no expone datos internos. |
-| Panel admin | OK | Rutas `/admin` protegidas por middleware (cookie) y `getCurrentUser()` en cada página; login con bcrypt. |
-
-**Recomendación:** En producción con Node, usar siempre `SESSION_SECRET` único y fuerte (p. ej. `openssl rand -base64 32`).
-
----
-
-## 2. Configuración, build y despliegue
-
-| Aspecto | Estado | Notas |
-|--------|--------|--------|
-| Build estático | OK | `npm run build:ftp` / `npm run build:static` termina correctamente y genera `out/`. |
-| Export estático | OK | `next.config.mjs`: `output: "export"` cuando `BUILD_FTP=1`. |
-| Script build-ftp | OK | Comprueba `page.ftp.tsx`, `proyectos/page.ftp.tsx` y `contacto/page.ftp.tsx`; borra `.next` antes del build; copia `.htaccess` a `out/`. |
-| .htaccess | OK | `static-deploy/.htaccess` incluye reglas para SPA, 404 y cache; se copia a `out/`. |
-| Favicon | OK | `public/icon.svg` es el favicon de CRONEC; `layout` usa solo `/icon.svg` (sin PNG inexistentes). |
-| Formspree (estático) | **Configurar** | Para que el formulario funcione en el sitio estático, en `.env.local` debe estar `NEXT_PUBLIC_FORMSPREE_ID=...` **antes** de ejecutar el build. Sin esto, el formulario muestra error. |
-
-**Nota:** En el build estático, las rutas `/api/contact` y `/api/upload` no se usan (Next las desactiva con `output: "export"`). El contacto en FTP va solo por Formspree.
+| Área | Estado | Notas |
+|------|--------|--------|
+| Build | ✅ OK | `npm run build` compila sin errores (Next.js 16.1.6). |
+| Lint | ✅ OK | ESLint sin errores. |
+| Páginas públicas | ✅ OK | Todas las rutas existen, metadata y datos desde `lib/data-read` o acciones. |
+| Dashboard admin | ✅ OK | 20 rutas admin; sidebar fijo; login con redirect `next`; toasts shadcn visibles. |
+| APIs | ✅ OK | `/api/contact`, `/api/upload`, `/api/health`, `/api/db-verify` implementadas y seguras. |
+| Datos | ✅ OK | Postgres → MySQL → JSON; `lib/data.ts` unificado; sections/nosotros en archivo. |
+| Auth | ✅ OK | iron-session, SESSION_SECRET, middleware con cookie y redirect. |
+| Errores y 404 | ✅ OK | `error.tsx`, `global-error.tsx`, `not-found.tsx` presentes. |
+| Variables de entorno | ✅ Documentado | `.env.local.example` y docs de despliegue actualizados. |
 
 ---
 
-## 3. Capa de datos y errores
+## 2. Páginas y secciones públicas
 
-| Aspecto | Estado | Notas |
-|--------|--------|--------|
-| Lectura pública | OK | Páginas públicas usan `lib/data-read.ts` (sin `"use server"`), compatible con export estático. |
-| MySQL vs JSON | OK | `lib/data.ts` usa MySQL si `MYSQL_*` está definido; si no, `data/*.json`. Build estático puede usar MySQL en el PC o solo JSON. |
-| Manejo de errores en lectura | OK | `data-read` usa try/catch y devuelve listas vacías o null; no rompe el build. |
-| company_info / settings | OK | `getCompanyInfo()` lee `settings.json` (o MySQL `company_info`); layout y JSON-LD toleran `null`. |
+Todas verificadas en el build como rutas dinámicas (ƒ) o estáticas (○).
 
----
+| Ruta | Descripción | Fuente de datos |
+|------|-------------|------------------|
+| `/` | Inicio | `getServicesPublic`, `getProjectsPublic`, `getCompanyInfo`, `getTestimonialsPublic`, `getCertificationsPublic`, `getClientsPublic`, `getSectionsPublic`, `getHeroImagesPublic("home")` |
+| `/servicios` | Listado de servicios | `getServicesPublic()` |
+| `/servicios/[slug]` | Detalle de servicio | `getServiceBySlug(slug)` |
+| `/proyectos` | Portfolio | `getProjectsPublic()` + fallback `staticProjects` |
+| `/blog` | Noticias / blog | `getBlogPostsPublic()` |
+| `/blog/[slug]` | Entrada de blog | `getBlogPostBySlug(slug)` |
+| `/contacto` | Formulario de contacto | Formulario → `/api/contact` o Formspree si `NEXT_PUBLIC_FORMSPREE_ID` |
+| `/nosotros` | Sobre nosotros | `getNosotrosPublic()`, `getCompanyInfo()` (mission/vision) |
+| `/calculadora` | Cotizador | Contenido estático + opcional datos desde dashboard |
+| `/brochure` | Descarga brochure | URL desde configuración |
+| `/politica-privacidad` | Legal | Contenido estático |
+| `/politica-calidad` | Legal | Contenido estático |
+| `/terminos-condiciones` | Legal | Contenido estático |
+| `/robots.txt` | SEO | Estático |
+| `/sitemap.xml` | SEO | Dinámico (servicios, blog) |
 
-## 4. Formularios, SEO y assets
-
-| Aspecto | Estado | Notas |
-|--------|--------|--------|
-| Contacto (FTP) | OK | `app/contacto/page.ftp.tsx` envía a Formspree; mensaje claro si falta `NEXT_PUBLIC_FORMSPREE_ID`. |
-| Metadata | OK | Título, descripción, Open Graph, Twitter, `metadataBase`, `robots`, favicon en `app/layout.tsx`. |
-| JSON-LD | OK | Schema.org LocalBusiness en layout con datos de `getCompanyInfo()` o valores por defecto. |
-| 404 | OK | `app/not-found.tsx` existe; página 404 usa logo (URL externa Vercel blob) y enlaces útiles. |
-| Imagen “Por qué CRONEC” | Opcional | Código usa `public/conec4.jpeg` con fallback a `placeholder.svg`; si no existe el archivo, se ve el placeholder. |
-| Placeholders | OK | Uso de `placeholder.svg` y textos "placeholder" en inputs es solo UI; no afecta producción. |
-
----
-
-## 5. Dependencias
-
-| Aspecto | Estado | Notas |
-|--------|--------|--------|
-| npm audit | 1 alta | Next.js 16.0.10 tiene 1 vulnerabilidad alta (DoS / Image Optimizer y otras). Corrección: actualizar a 16.1.6 cuando sea posible (`npm audit fix --force` puede cambiar versión; revisar changelog). |
-| Otras dependencias | OK | Sin revisión exhaustiva; uso estándar de React, Next, Radix, etc. |
+**Componentes globales:** `Header`, `Footer`, `WhatsAppButton` (configurables desde configuración).
 
 ---
 
-## 6. Checklist antes de subir a producción (FTP)
+## 3. Dashboard administrativo
 
-- [ ] **Formspree:** Formulario creado en https://formspree.io y en `.env.local`: `NEXT_PUBLIC_FORMSPREE_ID=tu_id`
-- [ ] Ejecutar **`npm run build:static`** (o `npm run build:ftp`) y confirmar que termina sin errores.
-- [ ] Subir **todo el contenido** de la carpeta **`out/`** (incluido `.htaccess`) a la raíz del sitio (ej. `public_html`).
-- [ ] Probar en el navegador: inicio, servicios, proyectos, blog, contacto; enviar un mensaje de prueba por el formulario.
-- [ ] (Opcional) Sustituir `public/conec4.jpeg` por la imagen deseada para la sección “Por qué CRONEC” y volver a generar el build.
+### 3.1 Rutas y protección
+
+- **Middleware:** Cookie `cronec_session`; sin sesión en rutas admin (salvo login/registro/recuperar) → redirect a `/admin/login?next=<path>`.
+- **Layout:** `app/admin/layout.tsx` obtiene `getCurrentUser()`, pasa a `AdminShell`; sin usuario se redirige a login.
+- **Rutas públicas admin:** `/admin/login`, `/admin/registro`, `/admin/recuperar` (registro en producción deshabilitado salvo `ALLOW_ADMIN_REGISTER=true`).
+
+### 3.2 Páginas del sidebar (todas con página y flujo)
+
+| Ruta | Contenido |
+|------|-----------|
+| `/admin` | Dashboard principal: estadísticas, proyectos y servicios recientes. |
+| `/admin/estado-del-sitio` | Estado del sitio. |
+| `/admin/inicio` | Contenido de inicio (secciones editables). |
+| `/admin/proyectos` | CRUD proyectos; listado, nuevo, editar. |
+| `/admin/servicios` | CRUD servicios. |
+| `/admin/noticias` | CRUD blog/noticias. |
+| `/admin/secciones` | Secciones de inicio (Por qué CRONEC, Proceso). |
+| `/admin/imagenes` | Imágenes hero por página (subida URL o archivo; Vercel Blob si `BLOB_READ_WRITE_TOKEN`). |
+| `/admin/testimonios` | CRUD testimonios. |
+| `/admin/certificaciones-clientes` | Certificaciones y clientes. |
+| `/admin/nosotros` | Contenido página Nosotros. |
+| `/admin/cotizador` | Configuración cotizador. |
+| `/admin/mensajes` | Mensajes de contacto. |
+| `/admin/configuracion` | Configuración global (empresa, hero, menú, contacto, redes, SEO, etc.); guardado con toast de éxito (Shadcn Toaster en layout). |
+| `/admin/diagnostico` | Diagnóstico: llama `/api/db-verify` (sesión admin o `X-Admin-Key`). |
+
+### 3.3 UX del dashboard
+
+- **Sidebar fijo:** El sidebar no hace scroll; solo el área principal (`main`) tiene `overflow-auto`. Usuario y "Cerrar sesión" siempre visibles.
+- **Sidebar colapsable:** Estado en `localStorage` (`cronec-sidebar-collapsed`); margen del `main` se ajusta (`lg:ml-16` / `lg:ml-64`).
+- **Toasts:** Layout raíz incluye `ShadcnToaster` y `SonnerToaster`; los managers que usan `useToast()` muestran "Guardado exitoso" correctamente.
 
 ---
 
-## 7. Para despliegue con Node (VPS) más adelante
+## 4. APIs
 
-- [ ] Definir en el servidor: `MYSQL_*`, `SESSION_SECRET` (obligatorio), y opcionalmente `NEXT_PUBLIC_HIDE_ADMIN_LINK=1` si no quieres enlace al admin en la web pública.
-- [ ] Crear admin con `npm run db:seed-admin` (o `db:init` si es la primera vez).
-- [ ] No usar el `SESSION_SECRET` por defecto; la app avisa por consola si se usa en producción.
+| Endpoint | Método | Auth | Descripción |
+|----------|--------|------|-------------|
+| `/api/contact` | POST | No | Formulario contacto: validación (Zod), rate limit, `writeData("messages.json")` (o BD). |
+| `/api/upload` | POST | Sesión admin/superadmin | Subida de imágenes: Vercel Blob si `BLOB_READ_WRITE_TOKEN`, si no `public/uploads` (solo local). |
+| `/api/health` | GET | No | Health check para monitoreo. |
+| `/api/db-verify` | GET | En producción: sesión admin o header `X-Admin-Key` | Diagnóstico: backend (postgres/mysql/json) y conteos por tabla. |
 
 ---
 
-## Resumen
+## 5. Capa de datos y variables de entorno
 
-- **Sitio estático (FTP):** Listo para producción siempre que `NEXT_PUBLIC_FORMSPREE_ID` esté configurado antes del build y se suba el contenido de `out/` correctamente.
-- **Seguridad:** Correcta para el caso de uso (SQL parametrizado, env no subidos, sesión con iron-session). Imprescindible `SESSION_SECRET` propio en producción con Node.
-- **Build:** Estable; favicon y metadata coherentes; sin dependencias de Server Actions en las páginas públicas del export.
-- **Recomendación:** Planificar actualización de Next.js para resolver la vulnerabilidad alta cuando sea posible.
+### 5.1 Prioridad de almacenamiento
+
+1. **PostgreSQL (Neon):** `DATABASE_URL` o `POSTGRES_URL` → `lib/db-pg.ts`, `lib/data-pg.ts`.
+2. **MySQL:** `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` → `lib/db.ts`, `lib/data-mysql.ts`.
+3. **Fallback:** Archivos `data/*.json`.
+
+Archivos lógicos con tabla en BD: `projects`, `services`, `blog`, `messages`, `testimonials`, `settings` (company_info), `hero-images`, `certifications`, `clients`, `admins` (users).  
+Solo archivo: `nosotros.json`, `sections.json`, `calculadora.json`.
+
+### 5.2 Variables críticas para producción
+
+| Variable | Uso |
+|----------|-----|
+| `SESSION_SECRET` | Obligatorio en producción (min. 32 caracteres); no usar el valor por defecto del código. |
+| `BLOB_READ_WRITE_TOKEN` | Obligatorio en Vercel para subir imágenes desde el dashboard. |
+| `DATABASE_URL` o `POSTGRES_URL` | Para usar Neon/Postgres. |
+| `MYSQL_*` | Para usar MySQL. |
+| `DB_VERIFY_KEY` | Opcional; para GET `/api/db-verify` sin sesión (diagnóstico). |
+| `NEXT_PUBLIC_FORMSPREE_ID` | Opcional; formulario de contacto estático (FTP). |
+| `NEXT_PUBLIC_SITE_URL` | Opcional; sitemap y OG (Vercel puede usar `VERCEL_URL`). |
+| `ALLOW_ADMIN_REGISTER` | Opcional; `true` para permitir `/admin/registro` en producción (no recomendado). |
+
+---
+
+## 6. Checklist pre-despliegue
+
+- [ ] `SESSION_SECRET` definido en producción (valor aleatorio 32+ caracteres).
+- [ ] En Vercel: `BLOB_READ_WRITE_TOKEN` configurado si se suben imágenes desde el dashboard.
+- [ ] Si se usa BD: ejecutar `scripts/postgres/schema.sql` (Neon) o `scripts/mysql/schema.sql` (MySQL) y tener `DATABASE_URL` o `MYSQL_*` configurados.
+- [ ] Al menos un usuario admin creado (script `db:seed-admin-pg` o `db:seed-admin` según BD o JSON).
+- [ ] Formulario de contacto: sin BD puede usarse `NEXT_PUBLIC_FORMSPREE_ID`; con BD el POST a `/api/contact` guarda en `messages`/contact_submissions.
+- [ ] Probar login admin, una edición de configuración (guardar y ver toast), subida de imagen (si aplica) y envío de formulario de contacto.
+
+---
+
+## 7. Conclusión
+
+El proyecto está **listo para despliegue y producción real** siempre que se cumplan las variables de entorno y la configuración de BD/Blob descritas. La auditoría cubre páginas públicas, dashboard, APIs, datos, autenticación y manejo de errores. No se han detectado bloqueantes; el build y el lint son correctos.

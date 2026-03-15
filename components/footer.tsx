@@ -208,7 +208,7 @@ export function Footer() {
       <div className="relative border-t border-white/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
-            <p>{currentYear} {companyName}. Todos los derechos reservados.{cuit ? ` CUIT: ${cuit}` : ""}</p>
+            <p><span suppressHydrationWarning>{currentYear}</span> {companyName}. Todos los derechos reservados.{cuit ? ` CUIT: ${cuit}` : ""}</p>
             <div className="flex items-center gap-6">
               <Link href="/politica-privacidad" className="hover:text-white transition-colors">
                 Privacidad

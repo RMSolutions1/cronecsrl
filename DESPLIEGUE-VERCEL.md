@@ -40,3 +40,9 @@ Alternativa: en cualquier formulario de imagen del dashboard podés **pegar una 
 - **Web:** `https://tu-proyecto.vercel.app`
 - **Admin:** `https://tu-proyecto.vercel.app/admin/login`  
   Usuario por defecto (si usaste `db:seed-admin-pg` en Neon): el que configuraste (ej. `admin@cronecsrl.com.ar` / la contraseña del seed).
+
+### Si no podés entrar al admin (siempre te manda al login)
+
+1. **Comprobá que `SESSION_SECRET` esté definido** en Vercel → Settings → Environment Variables (Production, Preview, Development). Si falta, la sesión no se persiste bien en producción.
+2. **Borrá las cookies** del sitio (o probá en ventana privada), entrá a `/admin/login`, iniciá sesión de nuevo y probá ir a `/admin/configuracion`.
+3. Si usás Neon, confirmá que el usuario admin exista en la base (tabla `users`) y que `DATABASE_URL` sea la correcta en Vercel.
