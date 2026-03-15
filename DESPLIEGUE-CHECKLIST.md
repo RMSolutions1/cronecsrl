@@ -45,6 +45,14 @@ Ver **DESPLIEGUE-MYSQL.md** para MySQL; **scripts/postgres/README.md** para Neon
 
 ---
 
+## Despliegue en Vercel
+
+- [ ] Repo conectado; variables de entorno: **`SESSION_SECRET`**, **`DATABASE_URL`** (Neon), **`BLOB_READ_WRITE_TOKEN`** (crear Blob store en Storage para subir imágenes desde el dashboard)
+- [ ] Opcional: `NEXT_PUBLIC_FORMSPREE_ID`, `DB_VERIFY_KEY`, `NEXT_PUBLIC_SITE_URL`
+- [ ] Sin `BLOB_READ_WRITE_TOKEN`, la subida desde la PC falla en Vercel; se puede usar "Pegar URL" en los formularios de imagen. Ver **DESPLIEGUE-VERCEL.md**.
+
+---
+
 ## Verificación rápida (ya comprobado)
 
 | Elemento | Estado |
@@ -55,3 +63,4 @@ Ver **DESPLIEGUE-MYSQL.md** para MySQL; **scripts/postgres/README.md** para Neon
 | Formulario contacto vía Formspree en sitio estático | Configurar NEXT_PUBLIC_FORMSPREE_ID |
 | Imagen sección "Por qué CRONEC" (conec4.jpeg) | Añadir archivo en `public/` si se desea imagen propia |
 | Neon (Postgres) como BD principal | DATABASE_URL en .env.local; docs: VERIFICACION-APIS-RUTAS-TABLAS.md, DASHBOARD-A-WEB.md |
+| Subida de imágenes en Vercel | Crear Blob store y configurar BLOB_READ_WRITE_TOKEN; ver DESPLIEGUE-VERCEL.md |

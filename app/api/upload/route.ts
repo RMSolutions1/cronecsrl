@@ -2,8 +2,15 @@ import { NextResponse } from "next/server"
 import { writeFile, mkdir } from "fs/promises"
 import path from "path"
 import { getCurrentUser } from "@/lib/auth"
+import { put } from "@vercel/blob"
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads")
+
+/**
+ * En Vercel el sistema de archivos es de solo lectura.
+ * Si BLOB_READ_WRITE_TOKEN está definido, se usa Vercel Blob; si no, se escribe en public/uploads (solo funciona en local).
+ */
+const useVercelBlob = (): boolean => !!process.env.BLOB_READ_WRITE_TOKEN
 
 export async function POST(request: Request) {
   const user = await getCurrentUser()
@@ -29,9 +36,20 @@ export async function POST(request: Request) {
   }
 
   try {
-    await mkdir(path.join(UPLOAD_DIR, subdir), { recursive: true })
     const ext = file.name.split(".").pop() || "jpg"
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`
+
+    if (useVercelBlob()) {
+      const bytes = await file.arrayBuffer()
+      const blob = await put(`uploads/${subdir}/${filename}`, bytes, {
+        access: "public",
+        addRandomSuffix: true,
+        contentType: file.type,
+      })
+      return NextResponse.json({ url: blob.url })
+    }
+
+    await mkdir(path.join(UPLOAD_DIR, subdir), { recursive: true })
     const filepath = path.join(UPLOAD_DIR, subdir, filename)
     const bytes = await file.arrayBuffer()
     await writeFile(filepath, Buffer.from(bytes))
@@ -39,6 +57,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ url })
   } catch (err) {
     console.error("Upload error:", err)
+    if (process.env.VERCEL && !useVercelBlob()) {
+      return NextResponse.json(
+        {
+          error:
+            "Las subidas en Vercel requieren Vercel Blob. Creá un Blob store en el proyecto y añadí BLOB_READ_WRITE_TOKEN en Variables de entorno.",
+        },
+        { status: 500 },
+      )
+    }
     return NextResponse.json({ error: "Error al subir el archivo" }, { status: 500 })
   }
 }

@@ -64,8 +64,9 @@ Tablas verificadas en `scripts/postgres/schema.sql` y en `/api/db-verify`:
 
 - **Autorización:** `getCurrentUser()`; solo roles `admin` y `superadmin`.
 - **Validación:** Solo imágenes (`file.type.startsWith("image/")`), máximo 5 MB.
-- **Almacenamiento:** `public/uploads/{subdir}/{timestamp}-{random}.{ext}`. Subdirectorio validado con `^[a-zA-Z0-9_-]+$`.
-- **Respuestas:** 401 (no autorizado), 400 (sin archivo / no imagen / >5MB), 500 (error de disco).
+- **Almacenamiento:** Si está definido `BLOB_READ_WRITE_TOKEN`, se usa **Vercel Blob** (obligatorio en Vercel; el disco es de solo lectura). Si no, se escribe en `public/uploads/{subdir}/` (solo válido en local o VPS).
+- **Respuestas:** 401 (no autorizado), 400 (sin archivo / no imagen / >5MB), 500 (error; en Vercel sin Blob se devuelve mensaje indicando configurar `BLOB_READ_WRITE_TOKEN`).
+- **Dashboard:** En los formularios de imagen también se puede **pegar una URL** (sin subir archivo); ver `components/admin/image-uploader.tsx`.
 
 ### 3.3 GET `/api/db-verify`
 

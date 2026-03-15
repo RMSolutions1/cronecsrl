@@ -40,7 +40,7 @@ Documento de recomendaciones para considerar la web app **completa y lista para 
 
 | # | Recomendación | Prioridad | Notas |
 |---|----------------|-----------|--------|
-| 2.1 | **Producción:** Configurar en Vercel (o plataforma elegida) todas las variables de `.env.local.example`: `DATABASE_URL` o `POSTGRES_URL`, `SESSION_SECRET`, opcionalmente `DB_VERIFY_KEY`, `NEXT_PUBLIC_FORMSPREE_ID` si aplica. | Crítica | Sin `SESSION_SECRET` único, las sesiones son predecibles. |
+| 2.1 | **Producción:** Configurar en Vercel (o plataforma elegida) todas las variables de `.env.local.example`: `DATABASE_URL` o `POSTGRES_URL`, `SESSION_SECRET`, y **`BLOB_READ_WRITE_TOKEN`** si se desean subidas de imágenes desde el dashboard (en Vercel el disco es de solo lectura). Opcional: `DB_VERIFY_KEY`, `NEXT_PUBLIC_FORMSPREE_ID`, `NEXT_PUBLIC_SITE_URL`. | Crítica | Sin `SESSION_SECRET` único, las sesiones son predecibles; sin Blob en Vercel, la subida de archivos falla. |
 | 2.2 | **Build estático (FTP):** Si se usa `BUILD_FTP=1`, definir `NEXT_PUBLIC_FORMSPREE_ID` para que el formulario de contacto funcione (no hay `/api/contact` en export estático). | Alta | Ver `README-FTP.md`. |
 | 2.3 | **Dominio:** Mantener `metadataBase` y URLs en metadata apuntando al dominio real (ej. `https://cronecsrl.com.ar`). | Media | Ya configurado en `app/layout.tsx`. |
 
@@ -64,6 +64,7 @@ Documento de recomendaciones para considerar la web app **completa y lista para 
 |---|----------------|-----------|--------|
 | 4.1 | **Rate limit de contacto:** En producción con múltiples instancias (serverless), el rate limit en memoria (`lib/rate-limit.ts`) no se comparte. Para límites globales, considerar Redis o servicio externo (ej. Upstash). | Media | Evita abuso distribuido. |
 | 4.2 | **Respuestas de error:** Mantener mensajes genéricos en producción (sin stack traces ni detalles de BD en `/api/contact` y `/api/upload`). | Alta | Ya implementado. |
+| 4.5 | **Subida en Vercel:** `/api/upload` usa Vercel Blob cuando `BLOB_READ_WRITE_TOKEN` está definido; en local usa `public/uploads`. Crear Blob store en el proyecto para que las imágenes del dashboard funcionen en producción. | Alta | Ver DESPLIEGUE-VERCEL.md. |
 | 4.3 | **CORS:** Si se consumen las APIs desde otro dominio, configurar headers CORS en las rutas API necesarias. | Baja | Solo si hay front externo. |
 | 4.4 | **Tamaño de body:** Opcional: limitar el tamaño del body en `/api/contact` (Next.js tiene límites por defecto). | Baja | Evita payloads enormes. |
 

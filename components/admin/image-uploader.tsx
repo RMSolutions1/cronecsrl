@@ -1,10 +1,11 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { X, ImageIcon } from "lucide-react"
+import { X, ImageIcon, Link as LinkIcon } from "lucide-react"
 import Image from "next/image"
 
 interface ImageUploaderProps {
@@ -12,12 +13,18 @@ interface ImageUploaderProps {
   onChange: (url: string) => void
   bucket?: string
   path?: string
+  label?: string
 }
 
-export function ImageUploader({ value, onChange, path = "projects" }: ImageUploaderProps) {
+export function ImageUploader({ value, onChange, path = "projects", label = "Imagen" }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(value || "")
+  const [urlInput, setUrlInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setPreviewUrl(value || "")
+  }, [value])
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -38,36 +45,64 @@ export function ImageUploader({ value, onChange, path = "projects" }: ImageUploa
       formData.append("file", file)
       formData.append("path", path)
       const res = await fetch("/api/upload", { method: "POST", body: formData })
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
         throw new Error(data.error || "Error al subir")
       }
-      const { url } = await res.json()
-      setPreviewUrl(url)
-      onChange(url)
+      const url = data.url
+      if (url) {
+        setPreviewUrl(url)
+        onChange(url)
+        setUrlInput("")
+      }
     } catch (err) {
       console.error("Error al subir imagen:", err)
       alert(err instanceof Error ? err.message : "Error al subir la imagen. Por favor intente nuevamente.")
     } finally {
       setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
     }
+  }
+
+  const handleApplyUrl = () => {
+    const url = urlInput.trim()
+    if (!url) return
+    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("/")) {
+      alert("Ingrese una URL válida (por ejemplo https://... o /uploads/...)")
+      return
+    }
+    setPreviewUrl(url)
+    onChange(url)
+    setUrlInput("")
   }
 
   const handleRemove = () => {
     setPreviewUrl("")
     onChange("")
+    setUrlInput("")
     if (fileInputRef.current) fileInputRef.current.value = ""
   }
 
   return (
     <div className="space-y-4">
-      <Label>Imagen del Proyecto</Label>
+      <Label>{label}</Label>
       {previewUrl ? (
-        <div className="relative w-full aspect-video rounded-lg overflow-hidden border">
-          <Image src={previewUrl || "/placeholder.svg"} alt="Preview" fill className="object-cover" />
-          <Button type="button" size="icon" variant="destructive" className="absolute top-2 right-2" onClick={handleRemove}>
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="space-y-2">
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden border">
+            <Image
+              src={previewUrl || "/placeholder.svg"}
+              alt="Preview"
+              fill
+              className="object-cover"
+              unoptimized={previewUrl.startsWith("http")}
+            />
+            <Button type="button" size="icon" variant="destructive" className="absolute top-2 right-2" onClick={handleRemove}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground truncate" title={previewUrl}>
+            {previewUrl}
+          </p>
         </div>
       ) : (
         <div
@@ -79,20 +114,42 @@ export function ImageUploader({ value, onChange, path = "projects" }: ImageUploa
           <p className="text-xs text-muted-foreground">PNG, JPG hasta 5MB</p>
         </div>
       )}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileSelect}
-        disabled={uploading}
-      />
-      {uploading && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          Subiendo imagen...
+
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <Input
+            type="url"
+            placeholder="O pegar URL de imagen (https://... o /uploads/...)"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyUrl())}
+            className="flex-1"
+            disabled={uploading}
+          />
+          <Button type="button" variant="outline" size="icon" onClick={handleApplyUrl} disabled={!urlInput.trim() || uploading} title="Usar esta URL">
+            <LinkIcon className="h-4 w-4" />
+          </Button>
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileSelect}
+            disabled={uploading}
+          />
+          <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+            Subir desde la PC
+          </Button>
+          {uploading && (
+            <span className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              Subiendo...
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

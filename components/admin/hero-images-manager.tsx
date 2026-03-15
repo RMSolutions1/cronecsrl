@@ -128,15 +128,19 @@ export function HeroImagesManager() {
       formData.append("file", file)
       formData.append("path", "hero")
       const res = await fetch("/api/upload", { method: "POST", body: formData })
-      if (!res.ok) throw new Error("Error al subir")
-      const { url } = await res.json()
-      setNewImageUrl(url)
-      toast({ title: "Imagen subida exitosamente" })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || "Error al subir")
+      const url = data.url
+      if (url) {
+        setNewImageUrl(url)
+        toast({ title: "Imagen subida exitosamente" })
+      }
     } catch (error) {
       console.error("Error uploading file:", error)
+      const message = error instanceof Error ? error.message : "No se pudo subir la imagen."
       toast({
-        title: "Error",
-        description: "No se pudo subir la imagen.",
+        title: "Error al subir",
+        description: message,
         variant: "destructive",
       })
     } finally {

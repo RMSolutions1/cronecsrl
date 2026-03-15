@@ -8,9 +8,19 @@ En el proyecto de Vercel: **Settings → Environment Variables**. Añadí estas 
 |----------|-------------|---------|
 | `DATABASE_URL` | URL de conexión a Neon (PostgreSQL) | `postgresql://user:pass@host/neondb?sslmode=verify-full` |
 | `SESSION_SECRET` | Clave para firmar la sesión del admin (32+ caracteres) | Generar una aleatoria |
+| `BLOB_READ_WRITE_TOKEN` | **Requerido para subir imágenes** desde el dashboard. En Vercel el disco es de solo lectura; sin Blob, "Subir desde la PC" falla. | Se crea al crear un Blob store (ver abajo) |
 | `NEXT_PUBLIC_FORMSPREE_ID` | (Opcional) ID de Formspree para el formulario de contacto | `mnjgvyqj` |
 
 **Importante:** Sin `DATABASE_URL`, la app usará los archivos `data/*.json` del repositorio (si existen). Para que el sitio use la base Neon en producción, tenés que configurar `DATABASE_URL` en Vercel.
+
+### Crear Blob store (subida de imágenes)
+
+1. En el proyecto de Vercel: **Storage** (sidebar) → **Create Database** → **Blob**.
+2. Nombre (ej. `cronec-images`), acceso **Public** (para que las URLs de imágenes sean visibles en la web).
+3. Crear. Vercel añade automáticamente la variable **`BLOB_READ_WRITE_TOKEN`** al proyecto.
+4. Volvé a desplegar o esperá al próximo deploy. Las subidas desde el dashboard (proyectos, hero, certificaciones, etc.) pasarán a usar Vercel Blob.
+
+Alternativa: en cualquier formulario de imagen del dashboard podés **pegar una URL** (por ejemplo de Unsplash o de un servicio externo) sin necesidad de subir archivo.
 
 ## 2. Build en Vercel
 

@@ -42,7 +42,7 @@ Si está definida `DATABASE_URL`, la app usa Neon; si no, usa MySQL o archivos e
 
 ## Despliegue
 
-- **Vercel:** Conectar el repo; configurar variables de entorno (SESSION_SECRET, DATABASE_URL, etc.). Cada push a la rama principal despliega en producción.
+- **Vercel:** Conectar el repo; configurar variables de entorno: `SESSION_SECRET`, `DATABASE_URL` (Neon), y **`BLOB_READ_WRITE_TOKEN`** (crear un Blob store en Storage para que funcionen las subidas de imágenes desde el dashboard). Cada push a la rama principal despliega en producción. Ver [DESPLIEGUE-VERCEL.md](DESPLIEGUE-VERCEL.md).
 - **Estático (FTP):** `npm run build:ftp` → subir contenido de `out/`. Definir `NEXT_PUBLIC_FORMSPREE_ID` para el formulario de contacto. Ver `README-FTP.md` y `DESPLIEGUE-CHECKLIST.md`.
 - **Con Node (VPS):** Ver `DESPLIEGUE-MYSQL.md` o `scripts/postgres/README.md` según la base elegida.
 

@@ -71,6 +71,8 @@ Sitio en producción: [cronecsrl2026.vercel.app](https://cronecsrl2026.vercel.ap
 | [VERIFICACION-APIS-RUTAS-TABLAS.md](VERIFICACION-APIS-RUTAS-TABLAS.md) | APIs, rutas y tablas de la aplicación. |
 | [IMAGENES-PUBLIC.md](IMAGENES-PUBLIC.md) | Uso y gestión de imágenes públicas. |
 
+**Subida de imágenes en Vercel:** En Vercel el sistema de archivos es de solo lectura. Para que "Subir desde la PC" funcione en el dashboard, hay que crear un **Blob store** en el proyecto y configurar `BLOB_READ_WRITE_TOKEN`. Ver [DESPLIEGUE-VERCEL.md](DESPLIEGUE-VERCEL.md). Siempre se puede **pegar una URL** de imagen en los formularios (Unsplash, Blob, etc.).
+
 ---
 
 ## 6. Otros
