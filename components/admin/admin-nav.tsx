@@ -25,6 +25,7 @@ import {
   LayoutTemplate,
   User,
   Calculator,
+  Stethoscope,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -43,6 +44,7 @@ const navItems = [
   { href: "/admin/cotizador", icon: Calculator, label: "Cotizador" },
   { href: "/admin/mensajes", icon: Mail, label: "Mensajes" },
   { href: "/admin/configuracion", icon: Settings, label: "Configuración" },
+  { href: "/admin/diagnostico", icon: Stethoscope, label: "Diagnóstico" },
 ]
 
 interface AdminNavProps {

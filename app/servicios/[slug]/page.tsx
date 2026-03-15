@@ -44,9 +44,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!service) return { title: "Servicio | CRONEC SRL" }
   const title = String(service.title ?? "Servicio")
   const desc = service.short_description ?? service.description
+  const description = typeof desc === "string" ? desc : `Servicio ${title} - CRONEC SRL Salta`
+  const imageUrl = service.image_url && String(service.image_url).trim() ? String(service.image_url) : undefined
   return {
     title: `${title} | CRONEC SRL`,
-    description: typeof desc === "string" ? desc : `Servicio ${title} - CRONEC SRL Salta`,
+    description,
+    openGraph: {
+      title: `${title} | CRONEC SRL`,
+      description,
+      ...(imageUrl && { images: [{ url: imageUrl, width: 1200, height: 630, alt: title }] }),
+    },
   }
 }
 

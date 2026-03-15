@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import DOMPurify from "isomorphic-dompurify"
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { getBlogPostBySlug, getBlogPostsPublic } from "@/lib/data-read"
@@ -33,6 +34,24 @@ export const dynamic = "force-dynamic"
 type Props = { params: Promise<{ slug: string }> }
 
 type PostShape = { title?: string; category?: string; author_name?: string; published_at?: string; created_at?: string; image_url?: string; content?: string; excerpt?: string }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getBlogPostBySlug(slug) as PostShape | null
+  if (!post) return { title: "Noticia | CRONEC SRL" }
+  const title = post.title ?? "Noticia"
+  const description = typeof post.excerpt === "string" ? post.excerpt.slice(0, 160) : `Noticia: ${title} - CRONEC SRL`
+  const imageUrl = post.image_url && post.image_url.trim() && !post.image_url.startsWith("/placeholder") ? post.image_url : undefined
+  return {
+    title: `${title} | CRONEC SRL`,
+    description,
+    openGraph: {
+      title: `${title} | CRONEC SRL`,
+      description,
+      ...(imageUrl && { images: [{ url: imageUrl, width: 1200, height: 630, alt: title }] }),
+    },
+  }
+}
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
