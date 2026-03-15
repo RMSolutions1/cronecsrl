@@ -14,12 +14,18 @@ export function DbVerifyCard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/db-verify")
-      .then((r) => r.json())
-      .then((data) => {
-        setRes(data)
+    fetch("/api/db-verify", { credentials: "same-origin" })
+      .then((r) => {
+        if (!r.ok) {
+          if (r.status === 401) return { backend: "error", tables: {}, ok: false, message: "Inicie sesión como administrador para ver el diagnóstico." }
+          return r.json().catch(() => ({ backend: "error", tables: {}, ok: false, message: "Error al conectar con el servidor." }))
+        }
+        return r.json()
       })
-      .catch(() => setRes({ backend: "error", tables: {}, ok: false, message: "Error al conectar con /api/db-verify" }))
+      .then((data) => {
+        setRes(data && typeof data === "object" ? data : { backend: "error", tables: {}, ok: false, message: "Respuesta inválida." })
+      })
+      .catch(() => setRes({ backend: "error", tables: {}, ok: false, message: "Error al conectar con /api/db-verify." }))
       .finally(() => setLoading(false))
   }, [])
 
@@ -35,7 +41,8 @@ export function DbVerifyCard() {
 
   if (!res) return null
 
-  const backendLabel = res.backend === "postgres" ? "PostgreSQL (Neon)" : res.backend === "mysql" ? "MySQL" : res.backend === "json" ? "Solo archivos JSON" : res.backend
+  const backendLabel = res.backend === "postgres" ? "PostgreSQL (Neon)" : res.backend === "mysql" ? "MySQL" : res.backend === "json" ? "Solo archivos JSON" : (res.backend ?? "error")
+  const tables = res.tables && typeof res.tables === "object" ? res.tables : {}
 
   return (
     <Card className="mb-6">
@@ -50,9 +57,9 @@ export function DbVerifyCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {Object.keys(res.tables).length > 0 && (
+        {Object.keys(tables).length > 0 && (
           <div className="grid grid-cols-2 gap-2 text-sm">
-            {Object.entries(res.tables).map(([table, count]) => (
+            {Object.entries(tables).map(([table, count]) => (
               <div key={table} className="flex justify-between rounded border px-3 py-2">
                 <span>{table}</span>
                 {count === "missing" ? (

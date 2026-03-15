@@ -1,6 +1,22 @@
 # CRONEC SRL – Sitio web y panel de administración
 
-Sitio corporativo de CRONEC SRL (construcción civil e instalaciones eléctricas, Salta). Next.js 16, panel admin y base de datos PostgreSQL (Neon) o MySQL.
+Sitio corporativo de **CRONEC SRL** (construcción civil e instalaciones eléctricas, Salta). Next.js 16, panel admin y base de datos PostgreSQL (Neon) o MySQL.
+
+- **Repositorio:** [github.com/RMSolutions1/cronecsrl](https://github.com/RMSolutions1/cronecsrl)
+- **Sitio en producción:** [cronecsrl2026.vercel.app](https://cronecsrl2026.vercel.app)
+- **Índice de toda la documentación:** [DOCUMENTACION.md](DOCUMENTACION.md)
+
+## Estructura del repositorio
+
+| Carpeta / archivo | Descripción |
+|-------------------|-------------|
+| `app/` | Rutas Next.js (páginas, API, admin) |
+| `components/` | Componentes React (UI, admin, header, footer) |
+| `lib/` | Lógica compartida (BD, auth, validación, datos) |
+| `data/` | JSON de contenido (fallback sin BD) |
+| `scripts/` | Scripts de BD (Postgres, MySQL), seed, build FTP |
+| `public/` | Assets estáticos e imágenes subidas |
+| `.env.local.example` | Plantilla de variables de entorno |
 
 ## Inicio rápido
 
@@ -45,11 +61,14 @@ Si está definida `DATABASE_URL`, la app usa Neon; si no, usa MySQL o archivos e
 
 ## Documentación
 
+Documentos principales (lista completa en **[DOCUMENTACION.md](DOCUMENTACION.md)**):
+
 | Documento | Contenido |
 |-----------|-----------|
-| `.env.local.example` | Variables de entorno (no subir `.env.local` a Git) |
-| `AUDITORIA-E2E.md` | Auditoría de BD, APIs, rutas y dashboard |
-| `RECOMENDACIONES-WEB-APP-COMPLETA.md` | Recomendaciones de seguridad, SEO y producción |
-| `DESPLIEGUE-CHECKLIST.md` | Checklist FTP, Node, Neon y MySQL |
-| `DASHBOARD-A-WEB.md` | Cómo los cambios del panel se reflejan en la web |
-| `VERIFICACION-APIS-RUTAS-TABLAS.md` | APIs, rutas, tablas y conexiones |
+| [.env.local.example](.env.local.example) | Variables de entorno (no subir `.env.local` a Git) |
+| [AUDITORIA-E2E.md](AUDITORIA-E2E.md) | Auditoría de BD, APIs, rutas y dashboard |
+| [RECOMENDACIONES-WEB-APP-COMPLETA.md](RECOMENDACIONES-WEB-APP-COMPLETA.md) | Recomendaciones de seguridad, SEO y producción |
+| [DESPLIEGUE-CHECKLIST.md](DESPLIEGUE-CHECKLIST.md) | Checklist FTP, Node, Neon y MySQL |
+| [DESPLIEGUE-VERCEL.md](DESPLIEGUE-VERCEL.md) | Despliegue en Vercel |
+| [DASHBOARD-A-WEB.md](DASHBOARD-A-WEB.md) | Cómo los cambios del panel se reflejan en la web |
+| [VERIFICACION-APIS-RUTAS-TABLAS.md](VERIFICACION-APIS-RUTAS-TABLAS.md) | APIs, rutas, tablas y conexiones |

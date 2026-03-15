@@ -4,6 +4,7 @@
  * En producción: requiere header X-Admin-Key con valor DB_VERIFY_KEY o solo en desarrollo.
  */
 import { NextRequest, NextResponse } from "next/server"
+import { getCurrentUser } from "@/lib/auth"
 import { isPostgresConfigured } from "@/lib/db-pg"
 import { isMySQLConfigured } from "@/lib/db"
 import { getPool as getPoolPg, query as queryPg } from "@/lib/db-pg"
@@ -62,10 +63,15 @@ async function getMySQLTableCounts(): Promise<TableStatus> {
 export async function GET(request: NextRequest) {
   try {
     const isProduction = process.env.NODE_ENV === "production"
-    const expectedKey = process.env.DB_VERIFY_KEY
-    const providedKey = request.headers.get("x-admin-key")
-    if (isProduction && (!expectedKey || providedKey !== expectedKey)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    if (isProduction) {
+      const user = await getCurrentUser()
+      const allowedBySession = user && ["admin", "superadmin"].includes(user.role)
+      const expectedKey = process.env.DB_VERIFY_KEY
+      const providedKey = request.headers.get("x-admin-key")
+      const allowedByKey = expectedKey && providedKey === expectedKey
+      if (!allowedBySession && !allowedByKey) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+      }
     }
 
     const backend = isPostgresConfigured() ? "postgres" : isMySQLConfigured() ? "mysql" : "json"
