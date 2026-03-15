@@ -79,7 +79,7 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
   const quickActions = [
     { label: "Nuevo Proyecto", href: "/admin/proyectos/nuevo", icon: FolderKanban, color: "bg-blue-50 hover:bg-blue-100 text-blue-700" },
     { label: "Nueva Noticia", href: "/admin/noticias", icon: Newspaper, color: "bg-purple-50 hover:bg-purple-100 text-purple-700" },
-    { label: "Nuevo Testimonio", href: "/admin/testimonios/nuevo", icon: MessageSquare, color: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700" },
+    { label: "Nuevo Testimonio", href: "/admin/testimonios", icon: MessageSquare, color: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700" },
     { label: "Ver Mensajes", href: "/admin/mensajes", icon: Mail, color: "bg-orange-50 hover:bg-orange-100 text-orange-700" },
     { label: "Imágenes Hero", href: "/admin/imagenes", icon: Image, color: "bg-teal-50 hover:bg-teal-100 text-teal-700" },
     { label: "Configuración", href: "/admin/configuracion", icon: Settings, color: "bg-gray-50 hover:bg-gray-100 text-gray-700" },

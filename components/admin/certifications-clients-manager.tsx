@@ -44,48 +44,48 @@ export function CertificationsClientsManager() {
   }
 
   async function handleSaveCert() {
-    try {
-      await saveCertification({ ...certForm, order_index: certForm.order_index ?? certifications.length })
+    const result = await saveCertification({ ...certForm, order_index: certForm.order_index ?? certifications.length })
+    if (result.ok) {
       toast({ title: "Certificación guardada" })
       setCertEditingId(null)
       setCertForm({})
       load()
-    } catch (e) {
-      toast({ title: "Error", description: "No se pudo guardar", variant: "destructive" })
+    } else {
+      toast({ title: "Error", description: result.error ?? "No se pudo guardar", variant: "destructive" })
     }
   }
 
   async function handleSaveClient() {
-    try {
-      await saveClient({ ...clientForm, order_index: clientForm.order_index ?? clients.length })
+    const result = await saveClient({ ...clientForm, order_index: clientForm.order_index ?? clients.length })
+    if (result.ok) {
       toast({ title: "Cliente guardado" })
       setClientEditingId(null)
       setClientForm({})
       load()
-    } catch (e) {
-      toast({ title: "Error", description: "No se pudo guardar", variant: "destructive" })
+    } else {
+      toast({ title: "Error", description: result.error ?? "No se pudo guardar", variant: "destructive" })
     }
   }
 
   async function handleDeleteCert(id: string) {
     if (!confirm("¿Eliminar esta certificación?")) return
-    try {
-      await deleteCertification(id)
+    const result = await deleteCertification(id)
+    if (result.ok) {
       toast({ title: "Certificación eliminada" })
       load()
-    } catch (e) {
-      toast({ title: "Error", variant: "destructive" })
+    } else {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
     }
   }
 
   async function handleDeleteClient(id: string) {
     if (!confirm("¿Eliminar este cliente?")) return
-    try {
-      await deleteClient(id)
+    const result = await deleteClient(id)
+    if (result.ok) {
       toast({ title: "Cliente eliminado" })
       load()
-    } catch (e) {
-      toast({ title: "Error", variant: "destructive" })
+    } else {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
     }
   }
 
