@@ -2,6 +2,10 @@
   "name": "cronec-srl-website",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.8.0",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "build": "next build",
     "build:ftp": "powershell -ExecutionPolicy Bypass -File ./scripts/build-ftp.ps1",
@@ -16,6 +20,12 @@
     "dev": "next dev",
     "dev:next": "node node_modules/next/dist/bin/next dev",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify-build.js",
+    "prebuild": "npm run typecheck",
     "setup": "npm install && npm run db:setup",
     "start": "next start",
     "start:lowmem": "node --max-old-space-size=512 ./node_modules/next/dist/bin/next start",
