@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import DOMPurify from "isomorphic-dompurify"
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -8,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, User } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { SanitizedHtml } from "@/components/sanitized-html"
 
 const defaultBlogSlugs = [
   "ampliacion-subestacion",
@@ -94,11 +94,10 @@ export default async function BlogPostPage({ params }: Props) {
               <Image src={imageSrc} alt={post.title ?? ""} fill className="object-cover" sizes="(max-width: 768px) 100vw, 672px" />
             </div>
           )}
-          <div
+          <SanitizedHtml
+            html={post.content || post.excerpt || ""}
             className="prose prose-neutral dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content || post.excerpt || "") }}
           />
-          {!post.content && post.excerpt && <p className="text-muted-foreground">{post.excerpt}</p>}
         </article>
       </main>
       <Footer />

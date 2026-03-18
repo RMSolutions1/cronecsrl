@@ -27,6 +27,7 @@ const FALLBACK_NAV = [
   { href: "/nosotros", label: "Nosotros" },
   { href: "/blog", label: "Noticias" },
   { href: "/calculadora", label: "Cotizador" },
+  { href: "/contacto", label: "Contacto" },
 ]
 
 export function Header() {

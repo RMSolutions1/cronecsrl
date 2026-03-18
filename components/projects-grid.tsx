@@ -113,7 +113,8 @@ export function ProjectsGrid({ initialProjects }: { initialProjects: Project[] }
               {filteredProjects.map((project) => (
                 <Card
                   key={project.id}
-                  className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                  id={String(project.id)}
+                  className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 scroll-mt-24"
                 >
                   <div className="relative overflow-hidden aspect-[4/3]">
                     <Image

@@ -135,7 +135,7 @@ export default async function BlogPage() {
         </section>
 
         {/* Recent Articles Grid */}
-        <section className="py-16">
+        <section className="py-16" id="noticias">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold">Ultimas Noticias</h2>
@@ -211,7 +211,7 @@ export default async function BlogPage() {
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-16 bg-primary text-primary-foreground">
+        <section className="py-16 bg-primary text-primary-foreground" id="newsletter">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto text-center space-y-6">
               <Building2 className="h-12 w-12 mx-auto text-accent" />

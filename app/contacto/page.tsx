@@ -227,7 +227,7 @@ export default function ContactoPage() {
         </section>
 
         {/* Formulario y Mapa */}
-        <section className="py-20 md:py-28 bg-secondary/30">
+        <section className="py-20 md:py-28 bg-secondary/30" id="formulario">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
               {/* Formulario */}
@@ -385,7 +385,7 @@ export default function ContactoPage() {
               </div>
 
               {/* Mapa y Info Adicional */}
-              <div className="space-y-6">
+              <div className="space-y-6" id="mapa">
                 {/* Mapa */}
                 <Card className="overflow-hidden">
                   <div className="aspect-[4/3] bg-secondary relative">

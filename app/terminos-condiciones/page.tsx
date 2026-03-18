@@ -1,6 +1,6 @@
 import { Building2, Scale, AlertCircle } from "lucide-react"
-import DOMPurify from "isomorphic-dompurify"
 import { getCompanyInfo } from "@/lib/data-read"
+import { SanitizedHtml } from "@/components/sanitized-html"
 
 export const metadata = {
   title: "Términos y Condiciones | CRONEC SRL",
@@ -29,7 +29,7 @@ export default async function TerminosCondiciones() {
         </section>
         <section className="py-16">
           <div className="container mx-auto px-4 max-w-4xl">
-            <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 prose prose-neutral max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(customHtml) }} />
+            <SanitizedHtml html={customHtml} className="bg-white rounded-xl shadow-lg p-8 md:p-12 prose prose-neutral max-w-none" />
           </div>
         </section>
       </div>
