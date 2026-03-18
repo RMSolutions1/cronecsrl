@@ -29,6 +29,17 @@ export async function readProjects(): Promise<unknown[]> {
   }))
 }
 
+/** Convierte area a número para columna DECIMAL (ej. "8,500 m²" → 8500). */
+function toAreaNumber(v: unknown): number | null {
+  if (v == null) return null
+  if (typeof v === "number" && !Number.isNaN(v)) return v
+  if (typeof v === "string") {
+    const n = parseFloat(v.replace(/[^\d.,]/g, "").replace(",", ""))
+    return Number.isNaN(n) ? null : n
+  }
+  return null
+}
+
 export async function writeProjects(list: unknown[]): Promise<void> {
   const p = getPool()
   await p.query("DELETE FROM projects")
@@ -37,7 +48,7 @@ export async function writeProjects(list: unknown[]): Promise<void> {
       `INSERT INTO projects (id, title, description, category, location, year, area, budget, duration, client, image_url, status, featured, created_by, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
       [
-        r.id, r.title, r.description, r.category, r.location ?? null, r.year ?? null, r.area ?? null,
+        r.id, r.title, r.description, r.category, r.location ?? null, r.year ?? null, toAreaNumber(r.area),
         r.budget ?? null, r.duration ?? null, r.client ?? null, r.image_url, r.status ?? "draft",
         (r.featured as boolean) ? true : false, r.created_by ?? null,
         r.created_at ?? new Date().toISOString(), r.updated_at ?? new Date().toISOString(),
