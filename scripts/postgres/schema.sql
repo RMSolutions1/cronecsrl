@@ -1,5 +1,7 @@
 -- CRONEC SRL - Esquema PostgreSQL (Neon u otro)
 -- Ejecutar en la base de datos (Neon SQL Editor o psql)
+-- IMPORTANTE: Este esquema usa id VARCHAR(36). Si tu base tiene id UUID y ves
+-- "invalid input syntax for type uuid: 'proj-1'", ejecutá fix-uuid-to-varchar.sql en Neon.
 
 -- Usuarios / admins (login)
 CREATE TABLE IF NOT EXISTS users (
