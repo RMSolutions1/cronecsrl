@@ -48,6 +48,8 @@ const defaultServiceImages: Record<string, string> = {
   "instalaciones-industriales": images.services.instalacionesIndustriales,
   "obras-generales": images.services.obrasGenerales,
   "servicios-especiales": images.services.serviciosEspeciales,
+  "mantenimiento": images.services.obrasGenerales,
+  "consultoria": images.services.arquitectura,
 }
 
 export type ServiceFromDb = {

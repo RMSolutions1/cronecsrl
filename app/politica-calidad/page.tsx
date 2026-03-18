@@ -8,7 +8,12 @@ export const metadata = {
 }
 
 export default async function PoliticaCalidad() {
-  const settings = await getCompanyInfo()
+  let settings: Awaited<ReturnType<typeof getCompanyInfo>> = null
+  try {
+    settings = await getCompanyInfo()
+  } catch {
+    // En producción puede fallar la lectura de datos; mostramos contenido por defecto
+  }
   const customHtml = (settings?.legal_politica_calidad as string)?.trim()
   if (customHtml) {
     return (

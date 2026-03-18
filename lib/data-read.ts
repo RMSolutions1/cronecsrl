@@ -59,8 +59,8 @@ export async function getBlogPostsPublic() {
 }
 
 export async function getBlogPostBySlug(slug: string) {
-  const list = await readData<{ slug?: string; id?: string; status?: string; [k: string]: unknown }[]>("blog.json")
-  return (list || []).find((p) => (p.slug ?? p.id) === slug && p.status === "published") ?? null
+  const list = await readData<{ slug?: string; id?: string | number; status?: string; [k: string]: unknown }[]>("blog.json")
+  return (list || []).find((p) => String(p.slug ?? p.id ?? "") === slug && p.status === "published") ?? null
 }
 
 export async function getCompanyInfo(): Promise<Record<string, unknown> | null> {

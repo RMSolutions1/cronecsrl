@@ -7,23 +7,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { images } from "@/lib/images"
+import { images, defaultServiceImages } from "@/lib/images"
 import type { Metadata } from "next"
 
 export const dynamic = "force-dynamic"
 
-const defaultImgs: Record<string, string> = {
-  "obras-civiles": images.services.obrasCiviles,
-  "obras-electricas": images.services.obrasElectricas,
-  "arquitectura-ingenieria": images.services.arquitectura,
-  "instalaciones-industriales": images.services.instalacionesIndustriales,
-  "obras-generales": images.services.obrasGenerales,
-  "servicios-especiales": images.services.serviciosEspeciales,
-  "mantenimiento": images.services.obrasGenerales,
-  "consultoria": images.services.arquitectura,
-}
-
-const defaultServiceSlugs = Object.keys(defaultImgs)
+const defaultServiceSlugs = Object.keys(defaultServiceImages)
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
@@ -45,14 +34,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = String(service.title ?? "Servicio")
   const desc = service.short_description ?? service.description
   const description = typeof desc === "string" ? desc : `Servicio ${title} - CRONEC SRL Salta`
-  const imageUrl = service.image_url && String(service.image_url).trim() ? String(service.image_url) : undefined
+  const imageUrl = (service.image_url && String(service.image_url).trim()) ? String(service.image_url) : (defaultServiceImages[slug] ?? undefined)
+  const fullImageUrl = imageUrl?.startsWith("http") ? imageUrl : imageUrl ? `${typeof process.env.NEXT_PUBLIC_SITE_URL === "string" ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") : "https://cronecsrl.com.ar"}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}` : undefined
   return {
     title: `${title} | CRONEC SRL`,
     description,
     openGraph: {
       title: `${title} | CRONEC SRL`,
       description,
-      ...(imageUrl && { images: [{ url: imageUrl, width: 1200, height: 630, alt: title }] }),
+      ...(fullImageUrl && { images: [{ url: fullImageUrl, width: 1200, height: 630, alt: title }] }),
     },
   }
 }
@@ -64,7 +54,7 @@ export default async function ServicioSlugPage({ params }: Props) {
   const service = await getServiceBySlug(slug) as ServiceShape | null
   if (!service) notFound()
 
-  const imageSrc = (service.image_url && service.image_url.trim()) ? service.image_url : (defaultImgs[slug] ?? images.services.obrasCiviles)
+  const imageSrc = (service.image_url && service.image_url.trim()) ? service.image_url : (defaultServiceImages[slug] ?? images.services.obrasCiviles)
   const features = Array.isArray(service.features) ? service.features : []
   const benefits = Array.isArray(service.benefits) ? service.benefits : []
 

@@ -54,8 +54,9 @@ export const images = {
     U("1510812431401-41d2d2c9b5c9", 200), // Minería/recursos
     U("1541888946425-81bb3d4f723f", 200), // Infraestructura
   ],
+  /** ISO 9001, 14001, 45001: mismo icono genérico; data/certifications.json también. Para distinguir, usar 3 imágenes distintas por norma. */
   certifications: [
-    U("1563013544-824ae1b704d3", 120), // Certificación
+    U("1563013544-824ae1b704d3", 120),
     U("1563013544-824ae1b704d3", 120),
     U("1563013544-824ae1b704d3", 120),
   ],
@@ -96,12 +97,12 @@ export const images = {
   blueprint: U("1503387762-592deb58ef4e", 1920),
   /** Edificio/empresa para brochure y secciones corporativas */
   companyBuilding: U("1486406146926-c627a92ad1ab", 1200),
-  // Imágenes para artículos del blog
+  // Imágenes para artículos del blog (índices 1 y 3 duplican cert; considerar imágenes distintas)
   blog: [
     U("1473341304170-971dccb5ac1e"), // Subestación
     U("1563013544-824ae1b704d3", 400), // Certificación
     U("1545324418-cc1a3fa10c00"),     // Viviendas
-    U("1563013544-824ae1b704d3", 400), // Seguridad
+    U("1563013544-824ae1b704d3", 400), // Seguridad (duplicado)
     U("1581091226825-a6a2a5aee158"),  // Maquinaria
     U("1503387762-592deb58ef4e"),     // Proyecto
   ],
@@ -110,7 +111,7 @@ export const images = {
 /** Fallback para proyecto sin image_url (ej. desde dashboard). */
 export const defaultProjectImage = images.portfolio[0]
 
-/** Mapa slug -> URL para servicios sin image_url en BD. */
+/** Mapa slug -> URL para servicios sin image_url en BD. Incluye todos los slugs usados en menú y data (mantenimiento/consultoria reutilizan imagen). */
 export const defaultServiceImages: Record<string, string> = {
   "obras-civiles": images.services.obrasCiviles,
   "obras-electricas": images.services.obrasElectricas,
@@ -120,4 +121,6 @@ export const defaultServiceImages: Record<string, string> = {
   "obras-generales": images.services.obrasGenerales,
   "obras-de-saneamiento": images.services.obrasSaneamiento,
   "servicios-especiales": images.services.serviciosEspeciales,
+  "mantenimiento": images.services.obrasGenerales,
+  "consultoria": images.services.arquitectura,
 }
