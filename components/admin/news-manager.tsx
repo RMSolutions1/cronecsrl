@@ -15,6 +15,7 @@ import { toast } from "sonner"
 import { Plus, Pencil, Trash2, Eye, EyeOff, Search, Newspaper, Calendar, Star, StarOff } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { ImageUploader } from "./image-uploader"
 
 interface Post {
   id: string
@@ -311,12 +312,19 @@ export function NewsManager({ posts: initialPosts }: NewsManagerProps) {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="image_url">URL de Imagen</Label>
+                <Label htmlFor="image_url">Imagen de portada</Label>
+                <ImageUploader
+                  value={formData.image_url}
+                  onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                  path="blog"
+                  label="Imagen de portada de la noticia"
+                />
                 <Input
                   id="image_url"
+                  className="mt-2"
                   value={formData.image_url}
                   onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://..."
+                  placeholder="O pegue URL: https://..."
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
