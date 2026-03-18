@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Pencil, Trash2, Save, X } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { ImageUploader } from "./image-uploader"
 
 interface Testimonial {
   id: string
@@ -42,6 +43,7 @@ export function TestimonialsManager() {
         (data as Record<string, unknown>[]).map((r) => ({
           ...r,
           testimonial_text: r.content,
+          image_url: (r.avatar_url ?? r.image_url) as string,
           is_featured: Boolean(r.featured),
           is_active: r.status === "published",
         })) as Testimonial[]
@@ -162,11 +164,18 @@ export function TestimonialsManager() {
             </div>
 
             <div>
-              <label className="text-sm font-medium">URL de Imagen (opcional)</label>
+              <label className="text-sm font-medium">Imagen / avatar (opcional)</label>
+              <ImageUploader
+                value={formData.image_url || ""}
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+                path="testimonials"
+                label="Avatar"
+              />
               <Input
+                className="mt-2"
                 value={formData.image_url || ""}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                placeholder="https://..."
+                placeholder="O pegar URL: https://..."
               />
             </div>
 

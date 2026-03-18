@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Save } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { ImageUploader } from "./image-uploader"
 
 type HeroSlide = { title: string; paragraph: string }
 
@@ -198,11 +199,18 @@ export function SettingsManager() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">URL del Logo</label>
+                <label className="text-sm font-medium">Logo de la empresa</label>
+                <ImageUploader
+                  value={info.logo_url || ""}
+                  onChange={(url) => setInfo({ ...info, logo_url: url })}
+                  path="general"
+                  label="Logo"
+                />
                 <Input
+                  className="mt-2"
                   value={info.logo_url || ""}
                   onChange={(e) => setInfo({ ...info, logo_url: e.target.value })}
-                  placeholder="https://..."
+                  placeholder="O pegar URL: https://..."
                 />
               </div>
             </CardContent>

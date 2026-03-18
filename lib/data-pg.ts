@@ -10,18 +10,18 @@ type Row = Record<string, unknown>
 export async function readProjects(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM projects ORDER BY created_at DESC")
   return rows.map((r) => ({
-    id: r.id,
-    title: r.title,
-    description: r.description,
-    category: r.category,
+    id: r.id != null ? String(r.id) : "",
+    title: r.title != null ? String(r.title) : "",
+    description: r.description != null ? String(r.description) : "",
+    category: r.category != null ? String(r.category) : "",
     location: r.location ?? null,
     year: r.year ?? null,
     area: r.area != null ? Number(r.area) : null,
     budget: r.budget ?? null,
     duration: r.duration ?? null,
     client: r.client ?? null,
-    image_url: r.image_url,
-    status: r.status ?? "draft",
+    image_url: r.image_url != null ? String(r.image_url) : "",
+    status: r.status != null ? String(r.status) : "draft",
     featured: !!r.featured,
     created_at: r.created_at ? new Date(r.created_at as string).toISOString() : undefined,
     updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
@@ -50,13 +50,13 @@ export async function writeProjects(list: unknown[]): Promise<void> {
 export async function readServices(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM services ORDER BY display_order ASC, order_index ASC")
   return rows.map((r) => ({
-    id: r.id,
-    title: r.title,
-    slug: r.slug,
-    description: r.description ?? null,
-    short_description: r.short_description ?? null,
-    icon: r.icon ?? null,
-    image_url: r.image_url ?? null,
+    id: r.id != null ? String(r.id) : "",
+    title: r.title != null ? String(r.title) : "",
+    slug: r.slug != null ? String(r.slug) : "",
+    description: r.description != null ? String(r.description) : null,
+    short_description: r.short_description != null ? String(r.short_description) : null,
+    icon: r.icon != null ? String(r.icon) : null,
+    image_url: r.image_url != null ? String(r.image_url) : null,
     features: r.features ?? null,
     benefits: r.benefits ?? null,
     display_order: r.display_order ?? 0,
@@ -89,19 +89,19 @@ export async function writeServices(list: unknown[]): Promise<void> {
 export async function readBlog(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM blog_posts ORDER BY created_at DESC")
   return rows.map((r) => ({
-    id: r.id,
-    title: r.title,
-    slug: r.slug,
-    excerpt: r.excerpt ?? null,
-    content: r.content,
-    image_url: r.image_url ?? null,
-    category: r.category ?? "noticias",
+    id: r.id != null ? String(r.id) : "",
+    title: r.title != null ? String(r.title) : "",
+    slug: r.slug != null ? String(r.slug) : "",
+    excerpt: r.excerpt != null ? String(r.excerpt) : null,
+    content: r.content != null ? String(r.content) : "",
+    image_url: r.image_url != null ? String(r.image_url) : null,
+    category: r.category != null ? String(r.category) : "noticias",
     tags: r.tags ?? null,
-    author_id: r.author_id ?? null,
-    author_name: r.author_name ?? null,
-    status: r.status ?? "draft",
+    author_id: r.author_id != null ? String(r.author_id) : null,
+    author_name: r.author_name != null ? String(r.author_name) : null,
+    status: r.status != null ? String(r.status) : "draft",
     featured: !!r.featured,
-    views: r.views ?? 0,
+    views: Number(r.views ?? 0),
     published_at: r.published_at ? new Date(r.published_at as string).toISOString() : null,
     created_at: r.created_at ? new Date(r.created_at as string).toISOString() : undefined,
     updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
@@ -129,13 +129,13 @@ export async function writeBlog(list: unknown[]): Promise<void> {
 export async function readMessages(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM contact_submissions ORDER BY created_at DESC")
   return rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    email: r.email,
-    phone: r.phone ?? null,
-    company: r.company ?? null,
-    service: r.service ?? null,
-    message: r.message,
+    id: r.id != null ? String(r.id) : "",
+    name: r.name != null ? String(r.name) : "",
+    email: r.email != null ? String(r.email) : "",
+    phone: r.phone != null ? String(r.phone) : null,
+    company: r.company != null ? String(r.company) : null,
+    service: r.service != null ? String(r.service) : null,
+    message: r.message != null ? String(r.message) : "",
     is_read: !!r.is_read,
     created_at: r.created_at ? new Date(r.created_at as string).toISOString() : "",
   }))
@@ -160,18 +160,18 @@ export async function writeMessages(list: unknown[]): Promise<void> {
 export async function readTestimonials(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM testimonials ORDER BY created_at DESC")
   return rows.map((r) => ({
-    id: r.id,
-    client_name: r.client_name,
-    client_company: r.client_company ?? null,
-    client_position: r.client_position ?? null,
-    content: r.content,
-    rating: r.rating ?? 5,
-    avatar_url: r.avatar_url ?? null,
-    status: r.status ?? "published",
+    id: r.id != null ? String(r.id) : "",
+    client_name: r.client_name != null ? String(r.client_name) : "",
+    client_company: r.client_company != null ? String(r.client_company) : null,
+    client_position: r.client_position != null ? String(r.client_position) : null,
+    content: r.content != null ? String(r.content) : "",
+    rating: Number(r.rating ?? 5),
+    avatar_url: r.avatar_url != null ? String(r.avatar_url) : null,
+    status: r.status != null ? String(r.status) : "published",
     featured: !!r.featured,
     created_at: r.created_at ? new Date(r.created_at as string).toISOString() : undefined,
     updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
-    created_by: r.created_by ?? undefined,
+    created_by: r.created_by != null ? String(r.created_by) : undefined,
   }))
 }
 
@@ -258,11 +258,11 @@ export async function writeSettings(data: Record<string, unknown>): Promise<void
 export async function readHeroImages(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM hero_images ORDER BY page, order_index ASC")
   return rows.map((r) => ({
-    id: r.id,
-    page: r.page,
-    image_url: r.image_url,
-    alt_text: r.alt_text ?? null,
-    order_index: r.order_index ?? 0,
+    id: r.id != null ? String(r.id) : "",
+    page: r.page != null ? String(r.page) : "",
+    image_url: r.image_url != null ? String(r.image_url) : "",
+    alt_text: r.alt_text != null ? String(r.alt_text) : null,
+    order_index: Number(r.order_index ?? 0),
   }))
 }
 
@@ -282,10 +282,10 @@ export async function writeHeroImages(list: unknown[]): Promise<void> {
 export async function readCertifications(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM certifications ORDER BY order_index ASC")
   return rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    logo_url: r.logo_url ?? null,
-    order_index: r.order_index ?? 0,
+    id: r.id != null ? String(r.id) : "",
+    name: r.name != null ? String(r.name) : "",
+    logo_url: r.logo_url != null ? String(r.logo_url) : null,
+    order_index: Number(r.order_index ?? 0),
     updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
   }))
 }
@@ -306,10 +306,10 @@ export async function writeCertifications(list: unknown[]): Promise<void> {
 export async function readClients(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT * FROM clients ORDER BY order_index ASC")
   return rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    logo_url: r.logo_url ?? null,
-    order_index: r.order_index ?? 0,
+    id: r.id != null ? String(r.id) : "",
+    name: r.name != null ? String(r.name) : "",
+    logo_url: r.logo_url != null ? String(r.logo_url) : null,
+    order_index: Number(r.order_index ?? 0),
     updated_at: r.updated_at ? new Date(r.updated_at as string).toISOString() : undefined,
   }))
 }
@@ -330,11 +330,11 @@ export async function writeClients(list: unknown[]): Promise<void> {
 export async function readAdmins(): Promise<unknown[]> {
   const rows = await query<Row[]>("SELECT id, email, full_name, role, password_hash FROM users ORDER BY email")
   return rows.map((r) => ({
-    id: r.id,
-    email: r.email,
-    full_name: r.full_name ?? null,
-    role: r.role ?? "admin",
-    password_hash: r.password_hash,
+    id: r.id != null ? String(r.id) : "",
+    email: r.email != null ? String(r.email) : "",
+    full_name: r.full_name != null ? String(r.full_name) : null,
+    role: r.role != null ? String(r.role) : "admin",
+    password_hash: r.password_hash != null ? String(r.password_hash) : "",
   }))
 }
 
