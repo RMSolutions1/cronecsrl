@@ -44,7 +44,12 @@ export function CertificationsClientsManager() {
   }
 
   async function handleSaveCert() {
-    const result = await saveCertification({ ...certForm, order_index: certForm.order_index ?? certifications.length })
+    const payload = {
+      ...certForm,
+      id: certEditingId && certEditingId !== "new" ? certEditingId : certForm.id,
+      order_index: certForm.order_index ?? certifications.length,
+    }
+    const result = await saveCertification(payload)
     if (result.ok) {
       toast({ title: "Certificación guardada" })
       setCertEditingId(null)
@@ -56,7 +61,12 @@ export function CertificationsClientsManager() {
   }
 
   async function handleSaveClient() {
-    const result = await saveClient({ ...clientForm, order_index: clientForm.order_index ?? clients.length })
+    const payload = {
+      ...clientForm,
+      id: clientEditingId && clientEditingId !== "new" ? clientEditingId : clientForm.id,
+      order_index: clientForm.order_index ?? clients.length,
+    }
+    const result = await saveClient(payload)
     if (result.ok) {
       toast({ title: "Cliente guardado" })
       setClientEditingId(null)
@@ -165,7 +175,7 @@ export function CertificationsClientsManager() {
                       <div className="flex items-start gap-3">
                         <div className="relative w-16 h-16 rounded-lg bg-muted overflow-hidden flex-shrink-0">
                           {c.logo_url ? (
-                            <Image src={c.logo_url} alt={c.name} fill className="object-contain" sizes="64px" unoptimized={c.logo_url.startsWith("/")} />
+                            <Image src={c.logo_url} alt={c.name} fill className="object-contain" sizes="64px" unoptimized />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center text-2xl text-muted-foreground">🏅</div>
                           )}
@@ -174,7 +184,7 @@ export function CertificationsClientsManager() {
                           <p className="font-medium truncate">{c.name}</p>
                           <p className="text-xs text-muted-foreground">Orden: {c.order_index}</p>
                           <div className="flex gap-1 mt-2">
-                            <Button size="sm" variant="ghost" onClick={() => { setCertEditingId(c.id); setCertForm(c) }}><Pencil className="h-3 w-3" /></Button>
+                            <Button size="sm" variant="ghost" onClick={() => { setCertEditingId(c.id); setCertForm({ ...c, logo_url: c.logo_url ?? "" }) }}><Pencil className="h-3 w-3" /></Button>
                             <Button size="sm" variant="ghost" className="text-red-600" onClick={() => handleDeleteCert(c.id)}><Trash2 className="h-3 w-3" /></Button>
                           </div>
                         </div>
@@ -247,7 +257,7 @@ export function CertificationsClientsManager() {
                       <div className="flex items-start gap-3">
                         <div className="relative w-16 h-16 rounded-lg bg-muted overflow-hidden flex-shrink-0">
                           {c.logo_url ? (
-                            <Image src={c.logo_url} alt={c.name} fill className="object-contain" sizes="64px" unoptimized={c.logo_url.startsWith("/")} />
+                            <Image src={c.logo_url} alt={c.name} fill className="object-contain" sizes="64px" unoptimized />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center text-2xl text-muted-foreground">🏢</div>
                           )}
@@ -256,7 +266,7 @@ export function CertificationsClientsManager() {
                           <p className="font-medium truncate">{c.name}</p>
                           <p className="text-xs text-muted-foreground">Orden: {c.order_index}</p>
                           <div className="flex gap-1 mt-2">
-                            <Button size="sm" variant="ghost" onClick={() => { setClientEditingId(c.id); setClientForm(c) }}><Pencil className="h-3 w-3" /></Button>
+                            <Button size="sm" variant="ghost" onClick={() => { setClientEditingId(c.id); setClientForm({ ...c, logo_url: c.logo_url ?? "" }) }}><Pencil className="h-3 w-3" /></Button>
                             <Button size="sm" variant="ghost" className="text-red-600" onClick={() => handleDeleteClient(c.id)}><Trash2 className="h-3 w-3" /></Button>
                           </div>
                         </div>

@@ -10,6 +10,7 @@ export const metadata = {
 export default async function CertificacionesClientesAdminPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/admin/login")
+  if (!["admin", "superadmin"].includes(user.role)) redirect("/admin/login")
 
   return (
     <div className="space-y-6">
