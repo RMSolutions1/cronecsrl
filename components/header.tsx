@@ -5,21 +5,36 @@ import Image from "next/image"
 import { useState, useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Phone, Mail, ChevronDown, Building2, Zap, Factory, Ruler, Wrench, HardHat, User } from "lucide-react"
+import { Menu, X, Phone, Mail, ChevronDown, Building2, Zap, Factory, PencilRuler, Wrench, HardHat, User, Hammer, ShieldCheck, Settings, ClipboardList } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSettings } from "@/lib/settings-context"
 import { useServicesNav } from "@/lib/services-nav-context"
 
 const FALLBACK_SERVICES: { href: string; label: string; icon: typeof Wrench; description?: string }[] = [
-  { href: "/servicios/obras-civiles", label: "Construcción Civil", icon: HardHat, description: "Construcción y mantenimiento de infraestructura" },
+  { href: "/servicios/obras-civiles", label: "Obras Civiles", icon: HardHat, description: "Construcción y mantenimiento de infraestructura civil" },
   { href: "/servicios/obras-electricas", label: "Obras Eléctricas", icon: Zap, description: "Instalaciones de baja, media y alta tensión" },
-  { href: "/servicios/instalaciones-industriales", label: "Instalaciones Industriales", icon: Factory, description: "Naves industriales y montajes" },
-  { href: "/servicios/arquitectura-ingenieria", label: "Arquitectura e Ingeniería", icon: Ruler, description: "Diseño, proyecto y dirección de obras" },
-  { href: "/servicios/mantenimiento", label: "Mantenimiento", icon: Wrench, description: "Mantenimiento preventivo y correctivo" },
-  { href: "/servicios/consultoria", label: "Consultoría", icon: Ruler, description: "Asesoramiento técnico y dirección de obra" },
-  { href: "/servicios/obras-generales", label: "Obras Generales", icon: Building2, description: "Infraestructura ferroviaria y transporte" },
-  { href: "/servicios/servicios-especiales", label: "Servicios Especiales", icon: Wrench, description: "Reparación de puentes y estructuras" },
+  { href: "/servicios/arquitectura-ingenieria", label: "Arquitectura e Ingeniería", icon: PencilRuler, description: "Diseño, proyecto y dirección de obras" },
+  { href: "/servicios/instalaciones-industriales", label: "Instalaciones Industriales", icon: Factory, description: "Naves industriales y montajes electromecánicos" },
+  { href: "/servicios/obras-generales", label: "Obras Generales", icon: Hammer, description: "Infraestructura ferroviaria y obras públicas" },
+  { href: "/servicios/servicios-especiales", label: "Servicios Especiales", icon: ShieldCheck, description: "Reparación de puentes y estructuras metálicas" },
+  { href: "/servicios/mantenimiento", label: "Mantenimiento", icon: Settings, description: "Mantenimiento preventivo y correctivo" },
+  { href: "/servicios/consultoria", label: "Consultoría", icon: ClipboardList, description: "Asesoramiento técnico y dirección de obra" },
 ]
+
+const SERVICE_ICON_MAP: Record<string, typeof Wrench> = {
+  HardHat,
+  Zap,
+  Factory,
+  Ruler: PencilRuler,
+  PencilRuler,
+  Building2,
+  Hammer,
+  ShieldCheck,
+  Settings,
+  ClipboardList,
+  Wrench,
+}
+
 
 const FALLBACK_NAV = [
   { href: "/", label: "Inicio" },
@@ -38,7 +53,7 @@ export function Header() {
     ? settings.nav_links
     : FALLBACK_NAV) as { href: string; label: string }[]
   const services = servicesFromDb.length > 0
-    ? servicesFromDb.map((s) => ({ href: `/servicios/${s.slug}`, label: s.title, icon: Wrench as typeof HardHat, description: "" }))
+    ? servicesFromDb.map((s) => ({ href: `/servicios/${s.slug}`, label: s.title, icon: (SERVICE_ICON_MAP[s.icon ?? ""] ?? HardHat) as typeof HardHat, description: "" }))
     : FALLBACK_SERVICES
   const topPhone = (settings?.phone as string) || "+54 9 (387) 536-1210"
   const topEmail = (settings?.email as string) || "cronec@cronecsrl.com.ar"
@@ -194,7 +209,9 @@ export function Header() {
                 onClick={() => setServicesOpen(!servicesOpen)}
                 onMouseEnter={() => setServicesOpen(true)}
               >
-                Servicios
+                <Link href="/servicios" onClick={(e) => e.stopPropagation()} className="flex items-center gap-0">
+                  Servicios
+                </Link>
                 <ChevronDown className={cn(
                   "ml-1 h-4 w-4 transition-transform duration-200",
                   servicesOpen ? "rotate-180" : ""
