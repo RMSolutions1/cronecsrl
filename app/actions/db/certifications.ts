@@ -56,7 +56,8 @@ export async function saveCertification(data: Record<string, unknown>): Promise<
     return { ok: true, id }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
-    return { ok: false, error: process.env.VERCEL ? "No se pudo guardar. Configurá DATABASE_URL (Neon) en Vercel para persistir datos." : msg }
+    console.error("[Certifications] Error al guardar:", msg)
+    return { ok: false, error: msg || "Error al guardar la certificación" }
   }
 }
 
@@ -69,6 +70,7 @@ export async function deleteCertification(id: string): Promise<{ ok: boolean; er
     return { ok: true }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
-    return { ok: false, error: process.env.VERCEL ? "No se pudo eliminar. Configurá DATABASE_URL en Vercel." : msg }
+    console.error("[Certifications] Error al eliminar:", msg)
+    return { ok: false, error: msg || "Error al eliminar la certificación" }
   }
 }

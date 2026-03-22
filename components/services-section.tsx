@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Building2, Zap, Factory, Ruler, Wrench, HardHat, ArrowRight, ArrowUpRight } from "lucide-react"
+import { Building2, Zap, Factory, PencilRuler, Wrench, HardHat, ArrowRight, ArrowUpRight, Hammer, ShieldCheck, Settings, ClipboardList } from "lucide-react"
 import Link from "next/link"
 import { SectionWrapper } from "@/components/section-wrapper"
 import { images, defaultServiceImages } from "@/lib/images"
@@ -11,19 +11,26 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Building2,
   Zap,
   Factory,
-  Ruler,
+  Ruler: PencilRuler,
+  PencilRuler,
   Wrench,
   HardHat,
+  Hammer,
+  ShieldCheck,
+  Settings,
+  ClipboardList,
 }
 
-// Misma lista que el menú y /servicios: 6 servicios con páginas propias
+// Todos los servicios con páginas propias
 const staticServices = [
   { icon: HardHat, title: "Obras Civiles", description: "Construcción de edificios, viviendas, locales comerciales y obras de infraestructura general con los más altos estándares de calidad.", features: ["Edificios", "Viviendas", "Locales comerciales"], image: images.services.obrasCiviles },
   { icon: Zap, title: "Obras Eléctricas", description: "Instalaciones eléctricas de baja, media y alta tensión. Subestaciones transformadoras y sistemas de distribución eléctrica.", features: ["Media tensión", "Subestaciones", "Mantenimiento"], image: images.services.obrasElectricas },
-  { icon: Ruler, title: "Arquitectura e Ingeniería", description: "Proyecto, dirección y construcción de obras civiles con asesoramiento técnico integral y profesional.", features: ["Proyectos", "Dirección", "Consultoría"], image: images.services.arquitectura },
+  { icon: PencilRuler, title: "Arquitectura e Ingeniería", description: "Proyecto, dirección y construcción de obras civiles con asesoramiento técnico integral y profesional.", features: ["Proyectos", "Dirección", "Consultoría"], image: images.services.arquitectura },
   { icon: Factory, title: "Instalaciones Industriales", description: "Naves industriales, galpones y montajes electromecánicos para el sector industrial y productivo de la región.", features: ["Naves industriales", "Montajes", "Galpones"], image: images.services.instalacionesIndustriales },
-  { icon: Building2, title: "Obras Generales", description: "Renovación de alambrados, mantenimiento de infraestructura ferroviaria y obras públicas con altos estándares de calidad.", features: ["Infraestructura ferroviaria", "Alambrados", "Obras públicas"], image: images.services.obrasGenerales },
-  { icon: Wrench, title: "Servicios Especiales", description: "Reparación de estructuras metálicas, puentes, estribos y mantenimiento especializado de infraestructura crítica.", features: ["Puentes metálicos", "Estribos", "Mantenimiento"], image: images.services.serviciosEspeciales },
+  { icon: Hammer, title: "Obras Generales", description: "Renovación de alambrados, mantenimiento de infraestructura ferroviaria y obras públicas con altos estándares de calidad.", features: ["Infraestructura ferroviaria", "Alambrados", "Obras públicas"], image: images.services.obrasGenerales },
+  { icon: ShieldCheck, title: "Servicios Especiales", description: "Reparación de estructuras metálicas, puentes, estribos y mantenimiento especializado de infraestructura crítica.", features: ["Puentes metálicos", "Estribos", "Mantenimiento"], image: images.services.serviciosEspeciales },
+  { icon: Settings, title: "Mantenimiento", description: "Mantenimiento preventivo y correctivo de instalaciones, edificios e infraestructura industrial.", features: ["Preventivo", "Correctivo", "Inspecciones"], image: images.services.obrasGenerales },
+  { icon: ClipboardList, title: "Consultoría", description: "Asesoramiento técnico, proyectos y dirección de obras. Consultoría en construcción e ingeniería.", features: ["Proyectos", "Dirección de obra", "Asesoramiento"], image: images.services.arquitectura },
 ]
 
 export interface ServiceFromDb {

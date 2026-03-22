@@ -11,7 +11,7 @@ import {
   Building2,
   Zap,
   Factory,
-  Ruler,
+  PencilRuler,
   Wrench,
   HardHat,
   CheckCircle2,
@@ -19,6 +19,10 @@ import {
   Users,
   Award,
   TrendingUp,
+  Hammer,
+  ShieldCheck,
+  Settings,
+  ClipboardList,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -27,9 +31,14 @@ import { images } from "@/lib/images"
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HardHat,
   Zap,
-  Ruler,
+  PencilRuler,
+  Ruler: PencilRuler,
   Factory,
   Building2,
+  Hammer,
+  ShieldCheck,
+  Settings,
+  ClipboardList,
   Wrench,
 }
 const colors = ["text-green-600", "text-amber-600", "text-primary", "text-orange-600", "text-blue-600", "text-red-600", "text-slate-600", "text-indigo-600"]
@@ -75,10 +84,12 @@ const stats = [
 const defaultServicesDetail = [
   { id: "obras-civiles", icon: HardHat, title: "Obras Civiles", href: "/servicios/obras-civiles", description: "Especialistas en refaccion y mantenimiento de instalaciones civiles.", projects: "180+", color: "text-green-600", bgColor: "bg-green-50", image: images.services.obrasCiviles, features: ["Refacción de baños", "Impermeabilizacion", "Albanileria general"], benefits: ["Materiales de primera calidad", "Garantia en trabajos"], },
   { id: "obras-electricas", icon: Zap, title: "Obras Electricas", href: "/servicios/obras-electricas", description: "Instalaciones eléctricas de baja, media y alta tensión.", projects: "160+", color: "text-amber-600", bgColor: "bg-amber-50", image: images.services.obrasElectricas, features: ["Baja y media tension", "Subestaciones"], benefits: ["Ingenieros matriculados", "Normativas AEA"], },
-  { id: "arquitectura-ingenieria", icon: Ruler, title: "Arquitectura e Ingenieria", href: "/servicios/arquitectura-ingenieria", description: "Proyecto, dirección y construcción de obras civiles.", projects: "150+", color: "text-primary", bgColor: "bg-primary/10", image: images.services.arquitectura, features: ["Proyecto y dirección", "Mantenimiento"], benefits: ["Arquitectos e ingenieros matriculados"], },
+  { id: "arquitectura-ingenieria", icon: PencilRuler, title: "Arquitectura e Ingenieria", href: "/servicios/arquitectura-ingenieria", description: "Proyecto, dirección y construcción de obras civiles.", projects: "150+", color: "text-primary", bgColor: "bg-primary/10", image: images.services.arquitectura, features: ["Proyecto y dirección", "Mantenimiento"], benefits: ["Arquitectos e ingenieros matriculados"], },
   { id: "instalaciones-industriales", icon: Factory, title: "Instalaciones Industriales", href: "/servicios/instalaciones-industriales", description: "Naves industriales, galpones y montaje electromecanico.", projects: "120+", color: "text-orange-600", bgColor: "bg-orange-50", image: images.services.instalacionesIndustriales, features: ["Naves industriales", "Montajes"], benefits: ["Diseno optimizado"], },
-  { id: "obras-generales", icon: Building2, title: "Obras Generales", href: "/servicios/obras-generales", description: "Renovacion y mantenimiento de infraestructura ferroviaria.", projects: "200+", color: "text-blue-600", bgColor: "bg-blue-50", image: images.services.obrasGenerales, features: ["Alambrados", "Obras publicas"], benefits: ["15+ años de experiencia"], },
-  { id: "servicios-especiales", icon: Wrench, title: "Servicios Especiales", href: "/servicios/servicios-especiales", description: "Reparacion y mantenimiento de infraestructura critica.", projects: "140+", color: "text-red-600", bgColor: "bg-red-50", image: images.services.serviciosEspeciales, features: ["Puentes metalicos", "Estribos"], benefits: ["Estructuras metalicas"], },
+  { id: "obras-generales", icon: Hammer, title: "Obras Generales", href: "/servicios/obras-generales", description: "Renovacion y mantenimiento de infraestructura ferroviaria.", projects: "200+", color: "text-blue-600", bgColor: "bg-blue-50", image: images.services.obrasGenerales, features: ["Alambrados", "Obras publicas"], benefits: ["15+ años de experiencia"], },
+  { id: "servicios-especiales", icon: ShieldCheck, title: "Servicios Especiales", href: "/servicios/servicios-especiales", description: "Reparacion y mantenimiento de infraestructura critica.", projects: "140+", color: "text-red-600", bgColor: "bg-red-50", image: images.services.serviciosEspeciales, features: ["Puentes metalicos", "Estribos"], benefits: ["Estructuras metalicas"], },
+  { id: "mantenimiento", icon: Settings, title: "Mantenimiento", href: "/servicios/mantenimiento", description: "Mantenimiento preventivo y correctivo de instalaciones y edificios.", projects: "100+", color: "text-slate-600", bgColor: "bg-slate-50", image: images.services.obrasGenerales, features: ["Preventivo", "Correctivo", "Inspecciones"], benefits: ["Mayor vida util", "Personal capacitado"], },
+  { id: "consultoria", icon: ClipboardList, title: "Consultoría", href: "/servicios/consultoria", description: "Asesoramiento técnico, proyectos y dirección de obras.", projects: "80+", color: "text-indigo-600", bgColor: "bg-indigo-50", image: images.services.arquitectura, features: ["Proyectos", "Dirección de obra", "Asesoramiento"], benefits: ["Equipo multidisciplinario", "Experiencia en obras"], },
 ]
 
 export function ServiciosPageContent({ servicesFromDb = [] }: { servicesFromDb?: ServiceFromDb[] }) {
