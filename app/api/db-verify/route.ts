@@ -21,6 +21,8 @@ const DB_TABLES = [
   "hero_images",
   "certifications",
   "clients",
+  "sections",
+  "calculator_pricing",
 ] as const
 
 export const dynamic = "force-dynamic"
