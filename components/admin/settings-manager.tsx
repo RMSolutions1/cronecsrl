@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { getCompanyInfo, saveCompanyInfo } from "@/app/actions/db/company-info"
 import { Button } from "@/components/ui/button"
@@ -69,7 +69,7 @@ const DEFAULT_NAV_LINKS: { href: string; label: string }[] = [
   { href: "/brochure", label: "Brochure" },
 ]
 
-export function SettingsManager() {
+function SettingsManagerInner({ initialTab }: { initialTab: string }) {
   const [info, setInfo] = useState<Partial<CompanyInfo>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -118,10 +118,8 @@ export function SettingsManager() {
     ? info.heroSlides.slice(0, 3)
     : defaultHeroSlides
 
-  const searchParams = useSearchParams()
-  const tabFromUrl = searchParams.get("tab") || "general"
   const validTabs = ["general", "hero", "menu", "textos", "contacto", "footer", "redes", "empresa", "brochure", "legal", "seo"]
-  const defaultTab = validTabs.includes(tabFromUrl) ? tabFromUrl : "general"
+  const defaultTab = validTabs.includes(initialTab) ? initialTab : "general"
   const navLinks: { href: string; label: string }[] = Array.isArray(info.nav_links) && info.nav_links.length > 0
     ? info.nav_links
     : DEFAULT_NAV_LINKS
@@ -676,5 +674,21 @@ export function SettingsManager() {
         </Button>
       </div>
     </div>
+  )
+}
+
+function TabFromUrl({ children }: { children: (tab: string) => React.ReactNode }) {
+  const searchParams = useSearchParams()
+  const tabFromUrl = searchParams.get("tab") || "general"
+  return <>{children(tabFromUrl)}</>
+}
+
+export function SettingsManager() {
+  return (
+    <Suspense fallback={<div className="text-muted-foreground">Cargando configuración...</div>}>
+      <TabFromUrl>
+        {(tab) => <SettingsManagerInner initialTab={tab} />}
+      </TabFromUrl>
+    </Suspense>
   )
 }
