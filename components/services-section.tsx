@@ -83,32 +83,37 @@ export function ServicesSection({ servicesFromDb = [] }: { servicesFromDb?: Serv
             return (
               <article 
                 key={index} 
-                className="group"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="group opacity-0 animate-slide-up-fade"
+                style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
               >
-                <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-0 bg-card">
+                <Card className="h-full overflow-hidden card-hover border-0 bg-card relative">
+                  {/* Glow effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img 
                       src={service.image} 
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
                     <div className="absolute bottom-4 left-4">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent text-accent-foreground shadow-lg">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent text-accent-foreground shadow-lg group-hover:scale-110 group-hover:shadow-accent/30 transition-all duration-300">
                         <Icon className="h-6 w-6" />
                       </div>
                     </div>
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-xl font-semibold group-hover:text-primary transition-colors">
+                  <CardHeader className="pb-2 relative">
+                    <CardTitle className="text-xl font-semibold group-hover:text-accent transition-colors duration-300">
                       {service.title}
                     </CardTitle>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 relative">
                     <CardDescription className="text-base leading-relaxed">
                       {service.description}
                     </CardDescription>
@@ -118,7 +123,7 @@ export function ServicesSection({ servicesFromDb = [] }: { servicesFromDb?: Serv
                       {service.features.map((feature, i) => (
                         <span 
                           key={i}
-                          className="px-2.5 py-1 bg-muted text-muted-foreground text-xs rounded-md"
+                          className="px-2.5 py-1 bg-muted text-muted-foreground text-xs rounded-md group-hover:bg-accent/10 group-hover:text-accent transition-colors duration-300"
                         >
                           {feature}
                         </span>
@@ -128,10 +133,10 @@ export function ServicesSection({ servicesFromDb = [] }: { servicesFromDb?: Serv
                     <Link href="/servicios" className="block pt-2">
                       <Button 
                         variant="ghost" 
-                        className="w-full justify-between text-primary hover:bg-primary/5 p-0"
+                        className="w-full justify-between text-primary hover:bg-primary/5 hover:text-accent p-0 transition-colors duration-300"
                       >
                         Ver mas detalles
-                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
                       </Button>
                     </Link>
                   </CardContent>

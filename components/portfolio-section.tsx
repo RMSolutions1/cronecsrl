@@ -49,11 +49,20 @@ export function PortfolioSection({ projectsFromDb = [] }: { projectsFromDb?: Pro
   const filteredProjects = activeCategory === "Todos" ? projects : projects.filter((p) => p.category === activeCategory)
 
   return (
-    <section className="py-24 md:py-32 bg-secondary/30">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8">
+    <section className="py-24 md:py-32 bg-secondary/30 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 relative">
         <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full">
+            Nuestro Portfolio
+          </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-balance">
-            Proyectos que <span className="text-primary">Transforman</span>
+            Proyectos que <span className="gradient-text">Transforman</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
             Descubra nuestra trayectoria en obras de infraestructura de gran envergadura en toda la región.
@@ -67,7 +76,7 @@ export function PortfolioSection({ projectsFromDb = [] }: { projectsFromDb?: Pro
               key={category}
               variant={activeCategory === category ? "default" : "outline"}
               onClick={() => setActiveCategory(category)}
-              className={activeCategory === category ? "bg-primary" : ""}
+              className={`transition-all duration-300 ${activeCategory === category ? "bg-primary shadow-lg shadow-primary/25 scale-105" : "hover:scale-105"}`}
             >
               {category}
             </Button>
@@ -76,31 +85,42 @@ export function PortfolioSection({ projectsFromDb = [] }: { projectsFromDb?: Pro
 
         {/* Grid de proyectos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {filteredProjects.map((project) => (
-            <Card key={project.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300">
+          {filteredProjects.map((project, index) => (
+            <Card 
+              key={project.id} 
+              className="group overflow-hidden card-hover border-0 bg-card opacity-0 animate-scale-up"
+              style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
+            >
               <div className="relative overflow-hidden aspect-[4/3]">
                 <img
                   src={project.image || defaultProjectImage}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">{project.category}</Badge>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground shadow-lg">{project.category}</Badge>
+                
+                {/* Hover overlay with icon */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                    <ArrowRight className="h-6 w-6 text-white" />
+                  </div>
+                </div>
               </div>
               <CardContent className="p-6 space-y-4">
-                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">{project.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{project.description}</p>
+                <h3 className="text-xl font-semibold group-hover:text-accent transition-colors duration-300">{project.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{project.description}</p>
                 <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                  <div className="flex items-center gap-1.5 group-hover:text-foreground transition-colors">
+                    <MapPin className="h-3.5 w-3.5 text-accent" />
                     <span>{project.location}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Ruler className="h-3.5 w-3.5 text-primary" />
+                  <div className="flex items-center gap-1.5 group-hover:text-foreground transition-colors">
+                    <Ruler className="h-3.5 w-3.5 text-accent" />
                     <span>{project.area}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 text-primary" />
+                  <div className="flex items-center gap-1.5 group-hover:text-foreground transition-colors">
+                    <Calendar className="h-3.5 w-3.5 text-accent" />
                     <span>{project.year}</span>
                   </div>
                 </div>
@@ -111,9 +131,9 @@ export function PortfolioSection({ projectsFromDb = [] }: { projectsFromDb?: Pro
 
         <div className="text-center mt-12">
           <Link href="/proyectos">
-            <Button size="lg" className="bg-primary hover:bg-primary/90">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 transition-all duration-300 group">
               Ver Todos los Proyectos
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </div>

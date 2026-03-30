@@ -87,10 +87,10 @@ export function Header() {
   return (
     <header 
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled 
-          ? "bg-background/95 backdrop-blur-lg shadow-lg border-b border-border/50" 
-          : "bg-background/80 backdrop-blur-md"
+          ? "bg-background/95 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-border/30" 
+          : "bg-background/70 backdrop-blur-md"
       )}
     >
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -138,7 +138,7 @@ export function Header() {
           "flex items-center justify-between transition-all duration-300",
           scrolled ? "h-16" : "h-20"
         )}>
-          <Link href="/" className="flex items-center space-x-3 group">
+          <Link href="/" className="flex items-center space-x-3 group hover:opacity-90 transition-opacity">
             <div className={cn(
               "relative flex-shrink-0 transition-all duration-300",
               scrolled ? "h-8 w-8" : "h-10 w-10"

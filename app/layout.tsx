@@ -6,6 +6,9 @@ import { Toaster as SonnerToaster } from "sonner"
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { Providers } from "@/components/providers"
+import { ScrollProgress } from "@/components/scroll-progress"
+import { BackToTop } from "@/components/back-to-top"
+import { SkipToContent } from "@/components/skip-to-content"
 import { getCompanyInfo } from "@/lib/data-read"
 import { getServicesPublic } from "@/lib/data-read"
 import "./globals.css"
@@ -178,9 +181,12 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased`} suppressHydrationWarning>
+        <SkipToContent />
+        <ScrollProgress />
         <Providers settings={settingsForClient} servicesNav={servicesNav}>
           {children}
           <WhatsAppButton />
+          <BackToTop />
           <ShadcnToaster />
           <SonnerToaster position="top-center" richColors />
           <Analytics />

@@ -52,26 +52,30 @@ export function Footer() {
   const ctaContactenos = (s?.site_cta_contactenos as string) || "Contáctenos"
 
   return (
-    <footer className="relative bg-[oklch(0.15_0.02_240)] text-white overflow-hidden">
+    <footer className="relative bg-[oklch(0.15_0.02_240)] text-white overflow-hidden" role="contentinfo">
       {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute inset-0" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }} />
       </div>
+      
+      {/* Decorative gradient orbs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* CTA Section */}
       <div className="relative border-b border-white/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-accent/10 rounded-2xl p-8 border border-accent/20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-accent/15 to-primary/15 rounded-2xl p-8 border border-accent/20 backdrop-blur-sm hover:from-accent/20 hover:to-primary/20 transition-all duration-500">
             <div>
-              <h3 className="text-2xl font-bold mb-2">{ctaTitle}</h3>
-              <p className="text-white/70">{ctaSubtitle}</p>
+              <h3 className="text-2xl font-bold mb-2 text-balance">{ctaTitle}</h3>
+              <p className="text-white/70 text-pretty">{ctaSubtitle}</p>
             </div>
             <Link href="/contacto">
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2 shadow-lg">
+              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2 shadow-lg hover:shadow-accent/30 hover:-translate-y-1 transition-all duration-300 group">
                 {ctaContactenos}
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Button>
             </Link>
           </div>
@@ -100,17 +104,17 @@ export function Footer() {
             <p className="text-sm text-white/70 leading-relaxed">{description}</p>
             <div className="flex items-center gap-3">
               {facebook && (
-                <a href={facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Facebook">
+                <a href={facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:scale-110 hover:shadow-lg hover:shadow-accent/20 transition-all duration-300" aria-label="Facebook">
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
               {instagram && (
-                <a href={instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="Instagram">
+                <a href={instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:scale-110 hover:shadow-lg hover:shadow-accent/20 transition-all duration-300" aria-label="Instagram">
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
               {linkedin && (
-                <a href={linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors" aria-label="LinkedIn">
+                <a href={linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:scale-110 hover:shadow-lg hover:shadow-accent/20 transition-all duration-300" aria-label="LinkedIn">
                   <Linkedin className="h-4 w-4" />
                 </a>
               )}

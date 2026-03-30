@@ -52,7 +52,7 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="main-content">
         <HeroSection
           heroSlidesFromSettings={heroSlidesFromSettings}
           heroImagesFromDb={heroImagesFromDb.length >= 1 ? heroImagesFromDb : undefined}

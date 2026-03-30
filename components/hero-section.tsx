@@ -92,29 +92,35 @@ export function HeroSection({
       currentIndex={currentIndex}
       onSlideChange={setCurrentIndex}
     >
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 pt-32 pb-20">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-accent/20 rounded-full blur-3xl animate-glow-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: "1s" }} />
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 pt-32 pb-20 relative">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-12 items-center">
             {/* Left content - cambia con cada slide */}
             <div className="lg:col-span-3 space-y-8 text-center lg:text-left">
               {/* Badge */}
               <div 
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-700 hover:bg-white/20 cursor-default ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               >
-                <Award className="h-4 w-4 text-accent" />
+                <Award className="h-4 w-4 text-accent animate-bounce-subtle" />
                 <span className="text-sm font-medium text-white">{heroBadge}</span>
               </div>
 
               <h1 
                 key={`title-${currentIndex}`}
-                className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] text-white animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both"
+                className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] text-white animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both text-balance"
               >
                 {typeof slide.title === "string" ? formatTitle(slide.title) : slide.title}
               </h1>
 
               <p 
                 key={`para-${currentIndex}`}
-                className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150"
+                className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both delay-200 text-pretty"
               >
                 {slide.paragraph}
               </p>
@@ -126,17 +132,17 @@ export function HeroSection({
                 <Link href="/proyectos">
                   <Button
                     size="lg"
-                    className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5 transition-all duration-300"
+                    className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 shadow-xl hover:shadow-accent/40 hover:-translate-y-1 hover:scale-105 transition-all duration-300 group"
                   >
                     {ctaVerProyectos}
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href="/contacto">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-2 border-white/30 text-white hover:bg-white hover:text-primary font-semibold px-8 bg-white/5 backdrop-blur-sm"
+                    className="border-2 border-white/30 text-white hover:bg-white hover:text-primary font-semibold px-8 bg-white/5 backdrop-blur-sm hover:-translate-y-1 transition-all duration-300"
                   >
                     {ctaSolicitarCotizacion}
                   </Button>
@@ -148,16 +154,19 @@ export function HeroSection({
             <div 
               className={`lg:col-span-2 transition-all duration-700 delay-400 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
             >
-              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-                <h3 className="text-lg font-semibold text-white mb-6">Nuestros números</h3>
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-500 hover:shadow-accent/10 hover:-translate-y-1">
+                <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                  Nuestros números
+                </h3>
                 <div className="space-y-6">
                   {heroStats.slice(0, 4).map((stat, i) => (
                     <div
                       key={i}
-                      className={i < 3 ? "flex items-center justify-between border-b border-white/10 pb-4" : "flex items-center justify-between"}
+                      className={`flex items-center justify-between group cursor-default ${i < 3 ? "border-b border-white/10 pb-4" : ""}`}
                     >
-                      <span className="text-white/70">{stat.label}</span>
-                      <span className="text-3xl font-bold text-accent">
+                      <span className="text-white/70 group-hover:text-white/90 transition-colors">{stat.label}</span>
+                      <span className="text-3xl font-bold text-accent group-hover:scale-110 transition-transform origin-right">
                         <AnimatedCounter end={stat.value} suffix={stat.suffix} />
                       </span>
                     </div>
@@ -167,14 +176,14 @@ export function HeroSection({
                 {/* Trust badges */}
                 <div className="mt-8 pt-6 border-t border-white/10">
                   <p className="text-xs text-white/50 mb-3">Certificaciones</p>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-default">
                       <span className="text-xs font-medium text-white">ISO 9001</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-default">
                       <span className="text-xs font-medium text-white">ISO 14001</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-default">
                       <span className="text-xs font-medium text-white">ISO 45001</span>
                     </div>
                   </div>
@@ -186,10 +195,17 @@ export function HeroSection({
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-        <a href="#servicios" className="flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors">
-          <span className="text-xs uppercase tracking-widest">{scrollLabel}</span>
-          <ChevronDown className="h-5 w-5" />
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10">
+        <a 
+          href="#servicios" 
+          className="flex flex-col items-center gap-2 text-white/50 hover:text-white transition-all duration-300 group"
+          aria-label="Desplazarse hacia abajo"
+        >
+          <span className="text-xs uppercase tracking-widest group-hover:tracking-[0.2em] transition-all">{scrollLabel}</span>
+          <div className="relative">
+            <ChevronDown className="h-5 w-5 animate-bounce" />
+            <div className="absolute inset-0 bg-accent/30 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
         </a>
       </div>
     </HeroCarousel>
