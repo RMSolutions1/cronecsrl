@@ -211,19 +211,25 @@ export function Footer() {
       {/* Sub-footer */}
       <div className="relative border-t border-white/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
-            <p><span suppressHydrationWarning>{currentYear}</span> {companyName}. Todos los derechos reservados.{cuit ? ` CUIT: ${cuit}` : ""}</p>
+          <div className="flex flex-col items-center gap-4 text-sm text-white/50">
+            {/* Legal links - arriba y centrados */}
             <div className="flex items-center gap-6">
               <Link href="/politica-privacidad" className="hover:text-white transition-colors">
-                Privacidad
+                Politica de Privacidad
               </Link>
+              <span className="text-white/20">|</span>
               <Link href="/terminos-condiciones" className="hover:text-white transition-colors">
-                Términos
+                Términos y Condiciones
               </Link>
+              <span className="text-white/20">|</span>
               <Link href="/politica-calidad" className="hover:text-white transition-colors">
-                Calidad
+                Politica de Calidad
               </Link>
             </div>
+            {/* Copyright - abajo y centrado */}
+            <p className="text-center">
+              <span suppressHydrationWarning>{currentYear}</span> {companyName}. Todos los derechos reservados.{cuit ? ` CUIT: ${cuit}` : ""}
+            </p>
           </div>
         </div>
       </div>
