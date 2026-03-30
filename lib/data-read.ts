@@ -110,9 +110,11 @@ export async function getNosotrosPublic(): Promise<Record<string, unknown>> {
   }
 }
 
-export type WhyCronecSection = { title?: string; subtitle?: string; stats?: unknown[]; features?: unknown[]; highlights?: string[] }
+export type WhyCronecSection = { title?: string; subtitle?: string; image_url?: string; stats?: unknown[]; features?: unknown[]; highlights?: string[] }
 export type ProcessSection = { title?: string; subtitle?: string; steps?: unknown[] }
-export type SectionsData = { whyCronec?: WhyCronecSection; process?: ProcessSection }
+export type ClientsSection = { certificationsTitle?: string; certificationsSubtitle?: string; clientsTitle?: string; clientsSubtitle?: string }
+export type CTASection = { badge?: string; title?: string; paragraph?: string; formTitle?: string; formSubtitle?: string }
+export type SectionsData = { whyCronec?: WhyCronecSection; process?: ProcessSection; clients?: ClientsSection; cta?: CTASection }
 
 export async function getSectionsPublic(): Promise<SectionsData> {
   try {
