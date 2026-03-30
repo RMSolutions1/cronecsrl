@@ -1,8 +1,7 @@
 "use server"
 
 import { getCurrentUser } from "@/lib/auth"
-import { query, getPool } from "@/lib/db-pg"
-import { isPostgresConfigured } from "@/lib/db-pg"
+import { query, isPostgresConfigured } from "@/lib/db-pg"
 import { readData, writeData, generateId } from "@/lib/data"
 
 type Message = {

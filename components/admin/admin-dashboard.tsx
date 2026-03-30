@@ -317,31 +317,39 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
         {/* Messages & Activity */}
         <div className="space-y-6">
           {/* Messages */}
-          <Card>
+          <Card className={stats.newSubmissions > 0 ? "border-orange-300 bg-orange-50/50 dark:bg-orange-950/20" : ""}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-orange-600" />
-                Mensajes Pendientes
+                Mensajes de Contacto
+                {stats.newSubmissions > 0 && (
+                  <Badge className="bg-orange-500 text-white animate-pulse ml-2">
+                    {stats.newSubmissions} nuevos
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {stats.newSubmissions > 0 ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-100">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900">
                       <Mail className="h-7 w-7 text-orange-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="font-semibold text-lg">
-                        {stats.newSubmissions}
+                      <p className="font-semibold text-lg text-orange-700 dark:text-orange-400">
+                        {stats.newSubmissions} {stats.newSubmissions === 1 ? "mensaje sin leer" : "mensajes sin leer"}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {stats.newSubmissions === 1 ? "mensaje nuevo" : "mensajes nuevos"}
+                        {stats.totalSubmissions} en total
                       </p>
                     </div>
                   </div>
-                  <Button asChild className="w-full" variant="outline">
-                    <Link href="/admin/mensajes">Ver Mensajes</Link>
+                  <Button asChild className="w-full bg-orange-600 hover:bg-orange-700">
+                    <Link href="/admin/mensajes">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Ver y Responder Mensajes
+                    </Link>
                   </Button>
                 </div>
               ) : (
@@ -349,6 +357,9 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
                   <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
                   <p className="mt-2 font-medium">Todo al dia</p>
                   <p className="text-sm text-muted-foreground">No hay mensajes pendientes</p>
+                  <Button asChild variant="ghost" size="sm" className="mt-3">
+                    <Link href="/admin/mensajes">Ver historial</Link>
+                  </Button>
                 </div>
               )}
             </CardContent>

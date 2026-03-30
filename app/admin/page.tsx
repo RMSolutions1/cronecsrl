@@ -26,7 +26,7 @@ export default async function AdminPage() {
     activeServices: raw.services,
     totalTestimonials: raw.testimonials,
     publishedTestimonials: raw.testimonials,
-    newSubmissions: 0,
+    newSubmissions: raw.unread_messages ?? 0,
     totalSubmissions: raw.contact_submissions,
     totalPosts: raw.blog_posts ?? 0,
     publishedPosts: raw.blog_published ?? 0,
