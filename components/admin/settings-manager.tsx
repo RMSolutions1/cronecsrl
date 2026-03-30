@@ -74,6 +74,10 @@ export function SettingsManager() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const { toast } = useToast()
+  const searchParams = useSearchParams()
+  const tabFromUrl = searchParams.get("tab") || "general"
+  const validTabs = ["general", "hero", "menu", "textos", "contacto", "footer", "redes", "empresa", "brochure", "legal", "seo"]
+  const defaultTab = validTabs.includes(tabFromUrl) ? tabFromUrl : "general"
 
   useEffect(() => {
     loadInfo()
@@ -118,10 +122,6 @@ export function SettingsManager() {
     ? info.heroSlides.slice(0, 3)
     : defaultHeroSlides
 
-  const searchParams = useSearchParams()
-  const tabFromUrl = searchParams.get("tab") || "general"
-  const validTabs = ["general", "hero", "menu", "textos", "contacto", "footer", "redes", "empresa", "brochure", "legal", "seo"]
-  const defaultTab = validTabs.includes(tabFromUrl) ? tabFromUrl : "general"
   const navLinks: { href: string; label: string }[] = Array.isArray(info.nav_links) && info.nav_links.length > 0
     ? info.nav_links
     : DEFAULT_NAV_LINKS

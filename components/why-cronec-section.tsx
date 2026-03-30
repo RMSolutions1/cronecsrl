@@ -31,8 +31,20 @@ const defaultStats = [
   { value: 50, suffix: "+", label: "Equipo" },
 ]
 
+// Imagen de respaldo robusta desde Unsplash (construccion profesional)
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80&auto=format&fit=crop"
+
+// Lista de imagenes posibles para usar
+const IMAGE_OPTIONS = [
+  "/conec4.jpeg",
+  "/hero-construction-1.jpeg", 
+  "/proyectos/proyecto-1.jpeg",
+  FALLBACK_IMAGE
+]
+
 export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
-  const [imgError, setImgError] = useState(false)
+  const [imgIndex, setImgIndex] = useState(0)
+  const [imgLoaded, setImgLoaded] = useState(false)
   const title = data?.title ?? "Por qué elegir CRONEC"
   const subtitle = data?.subtitle ?? "Experiencia, profesionalismo y compromiso en cada proyecto."
   const stats = (data?.stats?.length ? data.stats : defaultStats) as Array<{ value: number; suffix: string; label: string }>
@@ -41,7 +53,8 @@ export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
     ? featuresFromData.slice(0, 6).map((f, i) => ({ ...defaultFeatures[i], ...f, icon: defaultFeatures[i]?.icon ?? Award }))
     : defaultFeatures
   const highlights = (data?.highlights?.length ? data.highlights : defaultHighlights) as string[]
-  const whyImgSrc = imgError ? images.whyCronecFallback : images.whyCronec
+  // Usar imagen local primero, fallback a otras opciones si falla
+  const whyImgSrc = IMAGE_OPTIONS[imgIndex] || FALLBACK_IMAGE
 
   return (
     <SectionWrapper className="py-24 md:py-32" background="default" animationType="fade-up">
@@ -49,13 +62,28 @@ export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-muted min-h-[300px]">
+              {/* Placeholder mientras carga */}
+              {!imgLoaded && (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 animate-pulse flex items-center justify-center">
+                  <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+                </div>
+              )}
               <Image
                 src={whyImgSrc}
-                alt="CRONEC SRL - Servicios profesionales"
+                alt="CRONEC SRL - Servicios profesionales de construccion"
                 width={600}
                 height={500}
-                className="w-full h-auto object-cover"
-                onError={() => setImgError(true)}
+                className={`w-full h-auto object-cover transition-opacity duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoad={() => setImgLoaded(true)}
+                onError={() => {
+                  // Intentar la siguiente imagen en la lista
+                  if (imgIndex < IMAGE_OPTIONS.length - 1) {
+                    setImgIndex(imgIndex + 1)
+                  } else {
+                    setImgLoaded(true) // Ya probamos todas, mostrar lo que sea
+                  }
+                }}
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
             </div>
