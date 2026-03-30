@@ -81,6 +81,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin/configuracion", icon: Settings, label: "Configuración" },
       { href: "/admin/diagnostico", icon: Stethoscope, label: "Diagnóstico" },
+      { href: "/admin/perfil", icon: User, label: "Mi Perfil" },
     ],
   },
 ]
@@ -284,7 +285,12 @@ export function AdminNav({ user, collapsed = false, onCollapsedChange }: AdminNa
                 <span className="truncate">Ver Sitio Web</span>
               </Link>
             )}
-            <div className={cn("mt-2 rounded-lg bg-primary-foreground/10 p-2", collapsed && "lg:flex lg:flex-col lg:items-center")}>
+            <Link 
+              href="/admin/perfil"
+              onClick={() => setMobileOpen(false)}
+              className={cn("mt-2 rounded-lg bg-primary-foreground/10 p-2 hover:bg-primary-foreground/20 transition-colors cursor-pointer block", collapsed && "lg:flex lg:flex-col lg:items-center")}
+              title="Ver mi perfil"
+            >
               <p className={cn("text-sm font-medium truncate", collapsed && "lg:text-center lg:truncate lg:max-w-[2rem] lg:overflow-hidden")} title={user?.full_name || user?.email}>
                 {collapsed ? (user?.full_name || user?.email || "").slice(0, 1).toUpperCase() : (user?.full_name || user?.email)}
               </p>
@@ -293,7 +299,7 @@ export function AdminNav({ user, collapsed = false, onCollapsedChange }: AdminNa
                   {user?.role === "superadmin" ? "Super Admin" : "Administrador"}
                 </p>
               )}
-            </div>
+            </Link>
             {collapsed ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
