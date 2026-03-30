@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { readData, writeData, generateId } from "@/lib/data"
 import { validateContactInput } from "@/lib/contact-validation"
 import { checkContactRateLimit } from "@/lib/rate-limit"
+import { createContactSubmission } from "@/app/actions/db/contact"
 
 export async function POST(request: Request) {
   try {
@@ -32,19 +32,16 @@ export async function POST(request: Request) {
 
     const { name, email, phone, service, message, company } = validation.data
 
-    const list = await readData<{ id: string; name: string; email: string; phone?: string; company?: string; service: string; message: string; is_read: boolean; created_at: string }[]>("messages.json")
-    list.unshift({
-      id: generateId(),
+    // Guardar en la base de datos
+    await createContactSubmission({
       name,
       email,
       phone: phone || undefined,
-      company,
-      service,
+      company: company || undefined,
+      service: service || undefined,
       message,
-      is_read: false,
-      created_at: new Date().toISOString(),
     })
-    await writeData("messages.json", list)
+
     return NextResponse.json({
       success: true,
       message: "Gracias por contactarnos. Responderemos a la brevedad.",
