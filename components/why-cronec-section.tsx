@@ -10,6 +10,7 @@ import { images } from "@/lib/images"
 export type WhyCronecData = {
   title?: string
   subtitle?: string
+  image_url?: string
   stats?: Array<{ value: number; suffix: string; label: string }>
   features?: Array<{ title: string; description: string }>
   highlights?: string[]
@@ -53,8 +54,9 @@ export function WhyCronecSection({ data }: { data?: WhyCronecData | null }) {
     ? featuresFromData.slice(0, 6).map((f, i) => ({ ...defaultFeatures[i], ...f, icon: defaultFeatures[i]?.icon ?? Award }))
     : defaultFeatures
   const highlights = (data?.highlights?.length ? data.highlights : defaultHighlights) as string[]
-  // Usar imagen local primero, fallback a otras opciones si falla
-  const whyImgSrc = IMAGE_OPTIONS[imgIndex] || FALLBACK_IMAGE
+  // Usar imagen configurada si existe, si no usar fallbacks
+  const configuredImage = data?.image_url
+  const whyImgSrc = configuredImage || IMAGE_OPTIONS[imgIndex] || FALLBACK_IMAGE
 
   return (
     <SectionWrapper className="py-24 md:py-32" background="default" animationType="fade-up">

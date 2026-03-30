@@ -5,8 +5,8 @@ import { PortfolioSection } from "@/components/portfolio-section"
 import { WhyCronecSection, type WhyCronecData } from "@/components/why-cronec-section"
 import { ProcessSection, type ProcessData } from "@/components/process-section"
 import { TestimonialsSection, type TestimonialFromDb } from "@/components/testimonials-section"
-import { ClientsSection, type CertificationFromDb, type ClientFromDb } from "@/components/clients-section"
-import { CTASection } from "@/components/cta-section"
+import { ClientsSection, type CertificationFromDb, type ClientFromDb, type ClientsSectionData } from "@/components/clients-section"
+import { CTASection, type CTASectionData } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
 import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic, getHeroImagesPublic } from "@/lib/data-read"
 
@@ -63,8 +63,12 @@ export default async function HomePage() {
         <WhyCronecSection data={sectionsData.whyCronec as WhyCronecData | null | undefined} />
         <ProcessSection data={sectionsData.process as ProcessData | null | undefined} />
         <TestimonialsSection testimonialsFromDb={testimonialsFromDb} />
-        <ClientsSection certificationsFromDb={certificationsFromDb} clientsFromDb={clientsFromDb} />
-        <CTASection />
+        <ClientsSection 
+          certificationsFromDb={certificationsFromDb} 
+          clientsFromDb={clientsFromDb} 
+          data={sectionsData.clients as ClientsSectionData | null | undefined}
+        />
+        <CTASection data={sectionsData.cta as CTASectionData | null | undefined} />
       </main>
       <Footer />
     </>

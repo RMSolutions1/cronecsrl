@@ -10,11 +10,21 @@ import Link from "next/link"
 import { images } from "@/lib/images"
 import { useSettings } from "@/lib/settings-context"
 
-export function CTASection() {
+export type CTASectionData = {
+  badge?: string
+  title?: string
+  paragraph?: string
+  formTitle?: string
+  formSubtitle?: string
+}
+
+export function CTASection({ data }: { data?: CTASectionData | null }) {
   const s = useSettings()
-  const badge = (s?.site_cta_contactenos as string) || (s?.cta_badge as string) || "Contáctenos"
-  const ctaTitle = (s?.cta_title as string) || "Hagamos Realidad su Proyecto"
-  const ctaParagraph = (s?.cta_paragraph as string) || "Estamos listos para transformar su visión en realidad. Solicite una cotización sin compromiso y descubra cómo podemos ayudarlo."
+  const badge = data?.badge || (s?.site_cta_contactenos as string) || (s?.cta_badge as string) || "Contáctenos"
+  const ctaTitle = data?.title || (s?.cta_title as string) || "Hagamos Realidad su Proyecto"
+  const ctaParagraph = data?.paragraph || (s?.cta_paragraph as string) || "Estamos listos para transformar su visión en realidad. Solicite una cotización sin compromiso y descubra cómo podemos ayudarlo."
+  const formTitle = data?.formTitle || "Solicite una cotización"
+  const formSubtitle = data?.formSubtitle || "Complete el formulario y le responderemos en menos de 24 horas."
   const phone = (s?.phone as string) || "+54 9 387 536-1210"
   const email = (s?.email as string) || "cronec@cronecsrl.com.ar"
   const address = (s?.address as string) || "Santa Fe 548 PB \"B\", Salta"
@@ -147,8 +157,8 @@ export function CTASection() {
 
           {/* Right: Contact Form */}
           <div className="bg-card text-card-foreground rounded-2xl p-8 shadow-2xl">
-            <h3 className="text-2xl font-bold mb-2">Solicite una cotización</h3>
-            <p className="text-muted-foreground mb-6">Complete el formulario y le responderemos en menos de 24 horas.</p>
+            <h3 className="text-2xl font-bold mb-2">{formTitle}</h3>
+            <p className="text-muted-foreground mb-6">{formSubtitle}</p>
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>

@@ -4,7 +4,7 @@ import { SectionsManager } from "@/components/admin/sections-manager"
 
 export const metadata = {
   title: "Secciones de Inicio | CRONEC SRL",
-  description: "Editar secciones Por qué CRONEC y Proceso de trabajo de la página de inicio",
+  description: "Editar todas las secciones de texto de la página de inicio",
 }
 
 export default async function SeccionesAdminPage() {
@@ -15,7 +15,9 @@ export default async function SeccionesAdminPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Secciones de Inicio</h1>
-      <p className="text-muted-foreground">Edite las secciones &quot;Por qué elegir CRONEC&quot; y &quot;Nuestro Proceso de Trabajo&quot; que se muestran en la página de inicio.</p>
+      <p className="text-muted-foreground">
+        Edite todos los textos, títulos y descripciones de las secciones de la página de inicio: Por qué CRONEC, Proceso de Trabajo, Certificaciones y Clientes, y el bloque CTA de contacto.
+      </p>
       <SectionsManager />
     </div>
   )

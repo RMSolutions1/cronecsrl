@@ -9,12 +9,15 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, LayoutTemplate, GitBranch } from "lucide-react"
+import { Save, LayoutTemplate, GitBranch, Users, MessageSquare, Upload, ImageIcon } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { Label } from "@/components/ui/label"
+import Image from "next/image"
 
-const defaultWhy: WhyCronecSection = {
+const defaultWhy: WhyCronecSection & { image_url?: string } = {
   title: "Por qué elegir CRONEC",
   subtitle: "Experiencia, profesionalismo y compromiso en cada proyecto de construcción e infraestructura.",
+  image_url: "",
   stats: [
     { value: 15, suffix: "+", label: "Años" },
     { value: 500, suffix: "+", label: "Proyectos" },
@@ -42,6 +45,36 @@ const defaultProcess: ProcessSection = {
     { number: "04", title: "Ejecución Profesional", description: "Construcción con control de calidad continuo, gestión de seguridad y comunicación constante." },
     { number: "05", title: "Entrega y Garantía", description: "Inspección final, documentación completa y servicio de garantía post-entrega." },
   ],
+}
+
+type ClientsSection = {
+  certificationsTitle: string
+  certificationsSubtitle: string
+  clientsTitle: string
+  clientsSubtitle: string
+}
+
+const defaultClients: ClientsSection = {
+  certificationsTitle: "Certificaciones y Cumplimiento",
+  certificationsSubtitle: "Comprometidos con los más altos estándares de calidad, seguridad y medio ambiente",
+  clientsTitle: "Clientes que Confían en Nosotros",
+  clientsSubtitle: "Colaboramos con las principales organizaciones de la región",
+}
+
+type CTASection = {
+  badge: string
+  title: string
+  paragraph: string
+  formTitle: string
+  formSubtitle: string
+}
+
+const defaultCTA: CTASection = {
+  badge: "Contáctenos",
+  title: "Hagamos Realidad su Proyecto",
+  paragraph: "Estamos listos para transformar su visión en realidad. Solicite una cotización sin compromiso y descubra cómo podemos ayudarlo.",
+  formTitle: "Solicite una cotización",
+  formSubtitle: "Complete el formulario y le responderemos en menos de 24 horas.",
 }
 
 export function SectionsManager() {
@@ -83,6 +116,8 @@ export function SectionsManager() {
 
   const why: WhyCronecSection = { ...defaultWhy, ...data.whyCronec }
   const process: ProcessSection = { ...defaultProcess, ...data.process }
+  const clients: ClientsSection = { ...defaultClients, ...(data as Record<string, unknown>).clients as Partial<ClientsSection> }
+  const cta: CTASection = { ...defaultCTA, ...(data as Record<string, unknown>).cta as Partial<CTASection> }
 
   const setWhy = (updates: Partial<WhyCronecSection>) => {
     setData((d) => ({ ...d, whyCronec: { ...defaultWhy, ...d.whyCronec, ...updates } }))
@@ -90,24 +125,39 @@ export function SectionsManager() {
   const setProcess = (updates: Partial<ProcessSection>) => {
     setData((d) => ({ ...d, process: { ...defaultProcess, ...d.process, ...updates } }))
   }
+  const setClients = (updates: Partial<ClientsSection>) => {
+    setData((d) => ({ ...d, clients: { ...defaultClients, ...(d as Record<string, unknown>).clients as Partial<ClientsSection>, ...updates } }))
+  }
+  const setCTA = (updates: Partial<CTASection>) => {
+    setData((d) => ({ ...d, cta: { ...defaultCTA, ...(d as Record<string, unknown>).cta as Partial<CTASection>, ...updates } }))
+  }
 
   const searchParams = useSearchParams()
   const tabFromUrl = searchParams.get("tab") || "why"
-  const defaultTab = tabFromUrl === "process" ? "process" : "why"
+  const validTabs = ["why", "process", "clients", "cta"]
+  const defaultTab = validTabs.includes(tabFromUrl) ? tabFromUrl : "why"
 
   if (loading) return <div className="text-muted-foreground">Cargando...</div>
 
   return (
     <div className="space-y-6">
       <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="why" className="gap-2">
             <LayoutTemplate className="h-4 w-4" />
             Por qué CRONEC
           </TabsTrigger>
           <TabsTrigger value="process" className="gap-2">
             <GitBranch className="h-4 w-4" />
-            Proceso de trabajo
+            Proceso
+          </TabsTrigger>
+          <TabsTrigger value="clients" className="gap-2">
+            <Users className="h-4 w-4" />
+            Clientes
+          </TabsTrigger>
+          <TabsTrigger value="cta" className="gap-2">
+            <MessageSquare className="h-4 w-4" />
+            CTA
           </TabsTrigger>
         </TabsList>
 
@@ -125,6 +175,32 @@ export function SectionsManager() {
               <div>
                 <label className="text-sm font-medium">Subtítulo</label>
                 <Textarea value={why.subtitle} onChange={(e) => setWhy({ subtitle: e.target.value })} className="mt-1" rows={2} />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Imagen de la sección</Label>
+                <div className="mt-2 flex items-start gap-4">
+                  {(why as typeof why & { image_url?: string }).image_url && (
+                    <div className="relative w-32 h-24 rounded-lg overflow-hidden border bg-muted">
+                      <Image 
+                        src={(why as typeof why & { image_url?: string }).image_url || ""} 
+                        alt="Preview" 
+                        fill 
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <Input 
+                      placeholder="URL de la imagen (ej: /conec4.jpeg o URL externa)" 
+                      value={(why as typeof why & { image_url?: string }).image_url || ""} 
+                      onChange={(e) => setWhy({ ...why, image_url: e.target.value } as typeof why)}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Ingrese la URL de una imagen. Puede usar imagenes de /public o URLs externas de Unsplash.
+                    </p>
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium">Estadísticas (4 ítems)</label>
@@ -198,6 +274,86 @@ export function SectionsManager() {
               </div>
               <Button onClick={() => handleSave({ ...data, process })} disabled={saving} className="gap-2">
                 <Save className="h-4 w-4" /> Guardar Proceso
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="clients" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Sección Certificaciones y Clientes</CardTitle>
+              <CardDescription>Títulos y subtítulos de la sección de certificaciones y clientes en la página de inicio.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium">Certificaciones</h4>
+                  <div>
+                    <label className="text-sm font-medium">Título</label>
+                    <Input value={clients.certificationsTitle} onChange={(e) => setClients({ certificationsTitle: e.target.value })} className="mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Subtítulo</label>
+                    <Textarea value={clients.certificationsSubtitle} onChange={(e) => setClients({ certificationsSubtitle: e.target.value })} className="mt-1" rows={2} />
+                  </div>
+                </div>
+                <div className="space-y-2 pt-4 border-t">
+                  <h4 className="font-medium">Clientes</h4>
+                  <div>
+                    <label className="text-sm font-medium">Título</label>
+                    <Input value={clients.clientsTitle} onChange={(e) => setClients({ clientsTitle: e.target.value })} className="mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Subtítulo</label>
+                    <Textarea value={clients.clientsSubtitle} onChange={(e) => setClients({ clientsSubtitle: e.target.value })} className="mt-1" rows={2} />
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Nota: Los logos de certificaciones y clientes se gestionan en <a href="/admin/certificaciones-clientes" className="text-primary underline">Certificaciones y Clientes</a>.
+              </p>
+              <Button onClick={() => handleSave({ ...data, clients })} disabled={saving} className="gap-2">
+                <Save className="h-4 w-4" /> Guardar Clientes
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="cta" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Sección CTA (Llamada a la Acción)</CardTitle>
+              <CardDescription>Textos del bloque de contacto rápido al final de la página de inicio.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Badge (etiqueta superior)</label>
+                <Input value={cta.badge} onChange={(e) => setCTA({ badge: e.target.value })} className="mt-1" placeholder="Contáctenos" />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Título principal</label>
+                <Input value={cta.title} onChange={(e) => setCTA({ title: e.target.value })} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Párrafo descriptivo</label>
+                <Textarea value={cta.paragraph} onChange={(e) => setCTA({ paragraph: e.target.value })} className="mt-1" rows={3} />
+              </div>
+              <div className="pt-4 border-t">
+                <h4 className="font-medium mb-3">Formulario de contacto</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium">Título del formulario</label>
+                    <Input value={cta.formTitle} onChange={(e) => setCTA({ formTitle: e.target.value })} className="mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Subtítulo del formulario</label>
+                    <Textarea value={cta.formSubtitle} onChange={(e) => setCTA({ formSubtitle: e.target.value })} className="mt-1" rows={2} />
+                  </div>
+                </div>
+              </div>
+              <Button onClick={() => handleSave({ ...data, cta })} disabled={saving} className="gap-2">
+                <Save className="h-4 w-4" /> Guardar CTA
               </Button>
             </CardContent>
           </Card>

@@ -10,6 +10,7 @@ const SECTIONS_PATH = path.join(DATA_DIR, "sections.json")
 export type WhyCronecSection = {
   title: string
   subtitle: string
+  image_url?: string
   stats: Array<{ value: number; suffix: string; label: string }>
   features: Array<{ title: string; description: string }>
   highlights: string[]
@@ -21,9 +22,26 @@ export type ProcessSection = {
   steps: Array<{ number: string; title: string; description: string }>
 }
 
+export type ClientsSection = {
+  certificationsTitle?: string
+  certificationsSubtitle?: string
+  clientsTitle?: string
+  clientsSubtitle?: string
+}
+
+export type CTASection = {
+  badge?: string
+  title?: string
+  paragraph?: string
+  formTitle?: string
+  formSubtitle?: string
+}
+
 export type SectionsData = {
   whyCronec?: WhyCronecSection
   process?: ProcessSection
+  clients?: ClientsSection
+  cta?: CTASection
 }
 
 async function readSectionsRaw(): Promise<SectionsData> {

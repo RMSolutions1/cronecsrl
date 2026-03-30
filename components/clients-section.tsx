@@ -2,6 +2,12 @@ import { images } from "@/lib/images"
 
 export type CertificationFromDb = { id: string; name: string; logo_url?: string | null; order_index?: number }
 export type ClientFromDb = { id: string; name: string; logo_url?: string | null; order_index?: number }
+export type ClientsSectionData = {
+  certificationsTitle?: string
+  certificationsSubtitle?: string
+  clientsTitle?: string
+  clientsSubtitle?: string
+}
 
 const defaultCertifications = [
   { name: "ISO 9001", logo: images.certifications[0] },
@@ -20,10 +26,16 @@ const defaultClients = [
 export function ClientsSection({
   certificationsFromDb = [],
   clientsFromDb = [],
+  data,
 }: {
   certificationsFromDb?: CertificationFromDb[]
   clientsFromDb?: ClientFromDb[]
+  data?: ClientsSectionData | null
 }) {
+  const certificationsTitle = data?.certificationsTitle ?? "Certificaciones y Cumplimiento"
+  const certificationsSubtitle = data?.certificationsSubtitle ?? "Comprometidos con los más altos estándares de calidad, seguridad y medio ambiente"
+  const clientsTitle = data?.clientsTitle ?? "Clientes que Confían en Nosotros"
+  const clientsSubtitle = data?.clientsSubtitle ?? "Colaboramos con las principales organizaciones de la región"
   const certifications =
     certificationsFromDb.length > 0
       ? certificationsFromDb.map((c) => ({ name: c.name, logo: c.logo_url || "/placeholder.svg" }))
@@ -39,9 +51,9 @@ export function ClientsSection({
         {/* Certificaciones */}
         <div className="mb-20">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold">Certificaciones y Cumplimiento</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">{certificationsTitle}</h2>
             <p className="text-muted-foreground">
-              Comprometidos con los más altos estándares de calidad, seguridad y medio ambiente
+              {certificationsSubtitle}
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-12">
@@ -59,8 +71,8 @@ export function ClientsSection({
         {/* Clientes */}
         <div>
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold">Clientes que Confían en Nosotros</h2>
-            <p className="text-muted-foreground">Colaboramos con las principales organizaciones de la región</p>
+            <h2 className="text-2xl md:text-3xl font-bold">{clientsTitle}</h2>
+            <p className="text-muted-foreground">{clientsSubtitle}</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-12 md:gap-16">
             {clients.map((client, index) => (
