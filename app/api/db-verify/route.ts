@@ -96,7 +96,11 @@ export async function GET(request: NextRequest) {
       ok,
       message: ok
         ? "Conexión y tablas OK. Los cambios del dashboard se persisten en la BD."
-        : `Faltan tablas: ${missing.map(([t]) => t).join(", ")}. ${backend === "mysql" ? "Ejecutá scripts/mysql/schema.sql." : "Ejecutá scripts/postgres/schema.sql en Neon."}`,
+        : `Faltan tablas: ${missing.map(([t]) => t).join(", ")}. ${
+            backend === "mysql"
+              ? "Ejecutá scripts/mysql/schema.sql."
+              : "En Neon: scripts/postgres/schema.sql (completo) o scripts/postgres/add-cms-tables.sql (solo site_config y team_members si el resto ya existe)."
+          }`,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

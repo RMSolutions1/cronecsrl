@@ -172,6 +172,27 @@ CREATE TABLE IF NOT EXISTS clients (
 );
 CREATE INDEX IF NOT EXISTS idx_clients_order ON clients(order_index);
 
+-- CMS / diagnóstico: clave-valor y equipo (misma definición que lib/cms-migrations.ts)
+CREATE TABLE IF NOT EXISTS site_config (
+  key VARCHAR(100) PRIMARY KEY,
+  value TEXT,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS team_members (
+  id VARCHAR(36) PRIMARY KEY,
+  name VARCHAR(200) DEFAULT '',
+  role VARCHAR(200) DEFAULT '',
+  bio TEXT,
+  image_url TEXT,
+  linkedin_url VARCHAR(300),
+  order_index INT DEFAULT 0,
+  active BOOLEAN DEFAULT TRUE,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_team_members_order ON team_members(order_index);
+CREATE INDEX IF NOT EXISTS idx_team_members_active ON team_members(active);
+
 -- Fila por defecto company_info
 INSERT INTO company_info (id, company_name, tagline, address, phone, email, whatsapp, founded_year, cuit)
 VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Santa Fe 548 PB B, Salta Capital (4400)', '+54 9 387 536-1210', 'cronec@cronecsrl.com.ar', '5493875361210', 2009, '33-71090097-9')
