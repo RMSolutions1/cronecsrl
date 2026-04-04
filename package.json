@@ -28,6 +28,7 @@
     "db:init-pg": "node scripts/postgres/init-db.js",
     "db:query-pg": "node scripts/postgres/query-now.js",
     "db:verify-neon": "node scripts/postgres/verify-neon.js",
+    "db:add-cms-tables": "node scripts/postgres/run-add-cms-tables.js",
     "db:fix-uuid": "node scripts/postgres/run-fix-uuid.js",
     "db:seed-admin-pg": "node scripts/postgres/seed-admin.js",
     "seed:admin": "node scripts/seed-admin-json.js"
