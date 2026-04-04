@@ -52,6 +52,7 @@ export function SectionsManager() {
 
   useEffect(() => {
     load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga única al montar
   }, [])
 
   async function load() {

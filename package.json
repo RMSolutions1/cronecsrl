@@ -15,7 +15,7 @@
     "deploy:staging": "vercel --env=preview",
     "dev": "next dev",
     "dev:next": "node node_modules/next/dist/bin/next dev",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "setup": "npm install && npm run db:setup",
     "start": "next start",

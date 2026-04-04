@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Building2, Zap, Factory, Ruler, Wrench, HardHat, ArrowRight, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { SectionWrapper } from "@/components/section-wrapper"
 import { images, defaultServiceImages } from "@/lib/images"
 
@@ -89,10 +90,12 @@ export function ServicesSection({ servicesFromDb = [] }: { servicesFromDb?: Serv
                 <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-0 bg-card">
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={service.image} 
+                    <Image
+                      src={service.image}
                       alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
                     <div className="absolute bottom-4 left-4">

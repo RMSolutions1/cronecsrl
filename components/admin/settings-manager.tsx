@@ -78,6 +78,7 @@ export function SettingsManager() {
 
   useEffect(() => {
     loadInfo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga única al montar
   }, [])
 
   async function loadInfo() {

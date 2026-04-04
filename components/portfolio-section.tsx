@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, MapPin, Calendar, Ruler } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { images, defaultProjectImage } from "@/lib/images"
 
 const staticProjects = [
@@ -79,10 +80,12 @@ export function PortfolioSection({ projectsFromDb = [] }: { projectsFromDb?: Pro
           {filteredProjects.map((project) => (
             <Card key={project.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300">
               <div className="relative overflow-hidden aspect-[4/3]">
-                <img
+                <Image
                   src={project.image || defaultProjectImage}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">{project.category}</Badge>

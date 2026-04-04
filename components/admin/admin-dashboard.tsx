@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FolderKanban, Briefcase, MessageSquare, Mail, TrendingUp, CheckCircle2, Clock, Users, Newspaper, Settings, Image, ExternalLink, Pencil, ImageIcon, Globe } from "lucide-react"
+import { FolderKanban, Briefcase, MessageSquare, Mail, TrendingUp, CheckCircle2, Clock, Users, Newspaper, Settings, ExternalLink, Pencil, ImageIcon, Globe } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -81,12 +81,12 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
     { label: "Nueva Noticia", href: "/admin/noticias", icon: Newspaper, color: "bg-purple-50 hover:bg-purple-100 text-purple-700" },
     { label: "Nuevo Testimonio", href: "/admin/testimonios", icon: MessageSquare, color: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700" },
     { label: "Ver Mensajes", href: "/admin/mensajes", icon: Mail, color: "bg-orange-50 hover:bg-orange-100 text-orange-700" },
-    { label: "Imágenes Hero", href: "/admin/imagenes", icon: Image, color: "bg-teal-50 hover:bg-teal-100 text-teal-700" },
+    { label: "Imágenes Hero", href: "/admin/imagenes", icon: ImageIcon, color: "bg-teal-50 hover:bg-teal-100 text-teal-700" },
     { label: "Configuración", href: "/admin/configuracion", icon: Settings, color: "bg-gray-50 hover:bg-gray-100 text-gray-700" },
   ]
 
   const manageContent = [
-    { label: "Imagenes del Hero", description: "Gestionar carrusel de imagenes principales", href: "/admin/configuracion?tab=hero", icon: Image },
+    { label: "Imagenes del Hero", description: "Gestionar carrusel de imagenes principales", href: "/admin/configuracion?tab=hero", icon: ImageIcon },
     { label: "Información de Contacto", description: "Teléfono, email, dirección", href: "/admin/configuracion?tab=contacto", icon: Users },
     { label: "Redes Sociales", description: "Facebook, Instagram, LinkedIn", href: "/admin/configuracion?tab=social", icon: ExternalLink },
     { label: "Estadísticas", description: "Años, proyectos, clientes", href: "/admin/configuracion?tab=stats", icon: TrendingUp },
@@ -140,7 +140,7 @@ export function AdminDashboard({ stats, user, projects = [], services = [] }: Ad
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Image className="h-5 w-5 text-primary" />
+              <ImageIcon className="h-5 w-5 text-primary" />
               Contenido actual del sitio
             </CardTitle>
             <p className="text-sm text-muted-foreground">

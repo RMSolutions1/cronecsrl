@@ -34,6 +34,7 @@ export function TestimonialsManager() {
 
   useEffect(() => {
     loadTestimonials()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga única al montar
   }, [])
 
   async function loadTestimonials() {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { getHeroImagesAdmin, addHeroImage, updateHeroImage, deleteHeroImage } from "@/app/actions/db/hero-images"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -42,11 +42,7 @@ export function HeroImagesManager() {
   const [savingEdit, setSavingEdit] = useState(false)
   const { toast } = useToast()
 
-  useEffect(() => {
-    loadImages()
-  }, [selectedPage])
-
-  async function loadImages() {
+  const loadImages = useCallback(async () => {
     setLoading(true)
     try {
       const data = await getHeroImagesAdmin(selectedPage)
@@ -57,7 +53,11 @@ export function HeroImagesManager() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedPage])
+
+  useEffect(() => {
+    void loadImages()
+  }, [loadImages])
 
   async function handleAddImage() {
     if (!newImageUrl.trim()) {

@@ -44,9 +44,13 @@ export function TestimonialsSection({ testimonialsFromDb = [] }: { testimonialsF
   }
 
   useEffect(() => {
-    const timer = setInterval(nextTestimonial, 6000)
+    const len = testimonials.length
+    if (len === 0) return
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % len)
+    }, 6000)
     return () => clearInterval(timer)
-  }, [])
+  }, [testimonials.length])
 
   return (
     <section

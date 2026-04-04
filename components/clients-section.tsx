@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { images } from "@/lib/images"
 
 export type CertificationFromDb = { id: string; name: string; logo_url?: string | null; order_index?: number }
@@ -50,7 +51,13 @@ export function ClientsSection({
                 key={index}
                 className="grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
               >
-                <img src={cert.logo || "/placeholder.svg"} alt={cert.name} className="h-24 w-24 object-contain" />
+                <Image
+                  src={cert.logo || "/placeholder.svg"}
+                  alt={cert.name}
+                  width={96}
+                  height={96}
+                  className="h-24 w-24 object-contain"
+                />
               </div>
             ))}
           </div>
@@ -68,10 +75,12 @@ export function ClientsSection({
                 key={index}
                 className="grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100"
               >
-                <img
+                <Image
                   src={client.logo || "/placeholder.svg"}
                   alt={client.name}
-                  className="h-12 md:h-16 w-auto object-contain"
+                  width={200}
+                  height={64}
+                  className="h-12 md:h-16 w-auto max-w-[12rem] object-contain"
                 />
               </div>
             ))}

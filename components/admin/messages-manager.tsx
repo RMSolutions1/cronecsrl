@@ -30,6 +30,7 @@ export function MessagesManager() {
 
   useEffect(() => {
     loadMessages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga única al montar
   }, [])
 
   async function loadMessages() {
