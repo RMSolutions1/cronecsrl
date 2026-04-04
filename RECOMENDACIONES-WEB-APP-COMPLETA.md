@@ -119,7 +119,7 @@ Documento de recomendaciones para considerar la web app **completa y lista para 
 | # | Recomendación | Prioridad | Notas |
 |---|----------------|-----------|--------|
 | 9.1 | **Build de producción:** Usar `npm run build` y `npm run start` (o el comando de la plataforma). No usar `next dev` en producción. | Crítica | Comportamiento estable y optimizado. |
-| 9.2 | **Middleware deprecation:** Next.js 16 avisa sobre la convención "middleware" en favor de "proxy". Planificar migración cuando la documentación oficial lo indique. | Baja | Evitar deprecaciones futuras. |
+| 9.2 | **Proxy (antes middleware):** Next.js 16 usa `proxy.ts` + `export function proxy`. Proyecto migrado. | Baja | OK. |
 | 9.3 | **Build estático (FTP):** Si se usa `BUILD_FTP=1`, recordar que no hay API ni servidor; Formspree es obligatorio para contacto. Documentar en README o DESPLIEGUE-ESTATICO-FTP.md. | Alta | Ya documentado en ejemplo de env. |
 | 9.4 | **Variables en build:** Las `NEXT_PUBLIC_*` se embeben en el cliente en tiempo de build. Cambios en esas variables requieren rebuild. | Media | Tenerlo en cuenta al cambiar Formspree ID, etc. |
 

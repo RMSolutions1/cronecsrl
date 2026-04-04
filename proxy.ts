@@ -3,11 +3,11 @@ import { NextResponse, type NextRequest } from "next/server"
 const SESSION_COOKIE_NAME = "cronec_session"
 
 /**
- * Middleware corre en Edge Runtime (no Node.js).
+ * Proxy (Next.js 16): convención `proxy.ts` sustituye a `middleware.ts`; runtime por defecto Node.
  * Solo comprobamos si existe la cookie de sesión para redirigir.
  * La verificación real de sesión se hace en getCurrentUser() en las páginas.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isAdminRoute = path.startsWith("/admin")
   const isAdminPublic = path === "/admin/login" || path === "/admin/registro" || path === "/admin/recuperar"

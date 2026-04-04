@@ -103,7 +103,7 @@ Todas usan `getCurrentUser()` y `readData`/`writeData` (o lectura/escritura dire
 
 - **Login:** `lib/auth.ts` → `readData("admins.json")` (Postgres: tabla `users`, MySQL: tabla `users`).
 - **Sesión:** `iron-session` con cookie `cronec_session`; `SESSION_SECRET` obligatorio en producción.
-- **Protección:** `middleware.ts` redirige `/admin` sin cookie a `/admin/login`; cada página admin comprueba `getCurrentUser()`.
+- **Protección:** `proxy.ts` (Next.js 16) redirige `/admin` sin cookie a `/admin/login`; cada página admin comprueba `getCurrentUser()`.
 
 ---
 
