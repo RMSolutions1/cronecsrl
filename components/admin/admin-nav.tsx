@@ -40,6 +40,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  KeyRound,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -79,6 +80,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
   {
     title: "Sistema",
     items: [
+      { href: "/admin/mi-cuenta", icon: KeyRound, label: "Mi cuenta" },
       { href: "/admin/configuracion", icon: Settings, label: "Configuración" },
       { href: "/admin/diagnostico", icon: Stethoscope, label: "Diagnóstico" },
     ],

@@ -349,6 +349,16 @@ export async function readAdmins(): Promise<unknown[]> {
   }))
 }
 
+/** Actualiza solo el hash de contraseña (panel admin). */
+export async function updateUserPasswordByEmail(email: string, passwordHash: string): Promise<boolean> {
+  const p = getPool()
+  const r = await p.query(
+    "UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE LOWER(TRIM(email)) = LOWER(TRIM($2))",
+    [passwordHash, email]
+  )
+  return (r.rowCount ?? 0) > 0
+}
+
 export async function writeAdmins(list: unknown[]): Promise<void> {
   const p = getPool()
   await p.query("DELETE FROM users")

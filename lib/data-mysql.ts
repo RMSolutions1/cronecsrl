@@ -3,7 +3,7 @@
  * Mapea los mismos "archivos" lógicos (projects.json, etc.) a tablas MySQL.
  */
 import { getPool, query } from "@/lib/db-mysql"
-import type { RowDataPacket } from "mysql2"
+import type { ResultSetHeader, RowDataPacket } from "mysql2"
 
 // --- projects
 export async function readProjects(): Promise<unknown[]> {
@@ -405,6 +405,16 @@ export async function readAdmins(): Promise<unknown[]> {
     role: r.role ?? "admin",
     password_hash: r.password_hash,
   }))
+}
+
+/** Actualiza solo el hash de contraseña (panel admin). */
+export async function updateUserPasswordByEmail(email: string, passwordHash: string): Promise<boolean> {
+  const p = getPool()
+  const [result] = await p.query<ResultSetHeader>(
+    "UPDATE users SET password_hash = ?, updated_at = NOW() WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))",
+    [passwordHash, email]
+  )
+  return result.affectedRows > 0
 }
 
 export async function writeAdmins(list: unknown[]): Promise<void> {
