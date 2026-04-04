@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, User } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { SanitizedHtml } from "@/components/sanitized-html"
+import { BlogPostBody } from "@/components/blog-post-body"
 
 const defaultBlogSlugs = [
   "ampliacion-subestacion",
@@ -94,8 +94,8 @@ export default async function BlogPostPage({ params }: Props) {
               <Image src={imageSrc} alt={post.title ?? ""} fill className="object-cover" sizes="(max-width: 768px) 100vw, 672px" />
             </div>
           )}
-          <SanitizedHtml
-            html={post.content || post.excerpt || ""}
+          <BlogPostBody
+            content={post.content || post.excerpt || ""}
             className="prose prose-neutral dark:prose-invert max-w-none"
           />
         </article>

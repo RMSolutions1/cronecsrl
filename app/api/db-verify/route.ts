@@ -6,10 +6,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { isPostgresConfigured } from "@/lib/db-pg"
-import { isMySQLConfigured } from "@/lib/db"
+import { isMySQLConfigured, getPool as getPoolMysql } from "@/lib/db-mysql"
 import { getPool as getPoolPg, query as queryPg } from "@/lib/db-pg"
-import { getPool as getPoolMysql } from "@/lib/db"
 
+/** Tablas core (MySQL y Postgres tras schema estándar). */
 const DB_TABLES = [
   "users",
   "projects",
@@ -23,6 +23,9 @@ const DB_TABLES = [
   "clients",
 ] as const
 
+/** Solo Postgres: migraciones aditivas CMS (ver lib/cms-migrations.ts). */
+const POSTGRES_EXTRA_TABLES = ["site_config", "team_members"] as const
+
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
@@ -31,7 +34,8 @@ type TableStatus = Record<string, number | "missing" | "error">
 async function getPostgresTableCounts(): Promise<TableStatus> {
   const result: TableStatus = {}
   const p = getPoolPg()
-  for (const table of DB_TABLES) {
+  const tables = [...DB_TABLES, ...POSTGRES_EXTRA_TABLES] as const
+  for (const table of tables) {
     try {
       const rows = await queryPg<{ count: string }[]>(`SELECT COUNT(*) AS count FROM ${table}`)
       result[table] = parseInt(rows?.[0]?.count ?? "0", 10)

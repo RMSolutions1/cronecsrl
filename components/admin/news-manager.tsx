@@ -16,6 +16,7 @@ import { Plus, Pencil, Trash2, Eye, EyeOff, Search, Newspaper, Calendar, Star, S
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ImageUploader } from "./image-uploader"
+import { MarkdownBlogContentField } from "./markdown-blog-content-field"
 
 interface Post {
   id: string
@@ -302,13 +303,9 @@ export function NewsManager({ posts: initialPosts }: NewsManagerProps) {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="content">Contenido *</Label>
-                <Textarea
-                  id="content"
+                <MarkdownBlogContentField
                   value={formData.content}
-                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Contenido completo de la noticia..."
-                  rows={8}
+                  onChange={(content) => setFormData((prev) => ({ ...prev, content }))}
                 />
               </div>
               <div className="grid gap-2">

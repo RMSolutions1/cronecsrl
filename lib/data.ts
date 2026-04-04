@@ -4,7 +4,7 @@
 import { readFile, writeFile, mkdir } from "fs/promises"
 import path from "path"
 import { isPostgresConfigured } from "@/lib/db-pg"
-import { isMySQLConfigured } from "@/lib/db"
+import { isMySQLConfigured } from "@/lib/db-mysql"
 import * as pgData from "@/lib/data-pg"
 import * as mysqlData from "@/lib/data-mysql"
 
@@ -23,11 +23,11 @@ const DB_FILES = new Set([
   "admins.json",
 ])
 
-function usePostgres(): boolean {
+function isPostgresBackend(): boolean {
   return isPostgresConfigured()
 }
-function useMySQL(): boolean {
-  return !usePostgres() && isMySQLConfigured()
+function isMysqlBackend(): boolean {
+  return !isPostgresBackend() && isMySQLConfigured()
 }
 
 export function getDataPath(filename: string): string {
@@ -63,7 +63,7 @@ async function writeToFile(filename: string, data: unknown): Promise<void> {
 const LIST_FILES = new Set(["projects.json", "services.json", "blog.json", "messages.json", "testimonials.json", "hero-images.json", "certifications.json", "clients.json"])
 
 async function readFromDb<T>(filename: string): Promise<T | null> {
-  const db = usePostgres() ? pgData : mysqlData
+  const db = isPostgresBackend() ? pgData : mysqlData
   try {
     if (filename === "projects.json") {
       const data = await db.readProjects()
@@ -119,7 +119,7 @@ function hasContent(value: unknown, isList: boolean): boolean {
 }
 
 export async function readData<T>(filename: string): Promise<T> {
-  if ((usePostgres() || useMySQL()) && DB_FILES.has(filename)) {
+  if ((isPostgresBackend() || isMysqlBackend()) && DB_FILES.has(filename)) {
     const fromDb = await readFromDb<T>(filename)
     const isList = LIST_FILES.has(filename)
     const isSettingsOrAdmins = filename === "settings.json" || filename === "admins.json"
@@ -150,7 +150,7 @@ export async function readData<T>(filename: string): Promise<T> {
 }
 
 export async function writeData(filename: string, data: unknown): Promise<void> {
-  if (usePostgres() && DB_FILES.has(filename)) {
+  if (isPostgresBackend() && DB_FILES.has(filename)) {
     try {
       if (filename === "projects.json") { await pgData.writeProjects(data as unknown[]); return }
       if (filename === "services.json") { await pgData.writeServices(data as unknown[]); return }
@@ -167,7 +167,7 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       throw e
     }
   }
-  if (useMySQL() && DB_FILES.has(filename)) {
+  if (isMysqlBackend() && DB_FILES.has(filename)) {
     try {
       if (filename === "projects.json") { await mysqlData.writeProjects(data as unknown[]); return }
       if (filename === "services.json") { await mysqlData.writeServices(data as unknown[]); return }

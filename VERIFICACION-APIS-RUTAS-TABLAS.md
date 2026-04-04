@@ -66,7 +66,7 @@ Todas las páginas públicas usan `@/lib/data-read`, que a su vez usa `readData`
 Orden de uso de backend:
 
 1. **Postgres (Neon):** si existe `DATABASE_URL` o `POSTGRES_URL` → se usa `lib/db-pg.ts` y `lib/data-pg.ts`.
-2. **MySQL:** si no hay Postgres y están definidas `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_DATABASE` → se usa `lib/db.ts` y `lib/data-mysql.ts`.
+2. **MySQL:** si no hay Postgres y están definidas `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_DATABASE` → se usa `lib/db-mysql.ts` y `lib/data-mysql.ts`.
 3. **JSON:** en caso contrario, o como fallback solo si la BD **falla** (ej. tabla no existe) → `data/*.json`.
 
 Cuando la BD está configurada, **siempre** se lee y escribe en BD para los archivos listados. Si la consulta devuelve array vacío, se usa ese array (no se hace fallback a JSON), de modo que el dashboard y la web comparten la misma fuente.

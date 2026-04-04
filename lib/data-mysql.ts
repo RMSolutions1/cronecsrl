@@ -2,7 +2,7 @@
  * Lectura/escritura desde MySQL cuando MYSQL_* está configurado.
  * Mapea los mismos "archivos" lógicos (projects.json, etc.) a tablas MySQL.
  */
-import { getPool, query } from "@/lib/db"
+import { getPool, query } from "@/lib/db-mysql"
 import type { RowDataPacket } from "mysql2"
 
 // --- projects

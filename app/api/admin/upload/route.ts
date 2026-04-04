@@ -1,6 +1,5 @@
 import { handleAdminImageUpload } from "@/lib/admin-upload-handler"
 
-/** Misma lógica que POST /api/admin/upload (sesión admin + Blob o disco local). */
 export async function POST(request: Request) {
   return handleAdminImageUpload(request)
 }
