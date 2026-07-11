@@ -150,6 +150,12 @@ export async function readData<T>(filename: string): Promise<T> {
     const isList = LIST_FILES.has(filename)
     const isSettingsOrAdmins = filename === "settings.json" || filename === "admins.json"
     const isObjectCms = OBJECT_FILES.has(filename)
+
+    // Lista vacía en BD = sin contenido (no revivir data/*.json ni seeds al eliminar en admin)
+    if (fromDb !== null && isList) {
+      return fromDb
+    }
+
     if (fromDb !== null && hasContent(fromDb, isList)) {
       if (filename === "settings.json" && typeof fromDb === "object" && !Array.isArray(fromDb)) {
         try {
@@ -162,7 +168,7 @@ export async function readData<T>(filename: string): Promise<T> {
       }
       return fromDb
     }
-    if (!hasContent(fromDb, isList) && (isList || isSettingsOrAdmins || isObjectCms)) {
+    if (fromDb === null && (isList || isSettingsOrAdmins || isObjectCms)) {
       try {
         const fromFile = await readFromFile<T>(filename)
         if (hasContent(fromFile, isList)) return fromFile
