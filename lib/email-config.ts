@@ -1,4 +1,5 @@
 import { COMPANY_EMAIL } from "@/lib/company-email"
+import { FEROZO_SMTP, PUBLIC_CONTACT_EMAIL } from "@/lib/email-defaults"
 
 export type EmailProvider = "smtp" | "resend" | null
 
@@ -9,8 +10,17 @@ export type EmailConfig = {
   adminTo: string[]
 }
 
+function resolveSmtpUser(): string {
+  return process.env.SMTP_USER?.trim() || FEROZO_SMTP.user
+}
+
+function resolveSmtpHost(): string {
+  return process.env.SMTP_HOST?.trim() || FEROZO_SMTP.host
+}
+
 export function getEmailConfig(): EmailConfig {
-  const adminTo = (process.env.NOTIFY_TO_EMAIL?.trim() || COMPANY_EMAIL)
+  const smtpUser = resolveSmtpUser()
+  const adminTo = (process.env.NOTIFY_TO_EMAIL?.trim() || smtpUser || COMPANY_EMAIL)
     .split(",")
     .map((e) => e.trim())
     .filter(Boolean)
@@ -18,9 +28,9 @@ export function getEmailConfig(): EmailConfig {
   const from =
     process.env.SMTP_FROM?.trim() ||
     process.env.NOTIFY_FROM_EMAIL?.trim() ||
-    `CRONEC SRL <${COMPANY_EMAIL}>`
+    `CRONEC SRL <${smtpUser}>`
 
-  const replyTo = process.env.SMTP_REPLY_TO?.trim() || COMPANY_EMAIL
+  const replyTo = process.env.SMTP_REPLY_TO?.trim() || PUBLIC_CONTACT_EMAIL
 
   if (isSmtpConfigured()) {
     return { provider: "smtp", from, replyTo, adminTo }
@@ -32,7 +42,11 @@ export function getEmailConfig(): EmailConfig {
 }
 
 export function isSmtpConfigured(): boolean {
-  return !!(process.env.SMTP_HOST?.trim() && process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim())
+  const pass = process.env.SMTP_PASS?.trim()
+  if (!pass) return false
+  const user = resolveSmtpUser()
+  const host = resolveSmtpHost()
+  return !!(host && user && pass)
 }
 
 export function isEmailConfigured(): boolean {
@@ -40,15 +54,15 @@ export function isEmailConfigured(): boolean {
 }
 
 export function getSmtpSettings() {
-  const port = Number(process.env.SMTP_PORT || 465)
+  const port = Number(process.env.SMTP_PORT || FEROZO_SMTP.port)
   const secureEnv = process.env.SMTP_SECURE?.trim().toLowerCase()
-  const secure = secureEnv === "true" || secureEnv === "1" || port === 465
+  const secure = secureEnv === "false" || secureEnv === "0" ? false : secureEnv === "true" || secureEnv === "1" || port === 465
   return {
-    host: process.env.SMTP_HOST!.trim(),
+    host: resolveSmtpHost(),
     port,
     secure,
     auth: {
-      user: process.env.SMTP_USER!.trim(),
+      user: resolveSmtpUser(),
       pass: process.env.SMTP_PASS!.trim(),
     },
   }
@@ -60,18 +74,21 @@ export function getEmailConfigSummary(): {
   provider: EmailProvider
   from: string
   adminTo: string[]
-  smtpHost: string | null
-  smtpPort: number | null
-  smtpUser: string | null
+  smtpHost: string
+  smtpPort: number
+  smtpUser: string
+  hasPassword: boolean
 } {
   const cfg = getEmailConfig()
+  const hasPassword = !!process.env.SMTP_PASS?.trim()
   return {
     configured: cfg.provider !== null,
     provider: cfg.provider,
     from: cfg.from,
     adminTo: cfg.adminTo,
-    smtpHost: isSmtpConfigured() ? process.env.SMTP_HOST!.trim() : null,
-    smtpPort: isSmtpConfigured() ? Number(process.env.SMTP_PORT || 465) : null,
-    smtpUser: isSmtpConfigured() ? process.env.SMTP_USER!.trim() : null,
+    smtpHost: resolveSmtpHost(),
+    smtpPort: Number(process.env.SMTP_PORT || FEROZO_SMTP.port),
+    smtpUser: resolveSmtpUser(),
+    hasPassword,
   }
 }

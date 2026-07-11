@@ -15,9 +15,10 @@ type EmailSummary = {
   provider: string | null
   from: string
   adminTo: string[]
-  smtpHost: string | null
-  smtpPort: number | null
-  smtpUser: string | null
+  smtpHost: string
+  smtpPort: number
+  smtpUser: string
+  hasPassword: boolean
 }
 
 export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
@@ -56,15 +57,16 @@ export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
         <dl className="grid gap-2 text-sm">
           <div><dt className="text-muted-foreground inline">Remitente: </dt><dd className="inline">{summary.from}</dd></div>
           <div><dt className="text-muted-foreground inline">Notificaciones admin: </dt><dd className="inline">{summary.adminTo.join(", ")}</dd></div>
-          {summary.smtpHost && (
-            <div><dt className="text-muted-foreground inline">SMTP: </dt><dd className="inline">{summary.smtpUser}@{summary.smtpHost}:{summary.smtpPort}</dd></div>
-          )}
+          <div><dt className="text-muted-foreground inline">SMTP Ferozo: </dt><dd className="inline">{summary.smtpUser} @ {summary.smtpHost}:{summary.smtpPort}</dd></div>
+          <div><dt className="text-muted-foreground inline">Contraseña SMTP: </dt><dd className="inline">{summary.hasPassword ? "Configurada" : "Falta SMTP_PASS"}</dd></div>
         </dl>
         {!summary.configured && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Configure SMTP_HOST, SMTP_USER y SMTP_PASS en Vercel (correo corporativo cronec@cronecsrl.com.ar) o RESEND_API_KEY.
+              {summary.hasPassword
+                ? "Revise host/usuario SMTP en Vercel."
+                : "Agregue SMTP_PASS en Vercel (contraseña de admin@cronecsrl.com.ar en Ferozo). Host: c2751446.ferozo.com:465"}
             </AlertDescription>
           </Alert>
         )}

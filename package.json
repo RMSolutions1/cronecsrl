@@ -30,6 +30,7 @@
     "db:verify-neon": "node scripts/postgres/verify-neon.js",
     "db:add-cms-tables": "node scripts/postgres/run-add-cms-tables.js",
     "db:add-password-reset": "node scripts/postgres/run-add-password-reset-table.js",
+    "email:test": "node scripts/test-smtp.js",
     "db:seed-certs-clients": "node scripts/postgres/seed-certifications-clients.js",
     "db:update-company": "node scripts/postgres/update-company-info.js",
     "db:seed-cms-json": "node scripts/postgres/seed-cms-json-blobs.js",
