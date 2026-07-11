@@ -5,6 +5,7 @@
 const path = require("path")
 const fs = require("fs")
 const { Pool } = require("pg")
+const { normalizePostgresConnectionString, postgresPoolSsl } = require("./pg-ssl")
 
 const projectRoot = process.cwd() || path.resolve(__dirname, "../..")
 const envPaths = [path.join(projectRoot, ".env.local"), path.resolve(__dirname, "../..", ".env.local")]
@@ -27,27 +28,15 @@ for (const envPath of envPaths) {
   }
 }
 
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
-if (!connectionString) {
+const raw = process.env.DATABASE_URL || process.env.POSTGRES_URL
+if (!raw) {
   console.error("Faltan DATABASE_URL o POSTGRES_URL en .env.local")
   process.exit(1)
 }
 
-const sqlPath = path.join(__dirname, "add-cms-tables.sql")
-let sql = fs.readFileSync(sqlPath, "utf-8")
-sql = sql
-  .split("\n")
-  .filter((line) => !line.trim().startsWith("--"))
-  .join("\n")
-
-const statements = sql
-  .split(";")
-  .map((s) => s.trim())
-  .filter((s) => s.length > 0)
-
 const pool = new Pool({
-  connectionString,
-  ssl: connectionString.includes("sslmode=require") ? { rejectUnauthorized: true } : undefined,
+  connectionString: normalizePostgresConnectionString(raw),
+  ssl: postgresPoolSsl(raw),
 })
 
 async function main() {

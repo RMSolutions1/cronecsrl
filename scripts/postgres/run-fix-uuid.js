@@ -5,6 +5,7 @@
 const path = require("path")
 const fs = require("fs")
 const { Pool } = require("pg")
+const { normalizePostgresConnectionString, postgresPoolSsl } = require("./pg-ssl")
 
 const projectRoot = process.cwd() || path.resolve(__dirname, "../..")
 const envPaths = [
@@ -30,15 +31,15 @@ for (const envPath of envPaths) {
   }
 }
 
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
-if (!connectionString) {
+const raw = process.env.DATABASE_URL || process.env.POSTGRES_URL
+if (!raw) {
   console.error("Faltan DATABASE_URL o POSTGRES_URL en .env.local")
   process.exit(1)
 }
 
 const pool = new Pool({
-  connectionString,
-  ssl: connectionString.includes("sslmode=require") ? { rejectUnauthorized: true } : undefined,
+  connectionString: normalizePostgresConnectionString(raw),
+  ssl: postgresPoolSsl(raw),
 })
 
 const sqlPath = path.join(__dirname, "fix-uuid-to-varchar.sql")

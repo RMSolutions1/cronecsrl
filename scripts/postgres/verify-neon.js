@@ -6,6 +6,7 @@
 const path = require("path")
 const fs = require("fs")
 const { Pool } = require("pg")
+const { normalizePostgresConnectionString, postgresPoolSsl } = require("./pg-ssl")
 
 // Cargar .env.local: desde raíz del proyecto (cwd al ejecutar vía npm) o desde __dirname
 const projectRoot = process.cwd() || path.resolve(__dirname, "../..")
@@ -32,15 +33,15 @@ for (const envPath of envPaths) {
   }
 }
 
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
-if (!connectionString) {
+const raw = process.env.DATABASE_URL || process.env.POSTGRES_URL
+if (!raw) {
   console.error("Faltan DATABASE_URL o POSTGRES_URL en .env.local")
   process.exit(1)
 }
 
 const pool = new Pool({
-  connectionString,
-  ssl: connectionString.includes("sslmode=require") ? { rejectUnauthorized: true } : undefined,
+  connectionString: normalizePostgresConnectionString(raw),
+  ssl: postgresPoolSsl(raw),
 })
 
 async function main() {
@@ -53,7 +54,7 @@ async function main() {
     console.log("Conexión OK. Base:", ping.rows[0].db)
 
     // 2. Tipo de columna id en tablas críticas
-    const tables = ["projects", "services", "blog_posts", "contact_submissions", "testimonials", "hero_images", "certifications", "clients", "users"]
+    const tables = ["projects", "services", "blog_posts", "contact_submissions", "testimonials", "hero_images", "certifications", "clients", "users", "site_config", "team_members"]
     console.log("\n--- Tipo de columna 'id' por tabla ---")
     const problems = []
     for (const t of tables) {
