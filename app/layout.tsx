@@ -11,9 +11,6 @@ import { getServicesPublic } from "@/lib/data-read"
 import { CRONEC_OFFICIAL, getCompanyFullAddress, resolveCompanyGeo } from "@/lib/company-defaults"
 import "./globals.css"
 
-/** Datos de empresa siempre actuales (configuración del dashboard) */
-export const dynamic = "force-dynamic"
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",

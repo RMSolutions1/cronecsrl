@@ -10,9 +10,6 @@ import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
 import { getServicesPublic, getProjectsPublic, getCompanyInfo, getTestimonialsPublic, getCertificationsPublic, getClientsPublic, getSectionsPublic, getHeroImagesPublic } from "@/lib/data-read"
 
-/** Sin caché: los cambios del dashboard se ven al recargar la página */
-export const dynamic = "force-dynamic"
-
 export default async function HomePage() {
   let servicesFromDb: ServiceFromDb[] = []
   let projectsFromDb: Awaited<ReturnType<typeof getProjectsPublic>> = []

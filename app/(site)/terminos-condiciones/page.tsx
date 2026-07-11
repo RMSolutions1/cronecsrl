@@ -3,6 +3,7 @@ import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
 import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 
+
 export const metadata = {
   title: "Términos y Condiciones | CRONEC SRL",
   description: "Términos y condiciones de uso de los servicios de CRONEC SRL.",

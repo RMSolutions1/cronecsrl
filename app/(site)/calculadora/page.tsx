@@ -6,7 +6,6 @@ export const metadata = {
   description: "Calcule el presupuesto de su proyecto de construcción en pocos pasos.",
 }
 
-export const dynamic = "force-dynamic"
 
 export default async function CalculadoraPage() {
   let config = null

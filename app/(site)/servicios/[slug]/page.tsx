@@ -10,7 +10,6 @@ import Link from "next/link"
 import { images, defaultServiceImages } from "@/lib/images"
 import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic"
 
 const defaultServiceSlugs = Object.keys(defaultServiceImages)
 

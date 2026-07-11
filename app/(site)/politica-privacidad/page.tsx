@@ -3,6 +3,7 @@ import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
 import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 
+
 export const metadata = {
   title: "Política de Privacidad | CRONEC SRL",
   description: "Política de privacidad y protección de datos personales de CRONEC SRL.",

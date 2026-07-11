@@ -1,10 +1,15 @@
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
+import { CMS_TAG_LIST } from "@/lib/cms-cache"
 
 /** Invalida páginas públicas tras guardar contenido en el admin. */
 export function revalidatePublicContent(paths: string[] = ["/"]) {
   const unique = [...new Set(paths)]
   for (const p of unique) {
     revalidatePath(p)
+  }
+  revalidatePath("/sitemap.xml")
+  for (const tag of CMS_TAG_LIST) {
+    revalidateTag(tag, "max")
   }
 }
 

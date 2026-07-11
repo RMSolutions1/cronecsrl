@@ -11,7 +11,6 @@ import { images } from "@/lib/images"
 import { getBlogPostsPublic, getHeroImagesPublic } from "@/lib/data-read"
 import { resolveHeroSlides } from "@/lib/hero-images"
 
-export const dynamic = "force-dynamic"
 
 const heroFallbacks = [
   { src: images.heroBlog[0], alt: "Construccion CRONEC" },

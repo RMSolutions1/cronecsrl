@@ -3,8 +3,6 @@ import { NewsManager } from "@/components/admin/news-manager"
 import { getCurrentUser } from "@/lib/auth"
 import { getBlogPostsAdmin } from "@/app/actions/db/blog"
 
-export const dynamic = "force-dynamic"
-
 export default async function NoticiasAdminPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/admin/login")

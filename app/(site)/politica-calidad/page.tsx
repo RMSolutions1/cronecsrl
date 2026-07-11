@@ -2,6 +2,7 @@ import { Award, Target, CheckCircle2, Users, Briefcase, Shield, TrendingUp, Star
 import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
 
+
 export const metadata = {
   title: "Política de Calidad | CRONEC SRL",
   description: "Política de calidad, compromisos y estándares de excelencia de CRONEC SRL.",
