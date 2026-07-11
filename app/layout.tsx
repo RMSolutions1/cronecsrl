@@ -8,6 +8,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 import { Providers } from "@/components/providers"
 import { getCompanyInfo } from "@/lib/data-read"
 import { getServicesPublic } from "@/lib/data-read"
+import { CRONEC_GEO, CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 import "./globals.css"
 
 /** Datos de empresa siempre actuales (configuración del dashboard) */
@@ -100,7 +101,9 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
   const desc = (settings?.description as string) ?? "Empresa constructora especializada en obras civiles, instalaciones eléctricas e infraestructura industrial en Salta, Argentina."
   const tel = (settings?.phone as string) ?? "+54-9-387-536-1210"
   const email = (settings?.email as string) ?? "cronec@cronecsrl.com.ar"
-  const addressStr = (settings?.address as string) ?? "Santa Fe 548 PB B, Salta"
+  const addressStr = (settings?.address as string) ?? getCompanyFullAddress()
+  const lat = Number(settings?.latitude ?? CRONEC_GEO.latitude)
+  const lng = Number(settings?.longitude ?? CRONEC_GEO.longitude)
   const sameAs: string[] = []
   if (settings?.facebook_url) sameAs.push(settings.facebook_url as string)
   if (settings?.instagram_url) sameAs.push(settings.instagram_url as string)
@@ -117,13 +120,20 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
     url: "https://cronecsrl.com.ar",
     telephone: tel.replace(/\s/g, ""),
     email,
-    address: { "@type": "PostalAddress", streetAddress: addressStr, addressLocality: "Salta", addressRegion: "Salta", postalCode: "4400", addressCountry: "AR" },
-    geo: { "@type": "GeoCoordinates", latitude: -24.7821, longitude: -65.4232 },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: addressStr,
+      addressLocality: CRONEC_OFFICIAL.city,
+      addressRegion: CRONEC_OFFICIAL.province,
+      postalCode: CRONEC_OFFICIAL.postalCode,
+      addressCountry: "AR",
+    },
+    geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng },
     openingHoursSpecification: { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "18:00" },
     sameAs,
     priceRange: "$$",
     image: "https://images.unsplash.com/photo-1504309092620-4d0e8a54959e?w=1200&h=630&fit=crop&q=80",
-    areaServed: { "@type": "GeoCircle", geoMidpoint: { "@type": "GeoCoordinates", latitude: -24.7821, longitude: -65.4232 }, geoRadius: "500000" },
+    areaServed: { "@type": "GeoCircle", geoMidpoint: { "@type": "GeoCoordinates", latitude: lat, longitude: lng }, geoRadius: "500000" },
     serviceType: ["Construccion Civil", "Instalaciones Electricas", "Obras Publicas", "Infraestructura Industrial"],
     foundingDate: String(founding),
     numberOfEmployees: { "@type": "QuantitativeValue", minValue: 50, maxValue: 100 },

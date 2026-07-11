@@ -1,6 +1,7 @@
 import { Building2, Scale, AlertCircle } from "lucide-react"
 import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
+import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 
 export const metadata = {
   title: "Términos y Condiciones | CRONEC SRL",
@@ -14,6 +15,8 @@ export default async function TerminosCondiciones() {
   } catch {
     // En producción puede fallar la lectura de datos; mostramos contenido por defecto
   }
+  const legalAddress = (settings?.address as string) || getCompanyFullAddress()
+  const legalName = (settings?.company_name as string) || CRONEC_OFFICIAL.legalName
   const customHtml = (settings?.legal_terminos_condiciones as string)?.trim()
   if (customHtml) {
     return (
@@ -61,20 +64,19 @@ export default async function TerminosCondiciones() {
               </h2>
               <div className="text-gray-700 space-y-3">
                 <p>
-                  <strong>Razón Social:</strong> CRONEC SRL
+                  <strong>Razón Social:</strong> {legalName}
                 </p>
                 <p>
-                  <strong>CUIT:</strong> 33-71090097-9
+                  <strong>CUIT:</strong> {CRONEC_OFFICIAL.cuit}
                 </p>
                 <p>
-                  <strong>Forma Jurídica:</strong> Sociedad de Responsabilidad Limitada
+                  <strong>Forma Jurídica:</strong> Sociedad de Responsabilidad Limitada ({CRONEC_OFFICIAL.legalForm})
                 </p>
                 <p>
-                  <strong>Fecha de Constitución:</strong> 04 de Febrero de 2009
+                  <strong>Fecha de Constitución:</strong> {CRONEC_OFFICIAL.incorporationDateDisplay}
                 </p>
                 <p>
-                  <strong>Domicilio Legal:</strong> Santa Fe 548, PB "B", Salta Capital (CP 4400), Provincia de Salta,
-                  Argentina
+                  <strong>Domicilio Legal:</strong> {legalAddress}
                 </p>
                 <p>
                   <strong>Actividad Principal:</strong> Construcción, reforma y reparación de edificios no residenciales
@@ -277,7 +279,7 @@ export default async function TerminosCondiciones() {
                 <p>
                   <strong>CRONEC SRL</strong>
                 </p>
-                <p>Santa Fe 548, PB "B" - Salta Capital (4400)</p>
+                <p>{legalAddress}</p>
                 <p>Provincia de Salta, Argentina</p>
                 <p>Email: info@cronecsrl.com.ar</p>
                 <p>Teléfono: +54 387 431-1902</p>

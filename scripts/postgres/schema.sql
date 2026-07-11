@@ -195,5 +195,5 @@ CREATE INDEX IF NOT EXISTS idx_team_members_active ON team_members(active);
 
 -- Fila por defecto company_info
 INSERT INTO company_info (id, company_name, tagline, address, phone, email, whatsapp, founded_year, cuit)
-VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Santa Fe 548 PB B, Salta Capital (4400)', '+54 9 387 536-1210', 'cronec@cronecsrl.com.ar', '5493875361210', 2009, '33-71090097-9')
+VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Pasaje Soldado Salazar 196, Barrio Santa Ana, Salta Capital (4400), Salta, Argentina', '+54 9 387 536-1210', 'cronec@cronecsrl.com.ar', '5493875361210', 2009, '33-71090097-9')
 ON CONFLICT (id) DO NOTHING;

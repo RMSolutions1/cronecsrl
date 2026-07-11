@@ -206,7 +206,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insertar fila por defecto de company_info (una sola fila con id fijo)
 INSERT IGNORE INTO `company_info` (`id`, `company_name`, `tagline`, `address`, `phone`, `email`, `whatsapp`, `founded_year`, `cuit`)
-VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Santa Fe 548 PB B, Salta Capital (4400)', '+54 9 387 536-1210', 'cronec@cronecsrl.com', '5493875361210', 2009, '33-71090097-9');
+VALUES ('00000000-0000-0000-0000-000000000001', 'CRONEC S.R.L.', 'Construcción Civil e Instalaciones Eléctricas', 'Pasaje Soldado Salazar 196, Barrio Santa Ana, Salta Capital (4400), Salta, Argentina', '+54 9 387 536-1210', 'cronec@cronecsrl.com', '5493875361210', 2009, '33-71090097-9');
 
 -- Crear usuario admin por defecto (contraseña: admin123 - CAMBIAR EN PRODUCCIÓN)
 -- Ejecutar después de tener la app corriendo: npm run db:seed-admin

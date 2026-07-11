@@ -6,6 +6,7 @@ import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Clock, ArrowUpRight
 import { Button } from "@/components/ui/button"
 import { useSettings } from "@/lib/settings-context"
 import { useServicesNav } from "@/lib/services-nav-context"
+import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 
 const DEFAULT_LOGO = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo_mini-CRONEC-pjPMvEYWU2s5qGxTrNDnxIWWufI0oB.png"
 
@@ -35,18 +36,18 @@ export function Footer() {
   const servicesNav = useServicesNav()
   const footerNavLinks = (Array.isArray(s?.nav_links) && s.nav_links.length > 0 ? s.nav_links : FALLBACK_NAV_LINKS) as { href: string; label: string }[]
   const footerServiceLabels = servicesNav.length > 0 ? servicesNav.map((x) => x.title) : FALLBACK_SERVICE_LABELS
-  const companyName = (s?.company_name as string) ?? "CRONEC SRL"
+  const companyName = (s?.company_name as string) ?? CRONEC_OFFICIAL.displayName
   const tagline = (s?.tagline as string) ?? "Construcciones eléctricas y civiles"
   const description = (s?.description as string) ?? "Empresa Salteña dedicada a Obras Públicas, obras de saneamiento, infraestructura y Obras Eléctricas. Calidad y compromiso desde 2009."
   const logoUrl = (s?.logo_url as string) || DEFAULT_LOGO
-  const address = (s?.address as string) ?? "Santa Fe 548 PB \"B\", Salta Capital (4400)"
+  const address = (s?.address as string) ?? getCompanyFullAddress()
   const phone = (s?.phone as string) ?? "+54 9 (387) 536-1210"
   const email = (s?.email as string) ?? "cronec@cronecsrl.com.ar"
   const horario = (s?.horario as string) ?? "Lun - Vie: 8:00 - 18:00"
   const facebook = (s?.facebook_url as string) ?? "https://www.facebook.com/cronecsrl"
   const instagram = (s?.instagram_url as string) ?? "https://www.instagram.com/cronecsrl"
   const linkedin = (s?.linkedin_url as string) ?? "https://www.linkedin.com/company/cronecsrl"
-  const cuit = (s?.cuit as string) ?? "33-71090097-9"
+  const cuit = (s?.cuit as string) ?? CRONEC_OFFICIAL.cuit
   const ctaTitle = (s?.footer_cta_title as string) ?? "Inicia tu proyecto con nosotros"
   const ctaSubtitle = (s?.footer_cta_subtitle as string) ?? "Más de 15 años de experiencia en construcción civil y eléctrica"
   const ctaContactenos = (s?.site_cta_contactenos as string) || "Contáctenos"

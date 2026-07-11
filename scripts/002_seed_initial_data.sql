@@ -1,7 +1,7 @@
 -- Insert initial company info
 INSERT INTO public.company_info (key, value, category, description) VALUES
 ('company_name', 'CRONEC S.R.L.', 'basic', 'Nombre de la empresa'),
-('company_address', 'Santa Fe 548 PB "B", Salta Capital (4400), Salta, Argentina', 'contact', 'Dirección física'),
+('company_address', 'Pasaje Soldado Salazar 196, Barrio Santa Ana, Salta Capital (4400), Salta, Argentina', 'contact', 'Dirección física'),
 ('company_phone', '+54 9 387 536-1210', 'contact', 'Teléfono principal'),
 ('company_email', 'cronec@cronecsrl.com', 'contact', 'Email principal'),
 ('company_cuit', '33-71090097-9', 'legal', 'CUIT'),

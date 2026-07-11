@@ -1,6 +1,7 @@
 import { Shield, Lock, Eye, UserCheck, Database, FileCheck } from "lucide-react"
 import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
+import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
 
 export const metadata = {
   title: "Política de Privacidad | CRONEC SRL",
@@ -14,6 +15,8 @@ export default async function PoliticaPrivacidad() {
   } catch {
     // En producción puede fallar la lectura de datos; mostramos contenido por defecto
   }
+  const legalAddress = (settings?.address as string) || getCompanyFullAddress()
+  const legalName = (settings?.company_name as string) || CRONEC_OFFICIAL.displayName
   const customHtml = (settings?.legal_politica_privacidad as string)?.trim()
   if (customHtml) {
     return (
@@ -61,7 +64,7 @@ export default async function PoliticaPrivacidad() {
               </h2>
               <div className="text-gray-700 space-y-4">
                 <p>
-                  CRONEC SRL (CUIT 33-71090097-9), con domicilio en Santa Fe 548, PB "B", Salta Capital (4400),
+                  {legalName} (CUIT {CRONEC_OFFICIAL.cuit}), con domicilio en {legalAddress},
                   Argentina, se compromete a proteger la privacidad y los datos personales de sus clientes, proveedores,
                   empleados y visitantes de su sitio web, en cumplimiento de la Ley N° 25.326 de Protección de Datos
                   Personales de la República Argentina y sus normas complementarias.
@@ -81,13 +84,13 @@ export default async function PoliticaPrivacidad() {
               </h2>
               <div className="text-gray-700 space-y-3">
                 <p>
-                  <strong>Responsable:</strong> CRONEC SRL
+                  <strong>Responsable:</strong> {legalName}
                 </p>
                 <p>
-                  <strong>CUIT:</strong> 33-71090097-9
+                  <strong>CUIT:</strong> {CRONEC_OFFICIAL.cuit}
                 </p>
                 <p>
-                  <strong>Domicilio:</strong> Santa Fe 548, PB "B", Salta Capital (CP 4400), Provincia de Salta
+                  <strong>Domicilio:</strong> {legalAddress}
                 </p>
                 <p>
                   <strong>Email:</strong> info@cronecsrl.com.ar
@@ -301,7 +304,7 @@ export default async function PoliticaPrivacidad() {
                 </ul>
                 <p className="mt-4">
                   Para ejercer estos derechos, puede contactarnos en <strong>info@cronecsrl.com.ar</strong> o mediante
-                  carta dirigida a Santa Fe 548, PB "B", Salta Capital (4400).
+                  carta dirigida a {legalAddress}.
                 </p>
               </div>
             </div>
@@ -376,7 +379,7 @@ export default async function PoliticaPrivacidad() {
                 <p className="mt-4">
                   <strong>CRONEC SRL</strong>
                 </p>
-                <p>Santa Fe 548, PB "B" - Salta Capital (4400)</p>
+                <p>{legalAddress}</p>
                 <p>Provincia de Salta, Argentina</p>
                 <p>Email: info@cronecsrl.com.ar</p>
                 <p>Teléfono: +54 387 431-1902</p>

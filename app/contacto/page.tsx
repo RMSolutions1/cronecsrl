@@ -35,6 +35,13 @@ import {
   Linkedin,
   AlertCircle,
 } from "lucide-react"
+import {
+  getCompanyAddressLines,
+  getCompanyFullAddress,
+  getGoogleMapsEmbedUrl,
+  getGoogleMapsSearchUrl,
+  getHowToArriveText,
+} from "@/lib/company-defaults"
 
 type ContactInfoItem = {
   icon: typeof Phone
@@ -43,10 +50,11 @@ type ContactInfoItem = {
   link: string | null
 }
 
+const [line1, line2] = getCompanyAddressLines()
 const defaultContactInfo: ContactInfoItem[] = [
   { icon: Phone, title: "Teléfono", details: ["+54 9 (387) 536-1210", "Disponible en horario de oficina"], link: "tel:+5493875361210" },
   { icon: Mail, title: "Email", details: ["cronec@cronecsrl.com.ar", "Respuesta en 24 horas"], link: "mailto:cronec@cronecsrl.com.ar" },
-  { icon: MapPin, title: "Dirección", details: ['Santa Fe 548 PB "B"', "Salta Capital, Argentina (4400)"], link: "https://maps.google.com/?q=Santa+Fe+548,+Salta+Capital" },
+  { icon: MapPin, title: "Dirección", details: [line1, line2], link: getGoogleMapsSearchUrl() },
   { icon: Clock, title: "Horario de Atención", details: ["Lunes a Viernes: 8:00 - 18:00"], link: null },
 ]
 
@@ -64,19 +72,23 @@ const defaultServices = [
 export default function ContactoPage() {
   const [contactInfo, setContactInfo] = useState<ContactInfoItem[]>(defaultContactInfo)
   const [services, setServices] = useState<string[]>(defaultServices)
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(getGoogleMapsEmbedUrl())
+  const [howToArrive, setHowToArrive] = useState(getHowToArriveText())
   useEffect(() => {
     Promise.all([getCompanyInfo(), getServicesPublic()]).then(([settings, servicesFromDb]) => {
       if (settings && typeof settings === "object") {
         const phone = (settings.phone as string) || ""
         const email = (settings.email as string) || ""
-        const address = (settings.address as string) || ""
+        const address = (settings.address as string) || getCompanyFullAddress()
         const horario = (settings.horario as string) || "Lun - Vie: 8:00 - 18:00"
+        setMapEmbedUrl(getGoogleMapsEmbedUrl(address))
+        setHowToArrive(getHowToArriveText())
         const items: ContactInfoItem[] = []
         if (phone) items.push({ icon: Phone, title: "Teléfono", details: [phone, "Disponible en horario de oficina"], link: `tel:${phone.replace(/\s/g, "")}` })
         if (email) items.push({ icon: Mail, title: "Email", details: [email, "Respuesta en 24 horas"], link: `mailto:${email}` })
         if (address?.trim()) {
           const details = address.split(",").map((s) => s.trim()).filter(Boolean)
-          if (details.length) items.push({ icon: MapPin, title: "Dirección", details, link: "https://maps.google.com/?q=" + encodeURIComponent(address) })
+          if (details.length) items.push({ icon: MapPin, title: "Dirección", details, link: getGoogleMapsSearchUrl(address) })
         }
         items.push({ icon: Clock, title: "Horario de Atención", details: [horario], link: null })
         if (items.length) setContactInfo(items)
@@ -390,14 +402,14 @@ export default function ContactoPage() {
                 <Card className="overflow-hidden">
                   <div className="aspect-[4/3] bg-secondary relative">
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.8642813844845!2d-65.41110892407795!3d-24.788892478101386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x941bc3a70f1f1f1f%3A0x1f1f1f1f1f1f1f1f!2sSanta%20Fe%20548%2C%20A4400%20Salta!5e0!3m2!1ses-419!2sar!4v1699999999999!5m2!1ses-419!2sar"
+                      src={mapEmbedUrl}
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      title="Ubicación CRONEC SRL - Santa Fe 548 PB B, Salta Capital"
+                      title="Ubicación CRONEC SRL - Pasaje Soldado Salazar 196, Barrio Santa Ana, Salta"
                     />
                   </div>
                 </Card>
@@ -448,8 +460,7 @@ export default function ContactoPage() {
                     <div className="border-t pt-4">
                       <h3 className="font-semibold mb-2">Cómo Llegar</h3>
                       <p className="text-sm text-muted-foreground">
-                        Ubicados en calle Santa Fe 548 PB "B", frente a la Dirección General de Tránsito de Salta
-                        Capital. Fácil acceso desde el centro de la ciudad.
+                        {howToArrive}
                       </p>
                     </div>
                   </CardContent>

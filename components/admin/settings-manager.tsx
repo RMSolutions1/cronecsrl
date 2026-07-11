@@ -368,7 +368,7 @@ export function SettingsManager() {
                 <Input
                   value={info.address || ""}
                   onChange={(e) => setInfo({ ...info, address: e.target.value })}
-                  placeholder="Santa Fe 548 PB 'B', Salta Capital"
+                  placeholder="Pasaje Soldado Salazar 196, Barrio Santa Ana, Salta Capital"
                 />
               </div>
 

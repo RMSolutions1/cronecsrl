@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { images } from "@/lib/images"
 import { useSettings } from "@/lib/settings-context"
+import { getCompanyFullAddress } from "@/lib/company-defaults"
 
 export function CTASection() {
   const s = useSettings()
@@ -17,7 +18,7 @@ export function CTASection() {
   const ctaParagraph = (s?.cta_paragraph as string) || "Estamos listos para transformar su visión en realidad. Solicite una cotización sin compromiso y descubra cómo podemos ayudarlo."
   const phone = (s?.phone as string) || "+54 9 387 536-1210"
   const email = (s?.email as string) || "cronec@cronecsrl.com.ar"
-  const address = (s?.address as string) || "Santa Fe 548 PB \"B\", Salta"
+  const address = (s?.address as string) || getCompanyFullAddress()
   const horario = (s?.horario as string) || "Lun - Vie: 8:00 - 18:00"
 
   const [formData, setFormData] = useState({

@@ -21,6 +21,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { images } from "@/lib/images"
 import { getCompanyInfo } from "@/lib/data-read"
+import { CRONEC_OFFICIAL, getCompanyAddressLines, getCompanyFullAddress } from "@/lib/company-defaults"
 
 export const metadata: Metadata = {
   title: "Brochure Corporativo | CRONEC SRL",
@@ -31,11 +32,13 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 export default async function BrochurePage() {
-  let companyName = "CRONEC SRL"
+  let companyName: string = CRONEC_OFFICIAL.displayName
   let tagline = "Construcciones Eléctricas y Civiles"
   let intro = "15+ años construyendo infraestructura de excelencia en Salta"
   let brochurePdfUrl = ""
   let brochureCtaText = "Descargar Brochure PDF"
+  let companyAddress = getCompanyFullAddress()
+  const [addressLine1, addressLine2] = getCompanyAddressLines()
   try {
     const settings = await getCompanyInfo()
     if (settings && typeof settings === "object") {
@@ -44,6 +47,7 @@ export default async function BrochurePage() {
       if (typeof settings.description === "string" && settings.description.trim()) intro = settings.description.slice(0, 120) + (settings.description.length > 120 ? "…" : "")
       if (typeof settings.brochure_pdf_url === "string" && settings.brochure_pdf_url.trim()) brochurePdfUrl = settings.brochure_pdf_url
       if (typeof settings.brochure_cta_text === "string" && settings.brochure_cta_text.trim()) brochureCtaText = settings.brochure_cta_text
+      if (typeof settings.address === "string" && settings.address.trim()) companyAddress = settings.address
     }
   } catch {
     // usar valores por defecto
@@ -114,7 +118,7 @@ export default async function BrochurePage() {
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">Quiénes Somos</h2>
               <div className="w-20 h-1 bg-orange-500 mb-6"></div>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                <strong className="text-blue-900">CRONEC SRL</strong> es una empresa Salteña constituida en 2009,
+                <strong className="text-blue-900">{companyName}</strong> es una empresa Salteña constituida en {CRONEC_OFFICIAL.foundedYear},
                 dedicada a Obras Públicas, obras de saneamiento, infraestructura y Obras Eléctricas en general.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
@@ -126,19 +130,19 @@ export default async function BrochurePage() {
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="h-6 w-6 text-green-600" />
                   <span className="text-gray-800">
-                    <strong>Inscripción:</strong> Febrero 2009
+                    <strong>Inscripción:</strong> {CRONEC_OFFICIAL.incorporationDateDisplay}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="h-6 w-6 text-green-600" />
                   <span className="text-gray-800">
-                    <strong>CUIT:</strong> 33-71090097-9
+                    <strong>CUIT:</strong> {CRONEC_OFFICIAL.cuit}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="h-6 w-6 text-green-600" />
                   <span className="text-gray-800">
-                    <strong>Forma Jurídica:</strong> S.R.L.
+                    <strong>Forma Jurídica:</strong> {CRONEC_OFFICIAL.legalForm}
                   </span>
                 </div>
               </div>
@@ -595,9 +599,9 @@ export default async function BrochurePage() {
               <MapPin className="h-8 w-8 mx-auto mb-4 text-orange-500" />
               <h3 className="font-semibold mb-2">Dirección</h3>
               <p className="text-blue-100 text-sm">
-                Santa Fe 548, PB "B"
+                {addressLine1}
                 <br />
-                Salta Capital (4400)
+                {addressLine2}
               </p>
             </div>
           </div>
@@ -630,9 +634,9 @@ export default async function BrochurePage() {
             <Building2 className="h-8 w-8 text-orange-500" />
             <p className="text-2xl font-bold">CRONEC SRL</p>
           </div>
-          <p className="text-gray-400 mb-2">CUIT: 33-71090097-9</p>
+          <p className="text-gray-400 mb-2">CUIT: {CRONEC_OFFICIAL.cuit}</p>
           <p className="text-gray-400 text-sm">
-            Santa Fe 548, PB "B" - Salta Capital (4400) - Provincia de Salta, Argentina
+            {companyAddress}
           </p>
           <div className="mt-6 pt-6 border-t border-gray-800">
             <p className="text-sm text-gray-500">
