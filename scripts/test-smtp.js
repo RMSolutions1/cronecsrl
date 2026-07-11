@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer")
 async function main() {
   const host = process.env.SMTP_HOST || "c2751446.ferozo.com"
   const port = Number(process.env.SMTP_PORT || 465)
-  const user = process.env.SMTP_USER || "admin@cronecsrl.com.ar"
+  const user = process.env.SMTP_USER || "info@cronecsrl.com.ar"
   const pass = process.env.SMTP_PASS?.trim()
 
   if (!pass) {

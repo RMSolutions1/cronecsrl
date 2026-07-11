@@ -66,7 +66,7 @@ export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
             <AlertDescription>
               {summary.hasPassword
                 ? "Revise host/usuario SMTP en Vercel."
-                : "Agregue SMTP_PASS en Vercel (contraseña de admin@cronecsrl.com.ar en Ferozo). Host: c2751446.ferozo.com:465"}
+                : "Agregue SMTP_PASS en Vercel (contraseña de info@cronecsrl.com.ar en Ferozo). Host: c2751446.ferozo.com:465"}
             </AlertDescription>
           </Alert>
         )}
