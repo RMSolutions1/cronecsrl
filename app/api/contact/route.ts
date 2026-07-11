@@ -2,7 +2,9 @@ import { NextResponse } from "next/server"
 import { readData, writeData, generateId } from "@/lib/data"
 import { validateContactInput } from "@/lib/contact-validation"
 import { checkContactRateLimit } from "@/lib/rate-limit"
-import { buildContactNotificationHtml, notifyAdminEmail } from "@/lib/notify-email"
+import { sendAdminNotification, sendEmail } from "@/lib/send-email"
+import { buildContactAdminHtml, buildContactConfirmationHtml } from "@/lib/email-templates"
+import { isEmailConfigured } from "@/lib/email-config"
 
 export async function POST(request: Request) {
   try {
@@ -47,11 +49,18 @@ export async function POST(request: Request) {
     })
     await writeData("messages.json", list)
 
-    void notifyAdminEmail({
-      subject: `Nuevo contacto: ${service} — CRONEC SRL`,
-      html: buildContactNotificationHtml({ name, email, phone, company, service, message }),
-      replyTo: email,
-    })
+    if (isEmailConfigured()) {
+      void sendAdminNotification({
+        subject: `Nuevo contacto: ${service} — CRONEC SRL`,
+        html: buildContactAdminHtml({ name, email, phone, company, service, message }),
+        replyTo: email,
+      })
+      void sendEmail({
+        to: email,
+        subject: "Recibimos su consulta — CRONEC SRL",
+        html: buildContactConfirmationHtml(name),
+      })
+    }
 
     return NextResponse.json({
       success: true,

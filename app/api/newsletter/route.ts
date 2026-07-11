@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { checkContactRateLimit } from "@/lib/rate-limit"
 import { subscribeNewsletter } from "@/lib/newsletter-store"
-import { notifyAdminEmail } from "@/lib/notify-email"
+import { sendAdminNotification, sendEmail } from "@/lib/send-email"
+import { buildNewsletterAdminHtml, buildNewsletterWelcomeHtml } from "@/lib/email-templates"
+import { isEmailConfigured } from "@/lib/email-config"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
@@ -24,11 +26,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: result.message }, { status: 400 })
     }
 
-    if (!result.duplicate) {
-      void notifyAdminEmail({
+    if (!result.duplicate && isEmailConfigured()) {
+      const normalized = email.trim().toLowerCase()
+      void sendAdminNotification({
         subject: "Nueva suscripción al boletín — CRONEC SRL",
-        html: `<p>Nuevo suscriptor: <strong>${email.trim().toLowerCase()}</strong></p>`,
-        replyTo: email.trim().toLowerCase(),
+        html: buildNewsletterAdminHtml(normalized),
+        replyTo: normalized,
+      })
+      void sendEmail({
+        to: normalized,
+        subject: "Bienvenido al boletín — CRONEC SRL",
+        html: buildNewsletterWelcomeHtml(),
       })
     }
 

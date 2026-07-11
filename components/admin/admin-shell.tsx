@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { AdminNav } from "./admin-nav"
 import type { SessionUser } from "@/lib/auth"
 
-const NO_NAV_PATHS = ["/admin/login", "/admin/recuperar", "/admin/registro"]
+const NO_NAV_PATHS = ["/admin/login", "/admin/recuperar", "/admin/registro", "/admin/restablecer"]
 const SIDEBAR_COLLAPSED_KEY = "cronec-sidebar-collapsed"
 
 export function AdminShell({ user, children }: { user: SessionUser | null; children: React.ReactNode }) {

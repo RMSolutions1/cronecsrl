@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle2 } from "lucide-react"
 import { redirect } from "next/navigation"
 import { DbVerifyCard } from "@/components/admin/db-verify-card"
+import { EmailDiagnosticCard } from "@/components/admin/email-diagnostic-card"
+import { getEmailConfigSummary } from "@/lib/email-config"
 
 export default async function DiagnosticoPage() {
   const user = await getCurrentUser()
@@ -21,6 +23,8 @@ export default async function DiagnosticoPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-3xl font-bold">Diagnóstico del sistema</h1>
+
+        <EmailDiagnosticCard summary={getEmailConfigSummary()} />
 
         <DbVerifyCard />
 

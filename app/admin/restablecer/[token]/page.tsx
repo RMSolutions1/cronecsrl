@@ -1,17 +1,22 @@
 "use client"
 
 import { useState } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Lock, AlertCircle, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
-import { requestPasswordResetAction } from "@/app/actions/auth/request-password-reset"
+import { resetPasswordWithTokenAction } from "@/app/actions/auth/reset-password"
 
-export default function AdminRecoverPage() {
-  const [email, setEmail] = useState("")
+export default function AdminResetPasswordPage() {
+  const params = useParams()
+  const router = useRouter()
+  const token = typeof params.token === "string" ? params.token : ""
+  const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null)
 
@@ -20,10 +25,25 @@ export default function AdminRecoverPage() {
     setIsLoading(true)
     setResult(null)
     const fd = new FormData()
-    fd.set("email", email)
-    const res = await requestPasswordResetAction(fd)
+    fd.set("password", password)
+    fd.set("confirm", confirm)
+    const res = await resetPasswordWithTokenAction(token, fd)
     setResult(res)
     setIsLoading(false)
+    if (res.ok) {
+      setTimeout(() => router.push("/admin/login"), 2500)
+    }
+  }
+
+  if (!token) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>Enlace inválido.</AlertDescription>
+        </Alert>
+      </div>
+    )
   }
 
   return (
@@ -31,24 +51,36 @@ export default function AdminRecoverPage() {
       <Card className="w-full max-w-md border-2 shadow-xl">
         <CardHeader>
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-            <Mail className="h-6 w-6 text-blue-900" />
+            <Lock className="h-6 w-6 text-blue-900" />
           </div>
-          <CardTitle className="text-center">Recuperar contraseña</CardTitle>
+          <CardTitle className="text-center">Nueva contraseña</CardTitle>
           <CardDescription className="text-center">
-            Ingrese el correo de su cuenta de administrador. Le enviaremos un enlace seguro para restablecer la contraseña.
+            Elija una contraseña segura de al menos 8 caracteres.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Correo electrónico</Label>
+              <Label htmlFor="password">Nueva contraseña</Label>
               <Input
-                id="email"
-                type="email"
+                id="password"
+                type="password"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@cronecsrl.com.ar"
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm">Confirmar contraseña</Label>
+              <Input
+                id="confirm"
+                type="password"
+                required
+                minLength={8}
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
                 disabled={isLoading}
               />
             </div>
@@ -59,7 +91,7 @@ export default function AdminRecoverPage() {
               </Alert>
             )}
             <Button type="submit" className="w-full bg-blue-900 hover:bg-blue-800" disabled={isLoading}>
-              {isLoading ? "Enviando..." : "Enviar enlace de recuperación"}
+              {isLoading ? "Guardando..." : "Restablecer contraseña"}
             </Button>
           </form>
           <Button asChild variant="outline" className="w-full">
