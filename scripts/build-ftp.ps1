@@ -6,12 +6,12 @@ $adminPath = Join-Path $app "admin"
 $pageOrig = Join-Path $app "page.tsx"
 $pageFtp = Join-Path $app "page.ftp.tsx"
 $pageBak = Join-Path $app "page.tsx.bak"
-$proyectosPage = Join-Path $app "proyectos\page.tsx"
-$proyectosFtp = Join-Path $app "proyectos\page.ftp.tsx"
-$proyectosBak = Join-Path $app "proyectos\page.tsx.bak"
-$contactPage = Join-Path $app "contacto\page.tsx"
-$contactFtp = Join-Path $app "contacto\page.ftp.tsx"
-$contactBak = Join-Path $app "contacto\page.tsx.bak"
+$proyectosPage = Join-Path $app "(site)" "proyectos" "page.tsx"
+$proyectosFtp = Join-Path $app "(site)" "proyectos" "page.ftp.tsx"
+$proyectosBak = Join-Path $app "(site)" "proyectos" "page.tsx.bak"
+$contactPage = Join-Path $app "(site)" "contacto" "page.tsx"
+$contactFtp = Join-Path $app "(site)" "contacto" "page.ftp.tsx"
+$contactBak = Join-Path $app "(site)" "contacto" "page.tsx.bak"
 
 # Comprobar que existen las páginas FTP antes de sustituir
 if (-not (Test-Path $pageFtp)) {

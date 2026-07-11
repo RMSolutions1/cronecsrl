@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, MapPin, Send, ArrowRight, Clock } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { submitContactForm } from "@/lib/submit-contact-client"
 import Link from "next/link"
 import { images } from "@/lib/images"
 import { useSettings } from "@/lib/settings-context"
@@ -33,26 +34,21 @@ export function CTASection() {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: formData.name,
-          email: formData.email,
-          telefono: formData.phone,
-          empresa: "",
-          servicio: "Consulta desde inicio",
-          mensaje: formData.message,
-        }),
+      const result = await submitContactForm({
+        nombre: formData.name,
+        email: formData.email,
+        telefono: formData.phone,
+        empresa: "",
+        servicio: "Consulta desde inicio",
+        mensaje: formData.message,
       })
-      const result = await res.json().catch(() => ({}))
-      if (res.ok && result.success) {
+      if (result.success) {
         toast.success("Mensaje enviado correctamente", {
-          description: "Nos pondremos en contacto pronto."
+          description: "Nos pondremos en contacto pronto.",
         })
         setFormData({ name: "", email: "", phone: "", message: "" })
       } else {
-        toast.error("Error al enviar", { description: result.message ?? "Intente nuevamente." })
+        toast.error("Error al enviar", { description: result.message })
       }
     } catch {
       toast.error("Error de conexión", { description: "Intente más tarde o contáctenos por teléfono." })

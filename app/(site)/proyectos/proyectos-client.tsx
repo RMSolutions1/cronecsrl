@@ -29,9 +29,9 @@ interface ProyectosClientProps {
 
 const stats = [
   { value: 500, suffix: "+", label: "Proyectos Completados" },
-  { value: 15, suffix: "+", label: "Anos de Experiencia" },
+  { value: 15, suffix: "+", label: "Años de Experiencia" },
   { value: 98, suffix: "%", label: "Clientes Satisfechos" },
-  { value: 4, suffix: "", label: "Areas Especializadas" },
+  { value: 4, suffix: "", label: "Áreas Especializadas" },
 ]
 
 export function ProyectosClient({ initialProjects, heroSlides }: ProyectosClientProps) {

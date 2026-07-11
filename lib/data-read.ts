@@ -219,19 +219,19 @@ export type CalculadoraData = {
 const calculadoraDefaults: CalculadoraData = {
   projectTypes: [
     { id: "civil", label: "Obras Civiles", description: "Edificios, viviendas, locales", pricePerM2: 850 },
-    { id: "electrica", label: "Obra Electrica", description: "Instalaciones eléctricas", pricePerM2: 450 },
+    { id: "electrica", label: "Obra Eléctrica", description: "Instalaciones eléctricas", pricePerM2: 450 },
     { id: "industrial", label: "Industrial", description: "Naves, galpones, plantas", pricePerM2: 650 },
-    { id: "reforma", label: "Reforma/Refaccion", description: "Remodelaciones y mejoras", pricePerM2: 550 },
+    { id: "reforma", label: "Reforma/Refacción", description: "Remodelaciones y mejoras", pricePerM2: 550 },
   ],
   qualityLevels: [
-    { id: "standard", label: "Estandar", multiplier: 1, description: "Materiales de buena calidad" },
+    { id: "standard", label: "Estándar", multiplier: 1, description: "Materiales de buena calidad" },
     { id: "premium", label: "Premium", multiplier: 1.35, description: "Materiales superiores" },
     { id: "luxury", label: "Lujo", multiplier: 1.8, description: "Materiales exclusivos" },
   ],
   urgencyLevels: [
-    { id: "normal", label: "Normal", multiplier: 1, days: "90-120 dias" },
-    { id: "rapido", label: "Rapido", multiplier: 1.15, days: "60-90 dias" },
-    { id: "urgente", label: "Urgente", multiplier: 1.3, days: "30-60 dias" },
+    { id: "normal", label: "Normal", multiplier: 1, days: "90-120 días" },
+    { id: "rapido", label: "Rápido", multiplier: 1.15, days: "60-90 días" },
+    { id: "urgente", label: "Urgente", multiplier: 1.3, days: "30-60 días" },
   ],
 }
 

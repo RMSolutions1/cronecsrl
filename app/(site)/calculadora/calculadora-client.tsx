@@ -18,6 +18,7 @@ import {
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { submitContactForm } from "@/lib/submit-contact-client"
 import { images } from "@/lib/images"
 import type { CalculadoraData } from "@/lib/data-read"
 
@@ -30,19 +31,19 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const defaultProjectTypes = [
   { id: "civil", label: "Obras Civiles", description: "Edificios, viviendas, locales", pricePerM2: 850 },
-  { id: "electrica", label: "Obra Electrica", description: "Instalaciones eléctricas", pricePerM2: 450 },
+  { id: "electrica", label: "Obra Eléctrica", description: "Instalaciones eléctricas", pricePerM2: 450 },
   { id: "industrial", label: "Industrial", description: "Naves, galpones, plantas", pricePerM2: 650 },
-  { id: "reforma", label: "Reforma/Refaccion", description: "Remodelaciones y mejoras", pricePerM2: 550 },
+  { id: "reforma", label: "Reforma/Refacción", description: "Remodelaciones y mejoras", pricePerM2: 550 },
 ]
 const defaultQualityLevels = [
-  { id: "standard", label: "Estandar", multiplier: 1, description: "Materiales de buena calidad, terminaciones basicas" },
+  { id: "standard", label: "Estándar", multiplier: 1, description: "Materiales de buena calidad, terminaciones básicas" },
   { id: "premium", label: "Premium", multiplier: 1.35, description: "Materiales superiores, terminaciones de alta gama" },
   { id: "luxury", label: "Lujo", multiplier: 1.8, description: "Materiales exclusivos, diseño personalizado" },
 ]
 const defaultUrgencyLevels = [
-  { id: "normal", label: "Normal", multiplier: 1, days: "90-120 dias" },
-  { id: "rapido", label: "Rapido", multiplier: 1.15, days: "60-90 dias" },
-  { id: "urgente", label: "Urgente", multiplier: 1.3, days: "30-60 dias" },
+  { id: "normal", label: "Normal", multiplier: 1, days: "90-120 días" },
+  { id: "rapido", label: "Rápido", multiplier: 1.15, days: "60-90 días" },
+  { id: "urgente", label: "Urgente", multiplier: 1.3, days: "30-60 días" },
 ]
 
 export default function CalculadoraPageClient({ config }: { config: CalculadoraData | null }) {
@@ -85,26 +86,21 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
     ].join("\n")
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: contactInfo.name,
-          email: contactInfo.email,
-          telefono: contactInfo.phone,
-          empresa: "",
-          servicio: `Cotización - ${serviceLabel}`,
-          mensaje: messageBody,
-        }),
+      const result = await submitContactForm({
+        nombre: contactInfo.name,
+        email: contactInfo.email,
+        telefono: contactInfo.phone,
+        empresa: "",
+        servicio: `Cotización - ${serviceLabel}`,
+        mensaje: messageBody,
       })
-      const data = await res.json().catch(() => ({}))
-      if (res.ok && data.success) {
+      if (result.success) {
         toast.success("Solicitud enviada correctamente", {
           description: "Nos pondremos en contacto en las próximas 24 horas.",
         })
         setStep(5)
       } else {
-        toast.error("Error al enviar", { description: data.message ?? "Intente nuevamente." })
+        toast.error("Error al enviar", { description: result.message })
       }
     } catch {
       toast.error("Error de conexión", { description: "Intente más tarde o contáctenos por teléfono." })

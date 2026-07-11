@@ -1,7 +1,7 @@
 # Índice de documentación – CRONEC SRL
 
 Repositorio: [github.com/RMSolutions1/cronecsrl](https://github.com/RMSolutions1/cronecsrl)  
-Sitio en producción: [cronecsrl2026.vercel.app](https://cronecsrl2026.vercel.app)
+Sitio en producción: [www.cronecsrl.online](https://www.cronecsrl.online)
 
 ---
 

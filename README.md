@@ -3,7 +3,7 @@
 Sitio corporativo de **CRONEC SRL** (construcción civil e instalaciones eléctricas, Salta). Next.js 16, panel admin y base de datos PostgreSQL (Neon) o MySQL.
 
 - **Repositorio:** [github.com/RMSolutions1/cronecsrl](https://github.com/RMSolutions1/cronecsrl)
-- **Sitio en producción:** [cronecsrl2026.vercel.app](https://cronecsrl2026.vercel.app)
+- **Sitio en producción:** [www.cronecsrl.online](https://www.cronecsrl.online)
 - **Índice de toda la documentación:** [DOCUMENTACION.md](DOCUMENTACION.md)
 
 ## Estructura del repositorio

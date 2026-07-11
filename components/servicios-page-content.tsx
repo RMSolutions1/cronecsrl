@@ -68,7 +68,7 @@ export type ServiceFromDb = {
 }
 
 const stats = [
-  { icon: Award, value: 15, suffix: "+", label: "Anos de Experiencia" },
+  { icon: Award, value: 15, suffix: "+", label: "Años de Experiencia" },
   { icon: Users, value: 500, suffix: "+", label: "Proyectos Completados" },
   { icon: TrendingUp, value: 98, suffix: "%", label: "Satisfaccion del Cliente" },
 ]

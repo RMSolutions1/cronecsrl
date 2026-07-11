@@ -2,6 +2,7 @@ import { Shield, Lock, Eye, UserCheck, Database, FileCheck } from "lucide-react"
 import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
 import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
+import { resolveCompanyEmail, resolveCompanyPhone } from "@/lib/company-email"
 
 
 export const metadata = {
@@ -18,6 +19,7 @@ export default async function PoliticaPrivacidad() {
   }
   const legalAddress = (settings?.address as string) || getCompanyFullAddress()
   const legalName = (settings?.company_name as string) || CRONEC_OFFICIAL.displayName
+  const legalEmail = resolveCompanyEmail(settings)
   const customHtml = (settings?.legal_politica_privacidad as string)?.trim()
   if (customHtml) {
     return (
@@ -94,7 +96,7 @@ export default async function PoliticaPrivacidad() {
                   <strong>Domicilio:</strong> {legalAddress}
                 </p>
                 <p>
-                  <strong>Email:</strong> info@cronecsrl.com.ar
+                  <strong>Email:</strong> {legalEmail}
                 </p>
                 <p>
                   <strong>Teléfono:</strong> +54 387 431-1902
@@ -304,7 +306,7 @@ export default async function PoliticaPrivacidad() {
                   </li>
                 </ul>
                 <p className="mt-4">
-                  Para ejercer estos derechos, puede contactarnos en <strong>info@cronecsrl.com.ar</strong> o mediante
+                  Para ejercer estos derechos, puede contactarnos en <strong>{legalEmail}</strong> o mediante
                   carta dirigida a {legalAddress}.
                 </p>
               </div>
@@ -382,7 +384,7 @@ export default async function PoliticaPrivacidad() {
                 </p>
                 <p>{legalAddress}</p>
                 <p>Provincia de Salta, Argentina</p>
-                <p>Email: info@cronecsrl.com.ar</p>
+                <p>Email: {legalEmail}</p>
                 <p>Teléfono: +54 387 431-1902</p>
               </div>
             </div>

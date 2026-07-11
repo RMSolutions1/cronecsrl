@@ -42,6 +42,7 @@ import {
   ChevronRight,
   ChevronDown,
   KeyRound,
+  Send,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -77,6 +78,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
     title: "Comunicación",
     items: [
       { href: "/admin/mensajes", icon: Mail, label: "Mensajes" },
+      { href: "/admin/boletin", icon: Send, label: "Boletín" },
     ],
   },
   {

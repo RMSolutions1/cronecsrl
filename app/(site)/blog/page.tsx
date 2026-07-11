@@ -10,6 +10,7 @@ import Image from "next/image"
 import { images } from "@/lib/images"
 import { getBlogPostsPublic, getHeroImagesPublic } from "@/lib/data-read"
 import { resolveHeroSlides } from "@/lib/hero-images"
+import { BlogNewsletterForm } from "@/components/blog-newsletter-form"
 
 
 const heroFallbacks = [
@@ -25,11 +26,11 @@ export const metadata = {
 
 type ArticleItem = { id: string; title: string; excerpt: string; category: string; date: string; readTime: string; author: string; image: string; featured: boolean; slug: string }
 const defaultArticles: ArticleItem[] = [
-  { id: "1", title: "CRONEC completa ampliación de subestación eléctrica en zona industrial", excerpt: "Finalizamos exitosamente el proyecto de ampliacion de la subestacion transformadora para el parque industrial de Salta.", category: "Proyectos", date: "2024-02-15", readTime: "3 min", author: "Equipo CRONEC", image: images.blog[0], featured: true, slug: "ampliacion-subestacion" },
-  { id: "2", title: "Nuevas certificaciones ISO para nuestros procesos constructivos", excerpt: "Hemos renovado nuestras certificaciones ISO 9001, ISO 14001 e ISO 45001.", category: "Empresa", date: "2024-02-10", readTime: "2 min", author: "Direccion", image: images.blog[1], featured: true, slug: "certificaciones-iso" },
+  { id: "1", title: "CRONEC completa ampliación de subestación eléctrica en zona industrial", excerpt: "Finalizamos exitosamente el proyecto de ampliación de la subestación transformadora para el parque industrial de Salta.", category: "Proyectos", date: "2024-02-15", readTime: "3 min", author: "Equipo CRONEC", image: images.blog[0], featured: true, slug: "ampliacion-subestacion" },
+  { id: "2", title: "Nuevas certificaciones ISO para nuestros procesos constructivos", excerpt: "Hemos renovado nuestras certificaciones ISO 9001, ISO 14001 e ISO 45001.", category: "Empresa", date: "2024-02-10", readTime: "2 min", author: "Dirección", image: images.blog[1], featured: true, slug: "certificaciones-iso" },
   { id: "3", title: "Inicio de obra: Complejo habitacional Villa Mitre", excerpt: "Comenzamos la construcción de un nuevo complejo de viviendas sociales con 48 unidades.", category: "Proyectos", date: "2024-02-05", readTime: "4 min", author: "Equipo CRONEC", image: images.blog[2], featured: false, slug: "villa-mitre" },
-  { id: "4", title: "Capacitacion en seguridad e higiene para todo el personal", excerpt: "Jornadas de capacitacion en normas de seguridad e higiene industrial.", category: "Capacitacion", date: "2024-01-28", readTime: "2 min", author: "RRHH", image: images.blog[3], featured: false, slug: "capacitacion-seguridad" },
-  { id: "5", title: "Incorporacion de nueva maquinaria de ultima generacion", excerpt: "Ampliamos nuestra flota de equipos con maquinaria moderna.", category: "Empresa", date: "2024-01-20", readTime: "3 min", author: "Equipo CRONEC", image: images.blog[4], featured: false, slug: "nueva-maquinaria" },
+  { id: "4", title: "Capacitación en seguridad e higiene para todo el personal", excerpt: "Jornadas de capacitación en normas de seguridad e higiene industrial.", category: "Capacitación", date: "2024-01-28", readTime: "2 min", author: "RRHH", image: images.blog[3], featured: false, slug: "capacitacion-seguridad" },
+  { id: "5", title: "Incorporación de nueva maquinaria de última generación", excerpt: "Ampliamos nuestra flota de equipos con maquinaria moderna.", category: "Empresa", date: "2024-01-20", readTime: "3 min", author: "Equipo CRONEC", image: images.blog[4], featured: false, slug: "nueva-maquinaria" },
   { id: "6", title: "Entrega de planta de tratamiento de agua potable", excerpt: "Culminamos el proyecto de construcción de una planta de tratamiento que beneficiará a más de 5.000 habitantes.", category: "Proyectos", date: "2024-01-15", readTime: "5 min", author: "Equipo CRONEC", image: images.blog[5], featured: false, slug: "planta-agua" },
 ]
 
@@ -203,13 +204,6 @@ export default async function BlogPage() {
                 </Card>
               ))}
             </div>
-
-            {/* Load more */}
-            <div className="text-center mt-12">
-              <Button variant="outline" size="lg">
-                Cargar mas noticias
-              </Button>
-            </div>
           </div>
         </section>
 
@@ -220,19 +214,10 @@ export default async function BlogPage() {
               <Building2 className="h-12 w-12 mx-auto text-accent" />
               <h2 className="text-3xl font-bold">Suscríbase a nuestro boletín</h2>
               <p className="text-primary-foreground/80">
-                Reciba las ultimas noticias sobre proyectos, novedades del sector 
+                Reciba las últimas noticias sobre proyectos, novedades del sector 
                 y actualizaciones de CRONEC directamente en su correo.
               </p>
-              <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Su correo electrónico"
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                  Suscribirse
-                </Button>
-              </form>
+              <BlogNewsletterForm />
             </div>
           </div>
         </section>

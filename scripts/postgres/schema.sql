@@ -118,6 +118,15 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
 );
 CREATE INDEX IF NOT EXISTS idx_contact_created ON contact_submissions(created_at);
 
+-- Suscriptores del boletín (blog)
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id VARCHAR(36) PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  active BOOLEAN DEFAULT TRUE,
+  subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_newsletter_email ON newsletter_subscribers(email);
+
 -- Blog
 CREATE TABLE IF NOT EXISTS blog_posts (
   id VARCHAR(36) PRIMARY KEY,

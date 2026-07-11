@@ -2,6 +2,7 @@ import { Building2, Scale, AlertCircle } from "lucide-react"
 import { getCompanyInfo } from "@/lib/data-read"
 import { SanitizedHtml } from "@/components/sanitized-html"
 import { CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
+import { resolveCompanyEmail, resolveCompanyPhone } from "@/lib/company-email"
 
 
 export const metadata = {
@@ -18,6 +19,8 @@ export default async function TerminosCondiciones() {
   }
   const legalAddress = (settings?.address as string) || getCompanyFullAddress()
   const legalName = (settings?.company_name as string) || CRONEC_OFFICIAL.legalName
+  const legalEmail = resolveCompanyEmail(settings)
+  const legalPhone = resolveCompanyPhone(settings)
   const customHtml = (settings?.legal_terminos_condiciones as string)?.trim()
   if (customHtml) {
     return (
@@ -282,8 +285,8 @@ export default async function TerminosCondiciones() {
                 </p>
                 <p>{legalAddress}</p>
                 <p>Provincia de Salta, Argentina</p>
-                <p>Email: info@cronecsrl.com.ar</p>
-                <p>Teléfono: +54 387 431-1902</p>
+                <p>Email: {legalEmail}</p>
+                <p>Teléfono: {legalPhone}</p>
               </div>
             </div>
 

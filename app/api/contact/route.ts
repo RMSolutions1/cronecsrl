@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { readData, writeData, generateId } from "@/lib/data"
 import { validateContactInput } from "@/lib/contact-validation"
 import { checkContactRateLimit } from "@/lib/rate-limit"
+import { buildContactNotificationHtml, notifyAdminEmail } from "@/lib/notify-email"
 
 export async function POST(request: Request) {
   try {
@@ -45,6 +46,13 @@ export async function POST(request: Request) {
       created_at: new Date().toISOString(),
     })
     await writeData("messages.json", list)
+
+    void notifyAdminEmail({
+      subject: `Nuevo contacto: ${service} — CRONEC SRL`,
+      html: buildContactNotificationHtml({ name, email, phone, company, service, message }),
+      replyTo: email,
+    })
+
     return NextResponse.json({
       success: true,
       message: "Gracias por contactarnos. Responderemos a la brevedad.",

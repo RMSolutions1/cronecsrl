@@ -13,6 +13,7 @@ import {
   getNosotrosPublic,
   getBlogPostsPublic,
 } from "@/lib/data-read"
+import { getSiteUrl } from "@/lib/site-url"
 import { readData } from "@/lib/data"
 import {
   Card,
@@ -45,6 +46,8 @@ import {
 export default async function EstadoDelSitioPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/admin/login")
+
+  const siteUrl = getSiteUrl()
 
   const [
     settings,
@@ -100,7 +103,7 @@ export default async function EstadoDelSitioPage() {
           Vista de todos los datos que hoy muestra la web. Use los botones &quot;Editar&quot; para cambiar cualquier contenido sin tocar código.
         </p>
         <Button asChild variant="outline" size="sm" className="w-fit gap-2">
-          <Link href="https://cronecsrl2026.vercel.app" target="_blank" rel="noopener noreferrer">
+          <Link href={siteUrl} target="_blank" rel="noopener noreferrer">
             <ExternalLink className="h-4 w-4" />
             Ver sitio en vivo
           </Link>

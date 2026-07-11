@@ -25,6 +25,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { getCompanyInfo } from "@/lib/data-read"
 import { getServicesPublic } from "@/lib/data-read"
+import { getSiteUrl } from "@/lib/site-url"
 
 const DEFAULT_NAV_LINKS = [
   { href: "/", label: "Inicio" },
@@ -39,6 +40,9 @@ const DEFAULT_NAV_LINKS = [
 export default async function ContenidoInicioAdminPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/admin/login")
+
+  const siteUrl = getSiteUrl()
+  const siteHost = siteUrl.replace(/^https?:\/\//, "")
 
   let navLinks = DEFAULT_NAV_LINKS
   let serviceTitles: string[] = []
@@ -117,12 +121,12 @@ export default async function ContenidoInicioAdminPage() {
         <p className="text-muted-foreground mt-1">
           Todo lo que se ve en{" "}
           <a
-            href="https://cronecsrl2026.vercel.app"
+            href={siteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary underline"
           >
-            cronecsrl2026.vercel.app
+            {siteHost}
           </a>{" "}
           se puede editar desde aquí. Elija la sección que desea modificar.
         </p>
