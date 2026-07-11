@@ -11,8 +11,9 @@ import { images } from "@/lib/images"
 import { Button } from "@/components/ui/button"
 import { getCompanyInfo } from "@/app/actions/db/company-info"
 import { getServicesPublic } from "@/app/actions/db/services"
+import { fetchHeroSlidesForPage } from "@/app/actions/public/hero-images"
 
-const heroImages = [
+const heroFallbacks = [
   { src: images.heroContacto[0], alt: "Contacto CRONEC" },
   { src: images.heroContacto[1], alt: "Oficinas CRONEC" },
   { src: images.heroContacto[2], alt: "Construcción CRONEC" },
@@ -71,11 +72,13 @@ const defaultServices = [
 ]
 
 export default function ContactoPage() {
+  const [heroImages, setHeroImages] = useState(heroFallbacks)
   const [contactInfo, setContactInfo] = useState<ContactInfoItem[]>(defaultContactInfo)
   const [services, setServices] = useState<string[]>(defaultServices)
   const [mapEmbedUrl, setMapEmbedUrl] = useState(getGoogleMapsEmbedUrl())
   const [howToArrive, setHowToArrive] = useState(getHowToArriveText())
   useEffect(() => {
+    fetchHeroSlidesForPage("contacto", heroFallbacks).then(setHeroImages)
     Promise.all([getCompanyInfo(), getServicesPublic()]).then(([settings, servicesFromDb]) => {
       if (settings && typeof settings === "object") {
         const phone = (settings.phone as string) || ""

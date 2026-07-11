@@ -1,7 +1,9 @@
 "use server"
 
 import { readData, writeData, generateId } from "@/lib/data"
-import { getCurrentUser } from "@/lib/auth"
+import { requireAdmin } from "@/lib/admin-auth"
+import { assertDbWritable } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 type Project = {
   id: string
@@ -34,8 +36,8 @@ export async function getProjectsPublic() {
 }
 
 export async function getProjectsAdmin() {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) return []
+  const user = await requireAdmin().catch(() => null)
+  if (!user) return []
   const list = await readData<Project[]>("projects.json")
   return (list || []).sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""))
 }
@@ -64,8 +66,8 @@ export async function createOrUpdateProject(data: {
   status?: string
   featured?: boolean
 }) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  const user = await requireAdmin()
+  assertDbWritable()
   const list = await readData<Project[]>("projects.json")
   const id = data.id ?? generateId()
   const now = new Date().toISOString()
@@ -96,13 +98,15 @@ export async function createOrUpdateProject(data: {
     list.unshift(record)
   }
   await writeData("projects.json", list)
+  revalidatePublicContent([...REVALIDATE.proyectos, `/proyectos/${id}`])
   return id
 }
 
 export async function deleteProject(id: string) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  await requireAdmin()
+  assertDbWritable()
   const list = await readData<Project[]>("projects.json")
   const next = list.filter((p) => p.id !== id)
   await writeData("projects.json", next)
+  revalidatePublicContent([...REVALIDATE.proyectos, `/proyectos/${id}`])
 }

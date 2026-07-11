@@ -17,4 +17,23 @@ export const REVALIDATE = {
   contacto: ["/contacto"],
   calculadora: ["/", "/calculadora"],
   brochure: ["/brochure"],
+  legal: ["/terminos-condiciones", "/politica-privacidad", "/politica-calidad"],
+  settings: ["/", "/contacto", "/nosotros", "/brochure", "/terminos-condiciones", "/politica-privacidad", "/politica-calidad"],
+  testimonials: ["/"],
+  certifications: ["/"],
+  clients: ["/"],
 } as const
+
+/** Rutas a invalidar según la página del hero en admin. */
+export const HERO_PAGE_PATHS: Record<string, readonly string[]> = {
+  home: REVALIDATE.home,
+  servicios: REVALIDATE.servicios,
+  proyectos: REVALIDATE.proyectos,
+  nosotros: REVALIDATE.nosotros,
+  contacto: REVALIDATE.contacto,
+  blog: REVALIDATE.blog,
+}
+
+export function revalidateHeroPage(page: string) {
+  revalidatePublicContent([...(HERO_PAGE_PATHS[page] ?? ["/"])])
+}

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, LayoutTemplate, GitBranch } from "lucide-react"
+import { Save, LayoutTemplate, GitBranch, Plus, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 const defaultWhy: WhyCronecSection = {
@@ -80,8 +80,18 @@ export function SectionsManager() {
     }
   }
 
-  const why: WhyCronecSection = { ...defaultWhy, ...data.whyCronec }
-  const process: ProcessSection = { ...defaultProcess, ...data.process }
+  const why: WhyCronecSection = {
+    ...defaultWhy,
+    ...data.whyCronec,
+    stats: data.whyCronec?.stats?.length ? data.whyCronec.stats : defaultWhy.stats,
+    features: data.whyCronec?.features?.length ? data.whyCronec.features : defaultWhy.features,
+    highlights: data.whyCronec?.highlights?.length ? data.whyCronec.highlights : defaultWhy.highlights,
+  }
+  const process: ProcessSection = {
+    ...defaultProcess,
+    ...data.process,
+    steps: data.process?.steps?.length ? data.process.steps : defaultProcess.steps,
+  }
 
   const setWhy = (updates: Partial<WhyCronecSection>) => {
     setData((d) => ({ ...d, whyCronec: { ...defaultWhy, ...d.whyCronec, ...updates } }))
@@ -126,10 +136,20 @@ export function SectionsManager() {
                 <Textarea value={why.subtitle} onChange={(e) => setWhy({ subtitle: e.target.value })} className="mt-1" rows={2} />
               </div>
               <div>
-                <label className="text-sm font-medium">Estadísticas (4 ítems)</label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-sm font-medium">Estadísticas</label>
+                  <Button type="button" variant="outline" size="sm" className="gap-1" onClick={() => setWhy({ stats: [...why.stats, { value: 0, suffix: "+", label: "" }] })}>
+                    <Plus className="h-4 w-4" /> Agregar
+                  </Button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-2">
                   {why.stats.map((stat, i) => (
                     <div key={i} className="rounded border p-3 space-y-2">
+                      <div className="flex justify-end">
+                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" disabled={why.stats.length <= 1} onClick={() => setWhy({ stats: why.stats.filter((_, j) => j !== i) })}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input type="number" placeholder="Valor" value={stat.value} onChange={(e) => {
                         const v = Number(e.target.value) || 0
                         setWhy({ stats: why.stats.map((s, j) => (j === i ? { ...s, value: v } : s)) })
@@ -141,10 +161,20 @@ export function SectionsManager() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium">Características (6)</label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-sm font-medium">Características</label>
+                  <Button type="button" variant="outline" size="sm" className="gap-1" onClick={() => setWhy({ features: [...why.features, { title: "", description: "" }] })}>
+                    <Plus className="h-4 w-4" /> Agregar
+                  </Button>
+                </div>
                 <div className="space-y-3 mt-2">
                   {why.features.map((f, i) => (
                     <div key={i} className="rounded border p-3 space-y-2">
+                      <div className="flex justify-end">
+                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" disabled={why.features.length <= 1} onClick={() => setWhy({ features: why.features.filter((_, j) => j !== i) })}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input placeholder="Título" value={f.title} onChange={(e) => setWhy({ features: why.features.map((x, j) => (j === i ? { ...x, title: e.target.value } : x)) })} />
                       <Textarea placeholder="Descripción" value={f.description} onChange={(e) => setWhy({ features: why.features.map((x, j) => (j === i ? { ...x, description: e.target.value } : x)) })} rows={2} />
                     </div>
@@ -172,7 +202,7 @@ export function SectionsManager() {
           <Card>
             <CardHeader>
               <CardTitle>Sección Nuestro Proceso de Trabajo</CardTitle>
-              <CardDescription>Título, subtítulo y los 5 pasos del proceso en la página de inicio.</CardDescription>
+              <CardDescription>Título, subtítulo y pasos del proceso en la página de inicio.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -184,10 +214,47 @@ export function SectionsManager() {
                 <Textarea value={process.subtitle} onChange={(e) => setProcess({ subtitle: e.target.value })} className="mt-1" rows={2} />
               </div>
               <div>
-                <label className="text-sm font-medium">Pasos (5)</label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-sm font-medium">Pasos</label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                    onClick={() =>
+                      setProcess({
+                        steps: [
+                          ...process.steps,
+                          { number: String(process.steps.length + 1).padStart(2, "0"), title: "", description: "" },
+                        ],
+                      })
+                    }
+                  >
+                    <Plus className="h-4 w-4" /> Agregar
+                  </Button>
+                </div>
                 <div className="space-y-3 mt-2">
                   {process.steps.map((step, i) => (
                     <div key={i} className="rounded border p-3 space-y-2">
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          disabled={process.steps.length <= 1}
+                          onClick={() =>
+                            setProcess({
+                              steps: process.steps.filter((_, j) => j !== i).map((s, idx) => ({
+                                ...s,
+                                number: String(idx + 1).padStart(2, "0"),
+                              })),
+                            })
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input placeholder="Número" value={step.number} onChange={(e) => setProcess({ steps: process.steps.map((s, j) => (j === i ? { ...s, number: e.target.value } : s)) })} className="w-20" />
                       <Input placeholder="Título del paso" value={step.title} onChange={(e) => setProcess({ steps: process.steps.map((s, j) => (j === i ? { ...s, title: e.target.value } : s)) })} />
                       <Textarea placeholder="Descripción" value={step.description} onChange={(e) => setProcess({ steps: process.steps.map((s, j) => (j === i ? { ...s, description: e.target.value } : s)) })} rows={2} />

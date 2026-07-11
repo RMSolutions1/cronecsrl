@@ -1,7 +1,9 @@
 "use server"
 
 import { readData, writeData, generateId } from "@/lib/data"
-import { getCurrentUser } from "@/lib/auth"
+import { requireAdmin } from "@/lib/admin-auth"
+import { assertDbWritable } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 type Service = {
   id: string
@@ -33,8 +35,8 @@ export async function getServicesPublic() {
 }
 
 export async function getServicesAdmin() {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) return []
+  const user = await requireAdmin().catch(() => null)
+  if (!user) return []
   const list = await readData<Service[]>("services.json")
   return (list || []).sort((a, b) => (a.display_order ?? a.order_index ?? 0) - (b.display_order ?? b.order_index ?? 0))
 }
@@ -46,11 +48,12 @@ export async function getServiceBySlug(slug: string) {
 }
 
 export async function saveService(data: Record<string, unknown>) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  const user = await requireAdmin()
+  assertDbWritable()
   const list = await readData<Service[]>("services.json")
   const id = (data.id as string) ?? generateId()
   const slug = (data.slug as string) ?? String(data.title ?? "").toLowerCase().replace(/\s+/g, "-")
+  const prev = list.find((s) => s.id === id)
   const features = Array.isArray(data.features) ? data.features : data.features != null ? JSON.parse(JSON.stringify(data.features)) : null
   const benefits = Array.isArray(data.benefits) ? data.benefits : data.benefits != null ? JSON.parse(JSON.stringify(data.benefits)) : null
   const now = new Date().toISOString()
@@ -67,12 +70,20 @@ export async function saveService(data: Record<string, unknown>) {
   if (idx >= 0) list[idx] = { ...list[idx], ...record }
   else { record.created_by = user.id; list.push(record) }
   await writeData("services.json", list)
+  const paths: string[] = [...REVALIDATE.servicios]
+  if (slug) paths.push(`/servicios/${slug}`)
+  if (prev?.slug && prev.slug !== slug) paths.push(`/servicios/${prev.slug}`)
+  revalidatePublicContent(paths)
   return id
 }
 
 export async function deleteService(id: string) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  await requireAdmin()
+  assertDbWritable()
   const list = await readData<Service[]>("services.json")
+  const target = list.find((s) => s.id === id)
   await writeData("services.json", list.filter((s) => s.id !== id))
+  const paths: string[] = [...REVALIDATE.servicios]
+  if (target?.slug) paths.push(`/servicios/${target.slug}`)
+  revalidatePublicContent(paths)
 }

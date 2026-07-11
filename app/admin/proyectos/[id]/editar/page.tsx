@@ -38,7 +38,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
     redirect("/admin/login")
   }
   if (!user) redirect("/admin/login")
-  if (!["admin", "superadmin"].includes(user.role)) redirect("/")
+  if (!["admin", "superadmin"].includes(user.role)) redirect("/admin/login")
 
   let id: string
   let project: Record<string, unknown> | null = null

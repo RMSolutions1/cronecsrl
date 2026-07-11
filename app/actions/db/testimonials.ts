@@ -1,7 +1,9 @@
 "use server"
 
 import { readData, writeData, generateId } from "@/lib/data"
-import { getCurrentUser } from "@/lib/auth"
+import { requireAdmin } from "@/lib/admin-auth"
+import { assertDbWritable } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 type Testimonial = {
   id: string
@@ -29,15 +31,15 @@ export async function getTestimonialsPublic() {
 }
 
 export async function getTestimonialsAdmin() {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) return []
+  const user = await requireAdmin().catch(() => null)
+  if (!user) return []
   const list = await readData<Testimonial[]>("testimonials.json")
   return (list || []).sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""))
 }
 
 export async function saveTestimonial(data: Record<string, unknown>) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  const user = await requireAdmin()
+  assertDbWritable()
   const list = await readData<Testimonial[]>("testimonials.json")
   const id = (data.id as string) ?? generateId()
   const now = new Date().toISOString()
@@ -64,12 +66,14 @@ export async function saveTestimonial(data: Record<string, unknown>) {
     list.push(record)
   }
   await writeData("testimonials.json", list)
+  revalidatePublicContent([...REVALIDATE.testimonials])
   return id
 }
 
 export async function deleteTestimonial(id: string) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  await requireAdmin()
+  assertDbWritable()
   const list = await readData<Testimonial[]>("testimonials.json")
   await writeData("testimonials.json", list.filter((t) => t.id !== id))
+  revalidatePublicContent([...REVALIDATE.testimonials])
 }

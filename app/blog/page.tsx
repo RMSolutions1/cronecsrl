@@ -8,11 +8,12 @@ import { ArrowRight, Calendar, Clock, Building2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { images } from "@/lib/images"
-import { getBlogPostsPublic } from "@/lib/data-read"
+import { getBlogPostsPublic, getHeroImagesPublic } from "@/lib/data-read"
+import { resolveHeroSlides } from "@/lib/hero-images"
 
 export const dynamic = "force-dynamic"
 
-const heroImages = [
+const heroFallbacks = [
   { src: images.heroBlog[0], alt: "Construccion CRONEC" },
   { src: images.heroBlog[1], alt: "Obra civil CRONEC" },
   { src: images.heroBlog[2], alt: "Instalaciones industriales CRONEC" },
@@ -35,8 +36,11 @@ const defaultArticles: ArticleItem[] = [
 
 export default async function BlogPage() {
   let postsFromDb: Awaited<ReturnType<typeof getBlogPostsPublic>> = []
+  let heroSlides = resolveHeroSlides([], heroFallbacks)
   try {
-    postsFromDb = await getBlogPostsPublic()
+    const [posts, heroes] = await Promise.all([getBlogPostsPublic(), getHeroImagesPublic("blog")])
+    postsFromDb = posts
+    heroSlides = resolveHeroSlides(heroes, heroFallbacks)
   } catch {
     // fallback a artículos por defecto
   }
@@ -68,7 +72,7 @@ export default async function BlogPage() {
       <main>
         {/* Hero Section */}
         <HeroCarousel
-          images={heroImages}
+          images={heroSlides}
           badge="Blog y Noticias"
           title="Actualidad de CRONEC"
           subtitle="Mantengase informado sobre nuestros proyectos, novedades del sector y el crecimiento de nuestra empresa."

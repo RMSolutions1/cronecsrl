@@ -1,7 +1,9 @@
 "use server"
 
 import { readData, writeData, generateId } from "@/lib/data"
-import { getCurrentUser } from "@/lib/auth"
+import { requireAdmin } from "@/lib/admin-auth"
+import { assertDbWritable } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 type BlogPost = {
   id: string
@@ -33,8 +35,8 @@ export async function getBlogPostsPublic() {
 }
 
 export async function getBlogPostsAdmin() {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) return []
+  const user = await requireAdmin().catch(() => null)
+  if (!user) return []
   const list = await readData<BlogPost[]>("blog.json")
   return (list || []).sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""))
 }
@@ -50,10 +52,11 @@ export async function getBlogPostBySlug(slug: string) {
 }
 
 export async function saveBlogPost(data: Record<string, unknown>) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  const user = await requireAdmin()
+  assertDbWritable()
   const list = await readData<BlogPost[]>("blog.json")
   const id = (data.id as string) ?? generateId()
+  const prev = list.find((p) => p.id === id)
   const tags = Array.isArray(data.tags) ? data.tags : data.tags != null ? JSON.parse(JSON.stringify(data.tags)) : null
   const now = new Date().toISOString()
   const record: BlogPost = {
@@ -82,12 +85,20 @@ export async function saveBlogPost(data: Record<string, unknown>) {
     list.unshift(record)
   }
   await writeData("blog.json", list)
+  const paths: string[] = [...REVALIDATE.blog]
+  if (record.slug) paths.push(`/blog/${record.slug}`)
+  if (prev?.slug && prev.slug !== record.slug) paths.push(`/blog/${prev.slug}`)
+  revalidatePublicContent(paths)
   return id
 }
 
 export async function deleteBlogPost(id: string) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
+  await requireAdmin()
+  assertDbWritable()
   const list = await readData<BlogPost[]>("blog.json")
+  const target = list.find((p) => p.id === id)
   await writeData("blog.json", list.filter((p) => p.id !== id))
+  const paths: string[] = [...REVALIDATE.blog]
+  if (target?.slug) paths.push(`/blog/${target.slug}`)
+  revalidatePublicContent(paths)
 }

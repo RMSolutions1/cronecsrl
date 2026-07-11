@@ -7,6 +7,7 @@ import { isMySQLConfigured } from "@/lib/db-mysql"
 import * as pgData from "@/lib/data-pg"
 import * as mysqlData from "@/lib/data-mysql"
 import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 export type Client = {
   id: string
@@ -63,10 +64,12 @@ export async function saveClient(data: Record<string, unknown>): Promise<{ ok: t
 
     if (isPostgresConfigured()) {
       await pgData.upsertClient(record as unknown as Record<string, unknown>)
+      revalidatePublicContent([...REVALIDATE.clients])
       return { ok: true, id }
     }
     if (isMySQLConfigured()) {
       await mysqlData.upsertClient(record as unknown as Record<string, unknown>)
+      revalidatePublicContent([...REVALIDATE.clients])
       return { ok: true, id }
     }
 
@@ -76,6 +79,7 @@ export async function saveClient(data: Record<string, unknown>): Promise<{ ok: t
     else list.push(record)
     list.sort((a, b) => a.order_index - b.order_index)
     await writeData("clients.json", list)
+    revalidatePublicContent([...REVALIDATE.clients])
     return { ok: true, id }
   } catch (e) {
     console.error("saveClient:", e)
@@ -91,15 +95,18 @@ export async function deleteClient(id: string): Promise<{ ok: boolean; error?: s
 
     if (isPostgresConfigured()) {
       await pgData.deleteClientById(id)
+      revalidatePublicContent([...REVALIDATE.clients])
       return { ok: true }
     }
     if (isMySQLConfigured()) {
       await mysqlData.deleteClientById(id)
+      revalidatePublicContent([...REVALIDATE.clients])
       return { ok: true }
     }
 
     const list = await readData<Client[]>("clients.json")
     await writeData("clients.json", list.filter((c) => c.id !== id))
+    revalidatePublicContent([...REVALIDATE.clients])
     return { ok: true }
   } catch (e) {
     console.error("deleteClient:", e)

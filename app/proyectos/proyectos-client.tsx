@@ -8,6 +8,7 @@ import { ProjectsGrid } from "@/components/projects-grid"
 import { AnimatedCounter } from "@/components/animated-counter"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { images } from "@/lib/images"
+import type { HeroSlide } from "@/lib/hero-images"
 
 interface Project {
   id: string
@@ -23,13 +24,8 @@ interface Project {
 
 interface ProyectosClientProps {
   initialProjects: Project[]
+  heroSlides: HeroSlide[]
 }
-
-const heroImages = [
-  { src: images.heroProyectos[0], alt: "Edificio comercial moderno CRONEC" },
-  { src: images.heroProyectos[1], alt: "Complejo industrial CRONEC" },
-  { src: images.heroProyectos[2], alt: "Centro de salud CRONEC" },
-]
 
 const stats = [
   { value: 500, suffix: "+", label: "Proyectos Completados" },
@@ -38,11 +34,11 @@ const stats = [
   { value: 4, suffix: "", label: "Areas Especializadas" },
 ]
 
-export function ProyectosClient({ initialProjects }: ProyectosClientProps) {
+export function ProyectosClient({ initialProjects, heroSlides }: ProyectosClientProps) {
   return (
     <>
       {/* Hero Section with Carousel */}
-      <HeroCarousel images={heroImages} interval={5000}>
+      <HeroCarousel images={heroSlides} interval={5000}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8 pt-32 pb-20">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <Badge className="bg-accent/20 text-accent border-accent/30">

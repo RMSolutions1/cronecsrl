@@ -7,6 +7,7 @@ import { isMySQLConfigured } from "@/lib/db-mysql"
 import * as pgData from "@/lib/data-pg"
 import * as mysqlData from "@/lib/data-mysql"
 import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 export type Certification = {
   id: string
@@ -63,10 +64,12 @@ export async function saveCertification(data: Record<string, unknown>): Promise<
 
     if (isPostgresConfigured()) {
       await pgData.upsertCertification(record as unknown as Record<string, unknown>)
+      revalidatePublicContent([...REVALIDATE.certifications])
       return { ok: true, id }
     }
     if (isMySQLConfigured()) {
       await mysqlData.upsertCertification(record as unknown as Record<string, unknown>)
+      revalidatePublicContent([...REVALIDATE.certifications])
       return { ok: true, id }
     }
 
@@ -76,6 +79,7 @@ export async function saveCertification(data: Record<string, unknown>): Promise<
     else list.push(record)
     list.sort((a, b) => a.order_index - b.order_index)
     await writeData("certifications.json", list)
+    revalidatePublicContent([...REVALIDATE.certifications])
     return { ok: true, id }
   } catch (e) {
     console.error("saveCertification:", e)
@@ -91,15 +95,18 @@ export async function deleteCertification(id: string): Promise<{ ok: boolean; er
 
     if (isPostgresConfigured()) {
       await pgData.deleteCertificationById(id)
+      revalidatePublicContent([...REVALIDATE.certifications])
       return { ok: true }
     }
     if (isMySQLConfigured()) {
       await mysqlData.deleteCertificationById(id)
+      revalidatePublicContent([...REVALIDATE.certifications])
       return { ok: true }
     }
 
     const list = await readData<Certification[]>("certifications.json")
     await writeData("certifications.json", list.filter((c) => c.id !== id))
+    revalidatePublicContent([...REVALIDATE.certifications])
     return { ok: true }
   } catch (e) {
     console.error("deleteCertification:", e)
