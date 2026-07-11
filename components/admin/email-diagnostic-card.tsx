@@ -1,13 +1,14 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Send, CheckCircle2, AlertCircle } from "lucide-react"
+import { Mail, Send, CheckCircle2, AlertCircle, Settings } from "lucide-react"
 import { sendTestEmailAction } from "@/app/actions/admin/test-email"
 
 type EmailSummary = {
@@ -19,6 +20,8 @@ type EmailSummary = {
   smtpPort: number
   smtpUser: string
   hasPassword: boolean
+  source?: string
+  storedInDb?: boolean
 }
 
 export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
@@ -41,7 +44,7 @@ export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Mail className="h-5 w-5" />
-          Correo electrónico (SMTP / Resend)
+          Correo electrónico (SMTP)
         </CardTitle>
         <CardDescription>
           Notificaciones de contacto, boletín y recuperación de contraseña admin.
@@ -53,23 +56,34 @@ export function EmailDiagnosticCard({ summary }: { summary: EmailSummary }) {
             {summary.configured ? "Configurado" : "Sin configurar"}
           </Badge>
           {summary.provider && <Badge variant="outline">Proveedor: {summary.provider.toUpperCase()}</Badge>}
+          {summary.storedInDb && <Badge variant="outline">Guardado en panel</Badge>}
         </div>
         <dl className="grid gap-2 text-sm">
           <div><dt className="text-muted-foreground inline">Remitente: </dt><dd className="inline">{summary.from}</dd></div>
           <div><dt className="text-muted-foreground inline">Notificaciones admin: </dt><dd className="inline">{summary.adminTo.join(", ")}</dd></div>
           <div><dt className="text-muted-foreground inline">SMTP Ferozo: </dt><dd className="inline">{summary.smtpUser} @ {summary.smtpHost}:{summary.smtpPort}</dd></div>
-          <div><dt className="text-muted-foreground inline">Contraseña SMTP: </dt><dd className="inline">{summary.hasPassword ? "Configurada" : "Falta SMTP_PASS"}</dd></div>
+          <div><dt className="text-muted-foreground inline">Contraseña SMTP: </dt><dd className="inline">{summary.hasPassword ? "Configurada" : "Falta contraseña"}</dd></div>
         </dl>
         {!summary.configured && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {summary.hasPassword
-                ? "Revise host/usuario SMTP en Vercel."
-                : "Agregue SMTP_PASS en Vercel (contraseña de info@cronecsrl.com.ar en Ferozo). Host: c2751446.ferozo.com:465"}
+              Configurá el correo en{" "}
+              <Link href="/admin/correo" className="font-medium underline">
+                Admin → Correo
+              </Link>
+              : email, contraseña y servidor Ferozo (c2751446.ferozo.com:465).
             </AlertDescription>
           </Alert>
         )}
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-2">
+            <Link href="/admin/correo">
+              <Settings className="h-4 w-4" />
+              Configurar correo
+            </Link>
+          </Button>
+        </div>
         {summary.configured && (
           <div className="flex flex-col sm:flex-row gap-3 items-end pt-2 border-t">
             <div className="flex-1 space-y-2 w-full">

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     })
     await writeData("messages.json", list)
 
-    if (isEmailConfigured()) {
+    if (await isEmailConfigured()) {
       void sendAdminNotification({
         subject: `Nuevo contacto: ${service} — CRONEC SRL`,
         html: buildContactAdminHtml({ name, email, phone, company, service, message }),

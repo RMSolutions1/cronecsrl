@@ -25,7 +25,7 @@ function htmlToText(html: string): string {
 }
 
 async function sendViaSmtp(options: SendEmailOptions, from: string): Promise<SendEmailResult> {
-  const transporter = nodemailer.createTransport(getSmtpSettings())
+  const transporter = nodemailer.createTransport(await getSmtpSettings())
   try {
     await transporter.sendMail({
       from,
@@ -77,11 +77,14 @@ async function sendViaResend(options: SendEmailOptions, from: string): Promise<S
 
 /** Envía correo vía SMTP (prioridad) o Resend. */
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
-  if (!isEmailConfigured()) {
-    return { ok: false, error: "Correo no configurado: definí SMTP_* o RESEND_API_KEY." }
+  if (!(await isEmailConfigured())) {
+    return {
+      ok: false,
+      error: "Correo no configurado: configurá SMTP en Admin → Correo o definí SMTP_* / RESEND_API_KEY.",
+    }
   }
 
-  const cfg = getEmailConfig()
+  const cfg = await getEmailConfig()
   const replyTo = options.replyTo ?? cfg.replyTo
 
   if (cfg.provider === "smtp") {
@@ -92,6 +95,6 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 
 /** Notifica al equipo admin (contacto, boletín, etc.). */
 export async function sendAdminNotification(options: Omit<SendEmailOptions, "to">): Promise<SendEmailResult> {
-  const cfg = getEmailConfig()
+  const cfg = await getEmailConfig()
   return sendEmail({ ...options, to: cfg.adminTo })
 }

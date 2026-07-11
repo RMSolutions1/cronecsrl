@@ -20,10 +20,10 @@ export async function requestPasswordResetAction(formData: FormData): Promise<Re
     return { ok: false, message: "Demasiados intentos. Espere unos minutos e intente de nuevo." }
   }
 
-  if (!isEmailConfigured()) {
+  if (!(await isEmailConfigured())) {
     return {
       ok: false,
-      message: "El correo no está configurado en el servidor. Contacte al soporte técnico.",
+      message: "El correo no está configurado. Configúrelo en Admin → Correo.",
     }
   }
 
@@ -53,7 +53,7 @@ export async function requestPasswordResetAction(formData: FormData): Promise<Re
 
   if (!sent.ok) {
     console.error("[password-reset]", sent.error)
-    return { ok: false, message: "No se pudo enviar el correo. Verifique la configuración SMTP en Vercel." }
+    return { ok: false, message: "No se pudo enviar el correo. Verifique la configuración en Admin → Correo." }
   }
 
   return { ok: true, message: genericOk }

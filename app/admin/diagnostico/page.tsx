@@ -24,7 +24,7 @@ export default async function DiagnosticoPage() {
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-3xl font-bold">Diagnóstico del sistema</h1>
 
-        <EmailDiagnosticCard summary={getEmailConfigSummary()} />
+        <EmailDiagnosticCard summary={await getEmailConfigSummary()} />
 
         <DbVerifyCard />
 

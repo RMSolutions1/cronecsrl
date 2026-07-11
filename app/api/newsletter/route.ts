@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: result.message }, { status: 400 })
     }
 
-    if (!result.duplicate && isEmailConfigured()) {
+    if (!result.duplicate && (await isEmailConfigured())) {
       const normalized = email.trim().toLowerCase()
       void sendAdminNotification({
         subject: "Nueva suscripción al boletín — CRONEC SRL",

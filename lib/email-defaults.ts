@@ -10,5 +10,13 @@ export const FEROZO_SMTP = {
   user: "info@cronecsrl.com.ar",
 } as const
 
+/** Datos del panel Ferozo / DonWeb (correo entrante). */
+export const FEROZO_MAIL = {
+  host: FEROZO_SMTP.host,
+  ssl: true,
+  imapPort: 993,
+  pop3Port: 995,
+} as const
+
 /** Correo público del sitio (footer, contacto). Distinto del casillero SMTP. */
 export const PUBLIC_CONTACT_EMAIL = "cronec@cronecsrl.com.ar"

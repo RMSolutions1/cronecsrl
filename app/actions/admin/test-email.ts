@@ -13,17 +13,17 @@ export async function sendTestEmailAction(formData: FormData): Promise<TestEmail
     return { ok: false, message: "No autorizado." }
   }
 
-  if (!isEmailConfigured()) {
+  if (!(await isEmailConfigured())) {
     return {
       ok: false,
-      message: "Correo no configurado. Definí SMTP_HOST, SMTP_USER y SMTP_PASS (o RESEND_API_KEY) en Vercel.",
+      message: "Correo no configurado. Configúrelo en Admin → Correo (email, contraseña y servidor SMTP).",
     }
   }
 
   const to = String(formData.get("to") ?? user.email).trim()
   if (!to) return { ok: false, message: "Indique un destinatario." }
 
-  const summary = getEmailConfigSummary()
+  const summary = await getEmailConfigSummary()
   const result = await sendEmail({
     to,
     subject: "Prueba de correo — CRONEC SRL Admin",
