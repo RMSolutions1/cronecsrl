@@ -23,6 +23,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import { images } from "@/lib/images"
+import type { HeroSlide } from "@/lib/hero-images"
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HardHat,
@@ -35,7 +36,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 const colors = ["text-green-600", "text-amber-600", "text-primary", "text-orange-600", "text-blue-600", "text-red-600", "text-slate-600", "text-indigo-600"]
 const bgColors = ["bg-green-50", "bg-amber-50", "bg-primary/10", "bg-orange-50", "bg-blue-50", "bg-red-50", "bg-slate-50", "bg-indigo-50"]
 
-const heroImages = [
+const fallbackHeroImages: HeroSlide[] = [
   { src: images.heroServicios[0], alt: "Equipo de ingenieros CRONEC" },
   { src: images.heroServicios[1], alt: "Construcción de estructura metálica CRONEC" },
   { src: images.heroServicios[2], alt: "Obra civil en construcción CRONEC" },
@@ -81,7 +82,14 @@ const defaultServicesDetail = [
   { id: "servicios-especiales", icon: Wrench, title: "Servicios Especiales", href: "/servicios/servicios-especiales", description: "Reparacion y mantenimiento de infraestructura critica.", projects: "140+", color: "text-red-600", bgColor: "bg-red-50", image: images.services.serviciosEspeciales, features: ["Puentes metalicos", "Estribos"], benefits: ["Estructuras metalicas"], },
 ]
 
-export function ServiciosPageContent({ servicesFromDb = [] }: { servicesFromDb?: ServiceFromDb[] }) {
+export function ServiciosPageContent({
+  servicesFromDb = [],
+  heroSlides,
+}: {
+  servicesFromDb?: ServiceFromDb[]
+  heroSlides?: HeroSlide[]
+}) {
+  const heroImages = heroSlides?.length ? heroSlides : fallbackHeroImages
   const servicesDetail =
     servicesFromDb.length > 0
       ? servicesFromDb.map((s, i) => {

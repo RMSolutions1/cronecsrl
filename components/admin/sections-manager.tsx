@@ -70,15 +70,13 @@ export function SectionsManager() {
 
   async function handleSave(next: SectionsData) {
     setSaving(true)
-    try {
-      await saveSections(next)
-      toast({ title: "Secciones guardadas" })
+    const result = await saveSections(next)
+    setSaving(false)
+    if (result.ok) {
+      toast({ title: "Secciones guardadas", description: "Los cambios ya están en la página de inicio." })
       setData(next)
-      load()
-    } catch (e) {
-      toast({ title: "Error", description: "No se pudo guardar", variant: "destructive" })
-    } finally {
-      setSaving(false)
+    } else {
+      toast({ title: "Error", description: result.error ?? "No se pudo guardar", variant: "destructive" })
     }
   }
 

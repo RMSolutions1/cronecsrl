@@ -7,6 +7,8 @@ import { isPostgresConfigured } from "@/lib/db-pg"
 import { isMySQLConfigured } from "@/lib/db-mysql"
 import * as pgData from "@/lib/data-pg"
 import * as mysqlData from "@/lib/data-mysql"
+import * as pgBlobs from "@/lib/cms-json-blobs-pg"
+import * as mysqlBlobs from "@/lib/cms-json-blobs-mysql"
 
 const DATA_DIR = path.join(process.cwd(), "data")
 
@@ -21,6 +23,9 @@ const DB_FILES = new Set([
   "certifications.json",
   "clients.json",
   "admins.json",
+  "calculadora.json",
+  "sections.json",
+  "nosotros.json",
 ])
 
 function isPostgresBackend(): boolean {
@@ -65,6 +70,9 @@ async function writeToFile(filename: string, data: unknown): Promise<void> {
 /** Archivos que son listas; si la BD devuelve array vacío, hacemos fallback a JSON */
 const LIST_FILES = new Set(["projects.json", "services.json", "blog.json", "messages.json", "testimonials.json", "hero-images.json", "certifications.json", "clients.json"])
 
+/** Objetos JSON del CMS en site_config (calculadora, secciones, nosotros). */
+const OBJECT_FILES = new Set(["calculadora.json", "sections.json", "nosotros.json"])
+
 async function readFromDb<T>(filename: string): Promise<T | null> {
   const db = isPostgresBackend() ? pgData : mysqlData
   try {
@@ -108,6 +116,21 @@ async function readFromDb<T>(filename: string): Promise<T | null> {
       const data = await db.readAdmins()
       return (Array.isArray(data) ? data : []) as T
     }
+    if (filename === "calculadora.json") {
+      const blobs = isPostgresBackend() ? pgBlobs : mysqlBlobs
+      const data = await blobs.readCmsJsonBlob(filename)
+      return (data ?? {}) as T
+    }
+    if (filename === "sections.json") {
+      const blobs = isPostgresBackend() ? pgBlobs : mysqlBlobs
+      const data = await blobs.readCmsJsonBlob(filename)
+      return (data ?? {}) as T
+    }
+    if (filename === "nosotros.json") {
+      const blobs = isPostgresBackend() ? pgBlobs : mysqlBlobs
+      const data = await blobs.readCmsJsonBlob(filename)
+      return (data ?? {}) as T
+    }
   } catch {
     // BD falló (ej. tabla no existe): fallback a JSON
   }
@@ -126,6 +149,7 @@ export async function readData<T>(filename: string): Promise<T> {
     const fromDb = await readFromDb<T>(filename)
     const isList = LIST_FILES.has(filename)
     const isSettingsOrAdmins = filename === "settings.json" || filename === "admins.json"
+    const isObjectCms = OBJECT_FILES.has(filename)
     if (fromDb !== null && hasContent(fromDb, isList)) {
       if (filename === "settings.json" && typeof fromDb === "object" && !Array.isArray(fromDb)) {
         try {
@@ -138,7 +162,7 @@ export async function readData<T>(filename: string): Promise<T> {
       }
       return fromDb
     }
-    if (!hasContent(fromDb, isList) && (isList || isSettingsOrAdmins)) {
+    if (!hasContent(fromDb, isList) && (isList || isSettingsOrAdmins || isObjectCms)) {
       try {
         const fromFile = await readFromFile<T>(filename)
         if (hasContent(fromFile, isList)) return fromFile
@@ -165,6 +189,9 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "certifications.json") { await pgData.writeCertifications(data as unknown[]); return }
       if (filename === "clients.json") { await pgData.writeClients(data as unknown[]); return }
       if (filename === "admins.json") { await pgData.writeAdmins(data as unknown[]); return }
+      if (filename === "calculadora.json") { await pgBlobs.writeCmsJsonBlob(filename, data); return }
+      if (filename === "sections.json") { await pgBlobs.writeCmsJsonBlob(filename, data); return }
+      if (filename === "nosotros.json") { await pgBlobs.writeCmsJsonBlob(filename, data); return }
       return
     } catch (e) {
       throw e
@@ -182,6 +209,9 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
       if (filename === "certifications.json") { await mysqlData.writeCertifications(data as unknown[]); return }
       if (filename === "clients.json") { await mysqlData.writeClients(data as unknown[]); return }
       if (filename === "admins.json") { await mysqlData.writeAdmins(data as unknown[]); return }
+      if (filename === "calculadora.json") { await mysqlBlobs.writeCmsJsonBlob(filename, data); return }
+      if (filename === "sections.json") { await mysqlBlobs.writeCmsJsonBlob(filename, data); return }
+      if (filename === "nosotros.json") { await mysqlBlobs.writeCmsJsonBlob(filename, data); return }
       return
     } catch (e) {
       throw e

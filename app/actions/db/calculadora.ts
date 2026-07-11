@@ -1,11 +1,9 @@
 "use server"
 
-import { readFile, writeFile, mkdir } from "fs/promises"
-import path from "path"
+import { readData, writeData } from "@/lib/data"
 import { getCurrentUser } from "@/lib/auth"
-
-const DATA_DIR = path.join(process.cwd(), "data")
-const CALC_PATH = path.join(DATA_DIR, "calculadora.json")
+import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 export type ProjectTypeItem = { id: string; label: string; description: string; pricePerM2: number }
 export type QualityLevelItem = { id: string; label: string; multiplier: number; description: string }
@@ -17,7 +15,7 @@ export type CalculadoraData = {
   urgencyLevels?: UrgencyLevelItem[]
 }
 
-const defaults: CalculadoraData = {
+export const calculadoraDefaults: CalculadoraData = {
   projectTypes: [
     { id: "civil", label: "Obras Civiles", description: "Edificios, viviendas, locales", pricePerM2: 850 },
     { id: "electrica", label: "Obra Electrica", description: "Instalaciones eléctricas", pricePerM2: 450 },
@@ -36,31 +34,37 @@ const defaults: CalculadoraData = {
   ],
 }
 
-async function readCalculadoraRaw(): Promise<CalculadoraData> {
+async function readCalculadoraMerged(): Promise<CalculadoraData> {
   try {
-    await mkdir(DATA_DIR, { recursive: true })
-    const raw = await readFile(CALC_PATH, "utf-8")
-    const data = JSON.parse(raw)
-    if (data && typeof data === "object") return { ...defaults, ...data }
-    return defaults
+    const raw = await readData<CalculadoraData>("calculadora.json")
+    if (raw && typeof raw === "object") return { ...calculadoraDefaults, ...raw }
   } catch {
-    return defaults
+    // fallback
   }
+  return calculadoraDefaults
 }
 
 export async function getCalculadoraPublic(): Promise<CalculadoraData> {
-  return readCalculadoraRaw()
+  return readCalculadoraMerged()
 }
 
 export async function getCalculadoraAdmin(): Promise<CalculadoraData> {
   const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) return defaults
-  return readCalculadoraRaw()
+  if (!user || !["admin", "superadmin"].includes(user.role)) return calculadoraDefaults
+  return readCalculadoraMerged()
 }
 
-export async function saveCalculadora(data: CalculadoraData) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
-  const current = await readCalculadoraRaw()
-  await writeFile(CALC_PATH, JSON.stringify({ ...current, ...data }, null, 2), "utf-8")
+export async function saveCalculadora(data: CalculadoraData): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const user = await getCurrentUser()
+    if (!user || !["admin", "superadmin"].includes(user.role)) return { ok: false, error: "No autorizado" }
+    assertDbWritable()
+    const current = await readCalculadoraMerged()
+    await writeData("calculadora.json", { ...current, ...data })
+    revalidatePublicContent([...REVALIDATE.calculadora])
+    return { ok: true }
+  } catch (e) {
+    console.error("saveCalculadora:", e)
+    return { ok: false, error: formatAdminPersistError(e, "guardar") }
+  }
 }

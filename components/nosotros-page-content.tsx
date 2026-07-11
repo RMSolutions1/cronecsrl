@@ -22,8 +22,9 @@ import {
 import Link from "next/link"
 import { images } from "@/lib/images"
 import type { NosotrosData } from "@/app/actions/db/nosotros"
+import type { HeroSlide } from "@/lib/hero-images"
 
-const heroImages = [
+const fallbackHeroImages: HeroSlide[] = [
   { src: images.heroNosotros[0], alt: "Equipo CRONEC" },
   { src: images.heroNosotros[1], alt: "Nosotros CRONEC" },
   { src: images.heroNosotros[2], alt: "Trabajo en equipo CRONEC" },
@@ -49,11 +50,14 @@ export function NosotrosPageContent({
   data,
   mission,
   vision,
+  heroSlides,
 }: {
   data: NosotrosData
   mission?: string | null
   vision?: string | null
+  heroSlides?: HeroSlide[]
 }) {
+  const heroImages = heroSlides?.length ? heroSlides : fallbackHeroImages
   const hero = data?.hero ?? {}
   const stats = (data?.stats?.length ? data.stats : defaultStats).slice(0, 4)
   const historySection = data?.historySection ?? { title: "Nuestra Historia", subtitle: "Desde 2009, CRONEC SRL mantiene su compromiso con la excelencia en construcción y servicios técnicos." }

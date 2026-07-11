@@ -1,11 +1,9 @@
 "use server"
 
-import { readFile, writeFile, mkdir } from "fs/promises"
-import path from "path"
+import { readData, writeData } from "@/lib/data"
 import { getCurrentUser } from "@/lib/auth"
-
-const DATA_DIR = path.join(process.cwd(), "data")
-const SECTIONS_PATH = path.join(DATA_DIR, "sections.json")
+import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 export type WhyCronecSection = {
   title: string
@@ -26,11 +24,9 @@ export type SectionsData = {
   process?: ProcessSection
 }
 
-async function readSectionsRaw(): Promise<SectionsData> {
+async function readSectionsMerged(): Promise<SectionsData> {
   try {
-    await mkdir(DATA_DIR, { recursive: true })
-    const raw = await readFile(SECTIONS_PATH, "utf-8")
-    const data = JSON.parse(raw)
+    const data = await readData<SectionsData>("sections.json")
     return data && typeof data === "object" ? data : {}
   } catch {
     return {}
@@ -38,19 +34,26 @@ async function readSectionsRaw(): Promise<SectionsData> {
 }
 
 export async function getSectionsPublic(): Promise<SectionsData> {
-  return readSectionsRaw()
+  return readSectionsMerged()
 }
 
 export async function getSectionsAdmin(): Promise<SectionsData> {
   const user = await getCurrentUser()
   if (!user || !["admin", "superadmin"].includes(user.role)) return {}
-  return readSectionsRaw()
+  return readSectionsMerged()
 }
 
-export async function saveSections(data: SectionsData) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
-  const current = await readSectionsRaw()
-  const next = { ...current, ...data }
-  await writeFile(SECTIONS_PATH, JSON.stringify(next, null, 2), "utf-8")
+export async function saveSections(data: SectionsData): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const user = await getCurrentUser()
+    if (!user || !["admin", "superadmin"].includes(user.role)) return { ok: false, error: "No autorizado" }
+    assertDbWritable()
+    const current = await readSectionsMerged()
+    await writeData("sections.json", { ...current, ...data })
+    revalidatePublicContent([...REVALIDATE.home])
+    return { ok: true }
+  } catch (e) {
+    console.error("saveSections:", e)
+    return { ok: false, error: formatAdminPersistError(e, "guardar") }
+  }
 }

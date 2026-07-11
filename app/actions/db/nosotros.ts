@@ -1,11 +1,9 @@
 "use server"
 
-import { readFile, writeFile, mkdir } from "fs/promises"
-import path from "path"
+import { readData, writeData } from "@/lib/data"
 import { getCurrentUser } from "@/lib/auth"
-
-const DATA_DIR = path.join(process.cwd(), "data")
-const NOSOTROS_PATH = path.join(DATA_DIR, "nosotros.json")
+import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
+import { revalidatePublicContent, REVALIDATE } from "@/lib/revalidate-public"
 
 export type NosotrosHero = { badge?: string; title?: string; subtitle?: string }
 export type NosotrosStatsItem = { value: string; label: string }
@@ -29,11 +27,9 @@ export type NosotrosData = {
   cta?: { title?: string; paragraph?: string }
 }
 
-async function readNosotrosRaw(): Promise<NosotrosData> {
+async function readNosotrosMerged(): Promise<NosotrosData> {
   try {
-    await mkdir(DATA_DIR, { recursive: true })
-    const raw = await readFile(NOSOTROS_PATH, "utf-8")
-    const data = JSON.parse(raw)
+    const data = await readData<NosotrosData>("nosotros.json")
     return data && typeof data === "object" ? data : {}
   } catch {
     return {}
@@ -41,18 +37,26 @@ async function readNosotrosRaw(): Promise<NosotrosData> {
 }
 
 export async function getNosotrosPublic(): Promise<NosotrosData> {
-  return readNosotrosRaw()
+  return readNosotrosMerged()
 }
 
 export async function getNosotrosAdmin(): Promise<NosotrosData> {
   const user = await getCurrentUser()
   if (!user || !["admin", "superadmin"].includes(user.role)) return {}
-  return readNosotrosRaw()
+  return readNosotrosMerged()
 }
 
-export async function saveNosotros(data: NosotrosData) {
-  const user = await getCurrentUser()
-  if (!user || !["admin", "superadmin"].includes(user.role)) throw new Error("No autorizado")
-  const current = await readNosotrosRaw()
-  await writeFile(NOSOTROS_PATH, JSON.stringify({ ...current, ...data }, null, 2), "utf-8")
+export async function saveNosotros(data: NosotrosData): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const user = await getCurrentUser()
+    if (!user || !["admin", "superadmin"].includes(user.role)) return { ok: false, error: "No autorizado" }
+    assertDbWritable()
+    const current = await readNosotrosMerged()
+    await writeData("nosotros.json", { ...current, ...data })
+    revalidatePublicContent([...REVALIDATE.nosotros])
+    return { ok: true }
+  } catch (e) {
+    console.error("saveNosotros:", e)
+    return { ok: false, error: formatAdminPersistError(e, "guardar") }
+  }
 }

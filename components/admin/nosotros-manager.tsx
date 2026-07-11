@@ -37,16 +37,14 @@ export function NosotrosManager() {
 
   async function handleSave(updates: Partial<NosotrosData>) {
     setSaving(true)
-    try {
-      const next = { ...data, ...updates }
-      await saveNosotros(next)
+    const next = { ...data, ...updates }
+    const result = await saveNosotros(next)
+    setSaving(false)
+    if (result.ok) {
       setData(next)
-      toast({ title: "Nosotros guardado" })
-      load()
-    } catch (e) {
-      toast({ title: "Error", description: "No se pudo guardar", variant: "destructive" })
-    } finally {
-      setSaving(false)
+      toast({ title: "Nosotros guardado", description: "Los cambios ya están en /nosotros." })
+    } else {
+      toast({ title: "Error", description: result.error ?? "No se pudo guardar", variant: "destructive" })
     }
   }
 

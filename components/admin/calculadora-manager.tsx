@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, Calculator, Gauge, Clock } from "lucide-react"
+import { Save, Calculator, Gauge, Clock, Plus, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+
+function newItemId(prefix: string) {
+  return `${prefix}-${Date.now().toString(36)}`
+}
 
 export function CalculadoraManager() {
   const [data, setData] = useState<CalculadoraData>({})
@@ -26,7 +30,7 @@ export function CalculadoraManager() {
     try {
       const d = await getCalculadoraAdmin()
       setData(d ?? {})
-    } catch (e) {
+    } catch {
       toast({ title: "Error", description: "No se pudo cargar", variant: "destructive" })
     } finally {
       setLoading(false)
@@ -35,15 +39,14 @@ export function CalculadoraManager() {
 
   async function handleSave(updates: Partial<CalculadoraData>) {
     setSaving(true)
-    try {
-      await saveCalculadora({ ...data, ...updates })
-      setData((prev) => ({ ...prev, ...updates }))
-      toast({ title: "Cotizador guardado" })
-      load()
-    } catch (e) {
-      toast({ title: "Error", description: "No se pudo guardar", variant: "destructive" })
-    } finally {
-      setSaving(false)
+    const next = { ...data, ...updates }
+    const result = await saveCalculadora(next)
+    setSaving(false)
+    if (result.ok) {
+      setData(next)
+      toast({ title: "Cotizador guardado", description: "Los cambios ya están en la web pública." })
+    } else {
+      toast({ title: "Error", description: result.error ?? "No se pudo guardar", variant: "destructive" })
     }
   }
 
@@ -65,12 +68,12 @@ export function CalculadoraManager() {
           <Card>
             <CardHeader>
               <CardTitle>Tipos de proyecto</CardTitle>
-              <CardDescription>ID, etiqueta, descripción y precio por m².</CardDescription>
+              <CardDescription>Podés agregar todos los tipos y precios por m² que necesites. ID único (sin espacios).</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {projectTypes.map((t, i) => (
-                <div key={i} className="rounded border p-4 flex flex-wrap gap-2">
-                  <Input className="w-24" placeholder="ID" value={t.id} onChange={(e) => {
+                <div key={t.id || i} className="rounded border p-4 flex flex-wrap gap-2 items-start">
+                  <Input className="w-28" placeholder="ID" value={t.id} onChange={(e) => {
                     const n = [...projectTypes]
                     n[i] = { ...n[i], id: e.target.value }
                     setData((d) => ({ ...d, projectTypes: n }))
@@ -90,9 +93,24 @@ export function CalculadoraManager() {
                     n[i] = { ...n[i], pricePerM2: Number(e.target.value) || 0 }
                     setData((d) => ({ ...d, projectTypes: n }))
                   }} />
+                  <Button type="button" size="icon" variant="ghost" className="text-red-600 shrink-0" onClick={() => {
+                    setData((d) => ({ ...d, projectTypes: projectTypes.filter((_, j) => j !== i) }))
+                  }}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
-              <Button onClick={() => handleSave({ projectTypes })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar</Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" onClick={() => {
+                  setData((d) => ({
+                    ...d,
+                    projectTypes: [...projectTypes, { id: newItemId("tipo"), label: "", description: "", pricePerM2: 0 }],
+                  }))
+                }}>
+                  <Plus className="h-4 w-4 mr-2" /> Agregar tipo
+                </Button>
+                <Button onClick={() => handleSave({ projectTypes })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar tipos</Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -100,12 +118,12 @@ export function CalculadoraManager() {
           <Card>
             <CardHeader>
               <CardTitle>Niveles de calidad</CardTitle>
-              <CardDescription>ID, etiqueta, multiplicador y descripción.</CardDescription>
+              <CardDescription>Multiplicadores sobre el precio base. Agregá o quitá niveles libremente.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {qualityLevels.map((q, i) => (
-                <div key={i} className="rounded border p-4 flex flex-wrap gap-2">
-                  <Input className="w-24" placeholder="ID" value={q.id} onChange={(e) => {
+                <div key={q.id || i} className="rounded border p-4 flex flex-wrap gap-2 items-start">
+                  <Input className="w-28" placeholder="ID" value={q.id} onChange={(e) => {
                     const n = [...qualityLevels]
                     n[i] = { ...n[i], id: e.target.value }
                     setData((d) => ({ ...d, qualityLevels: n }))
@@ -125,9 +143,24 @@ export function CalculadoraManager() {
                     n[i] = { ...n[i], description: e.target.value }
                     setData((d) => ({ ...d, qualityLevels: n }))
                   }} />
+                  <Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => {
+                    setData((d) => ({ ...d, qualityLevels: qualityLevels.filter((_, j) => j !== i) }))
+                  }}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
-              <Button onClick={() => handleSave({ qualityLevels })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar</Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" onClick={() => {
+                  setData((d) => ({
+                    ...d,
+                    qualityLevels: [...qualityLevels, { id: newItemId("calidad"), label: "", multiplier: 1, description: "" }],
+                  }))
+                }}>
+                  <Plus className="h-4 w-4 mr-2" /> Agregar nivel
+                </Button>
+                <Button onClick={() => handleSave({ qualityLevels })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar calidad</Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -135,12 +168,12 @@ export function CalculadoraManager() {
           <Card>
             <CardHeader>
               <CardTitle>Plazos</CardTitle>
-              <CardDescription>ID, etiqueta, multiplicador y texto de días.</CardDescription>
+              <CardDescription>Multiplicador y texto de días estimados por urgencia.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {urgencyLevels.map((u, i) => (
-                <div key={i} className="rounded border p-4 flex flex-wrap gap-2">
-                  <Input className="w-24" placeholder="ID" value={u.id} onChange={(e) => {
+                <div key={u.id || i} className="rounded border p-4 flex flex-wrap gap-2 items-start">
+                  <Input className="w-28" placeholder="ID" value={u.id} onChange={(e) => {
                     const n = [...urgencyLevels]
                     n[i] = { ...n[i], id: e.target.value }
                     setData((d) => ({ ...d, urgencyLevels: n }))
@@ -160,9 +193,24 @@ export function CalculadoraManager() {
                     n[i] = { ...n[i], days: e.target.value }
                     setData((d) => ({ ...d, urgencyLevels: n }))
                   }} />
+                  <Button type="button" size="icon" variant="ghost" className="text-red-600" onClick={() => {
+                    setData((d) => ({ ...d, urgencyLevels: urgencyLevels.filter((_, j) => j !== i) }))
+                  }}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
-              <Button onClick={() => handleSave({ urgencyLevels })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar</Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" onClick={() => {
+                  setData((d) => ({
+                    ...d,
+                    urgencyLevels: [...urgencyLevels, { id: newItemId("plazo"), label: "", multiplier: 1, days: "" }],
+                  }))
+                }}>
+                  <Plus className="h-4 w-4 mr-2" /> Agregar plazo
+                </Button>
+                <Button onClick={() => handleSave({ urgencyLevels })} disabled={saving} className="gap-2"><Save className="h-4 w-4" /> Guardar plazos</Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

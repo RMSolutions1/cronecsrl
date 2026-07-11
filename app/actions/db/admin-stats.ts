@@ -20,12 +20,15 @@ export async function getAdminStats() {
   ])
   const blogList = Array.isArray(blog) ? blog : []
   const blogPublished = blogList.filter((p) => p.status === "published").length
+  const messagesList = Array.isArray(messages) ? messages : []
+  const unreadMessages = messagesList.filter((m) => !(m as { is_read?: boolean }).is_read).length
   return {
     users: Array.isArray(admins) ? admins.length : 0,
     projects: Array.isArray(projects) ? projects.length : 0,
     services: Array.isArray(services) ? services.length : 0,
     testimonials: Array.isArray(testimonials) ? testimonials.length : 0,
-    contact_submissions: Array.isArray(messages) ? messages.length : 0,
+    contact_submissions: messagesList.length,
+    contact_unread: unreadMessages,
     blog_posts: blogList.length,
     blog_published: blogPublished,
   }
