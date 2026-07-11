@@ -8,7 +8,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 import { Providers } from "@/components/providers"
 import { getCompanyInfo } from "@/lib/data-read"
 import { getServicesPublic } from "@/lib/data-read"
-import { CRONEC_GEO, CRONEC_OFFICIAL, getCompanyFullAddress } from "@/lib/company-defaults"
+import { CRONEC_OFFICIAL, getCompanyFullAddress, resolveCompanyGeo } from "@/lib/company-defaults"
 import "./globals.css"
 
 /** Datos de empresa siempre actuales (configuración del dashboard) */
@@ -102,8 +102,9 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
   const tel = (settings?.phone as string) ?? "+54-9-387-536-1210"
   const email = (settings?.email as string) ?? "cronec@cronecsrl.com.ar"
   const addressStr = (settings?.address as string) ?? getCompanyFullAddress()
-  const lat = Number(settings?.latitude ?? CRONEC_GEO.latitude)
-  const lng = Number(settings?.longitude ?? CRONEC_GEO.longitude)
+  const geo = resolveCompanyGeo(settings)
+  const lat = geo.latitude
+  const lng = geo.longitude
   const sameAs: string[] = []
   if (settings?.facebook_url) sameAs.push(settings.facebook_url as string)
   if (settings?.instagram_url) sameAs.push(settings.instagram_url as string)

@@ -31,21 +31,30 @@ export function getCompanyAddressLines(): [string, string] {
   return [c.street, `${c.neighborhood}, ${c.city}, ${c.country} (${c.postalCode})`]
 }
 
-/** Coordenadas del Pasaje Soldado (Ramón) Salazar, barrio Santa Ana — Salta Capital. */
+/** Coordenadas exactas del domicilio fiscal (Pasaje Soldado Salazar 196). */
 export const CRONEC_GEO = {
-  latitude: -24.8576,
-  longitude: -65.4644,
+  latitude: -24.859937,
+  longitude: -65.464272,
 } as const
 
-export function getGoogleMapsSearchUrl(address?: string): string {
-  const q = encodeURIComponent(address?.trim() || getCompanyFullAddress())
-  return `https://maps.google.com/?q=${q}`
+export type GeoCoords = { latitude: number; longitude: number }
+
+export function resolveCompanyGeo(settings?: { latitude?: unknown; longitude?: unknown } | null): GeoCoords {
+  const lat = Number(settings?.latitude)
+  const lng = Number(settings?.longitude)
+  if (Number.isFinite(lat) && Number.isFinite(lng)) return { latitude: lat, longitude: lng }
+  return { latitude: CRONEC_GEO.latitude, longitude: CRONEC_GEO.longitude }
 }
 
-/** Embed sin API key: Google geocodifica la dirección fiscal. */
-export function getGoogleMapsEmbedUrl(address?: string): string {
-  const q = encodeURIComponent(address?.trim() || getCompanyFullAddress())
-  return `https://www.google.com/maps?q=${q}&hl=es&z=17&output=embed`
+export function getGoogleMapsSearchUrl(_address?: string, geo?: GeoCoords): string {
+  const coords = geo ?? resolveCompanyGeo()
+  return `https://maps.google.com/?q=${coords.latitude},${coords.longitude}`
+}
+
+/** Embed sin API key: usa coordenadas exactas para el pin. */
+export function getGoogleMapsEmbedUrl(geo?: GeoCoords): string {
+  const coords = geo ?? resolveCompanyGeo()
+  return `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}&hl=es&z=18&output=embed`
 }
 
 export function getHowToArriveText(): string {

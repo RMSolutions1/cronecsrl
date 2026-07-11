@@ -41,6 +41,7 @@ import {
   getGoogleMapsEmbedUrl,
   getGoogleMapsSearchUrl,
   getHowToArriveText,
+  resolveCompanyGeo,
 } from "@/lib/company-defaults"
 
 type ContactInfoItem = {
@@ -81,14 +82,15 @@ export default function ContactoPage() {
         const email = (settings.email as string) || ""
         const address = (settings.address as string) || getCompanyFullAddress()
         const horario = (settings.horario as string) || "Lun - Vie: 8:00 - 18:00"
-        setMapEmbedUrl(getGoogleMapsEmbedUrl(address))
+        const geo = resolveCompanyGeo(settings)
+        setMapEmbedUrl(getGoogleMapsEmbedUrl(geo))
         setHowToArrive(getHowToArriveText())
         const items: ContactInfoItem[] = []
         if (phone) items.push({ icon: Phone, title: "Teléfono", details: [phone, "Disponible en horario de oficina"], link: `tel:${phone.replace(/\s/g, "")}` })
         if (email) items.push({ icon: Mail, title: "Email", details: [email, "Respuesta en 24 horas"], link: `mailto:${email}` })
         if (address?.trim()) {
           const details = address.split(",").map((s) => s.trim()).filter(Boolean)
-          if (details.length) items.push({ icon: MapPin, title: "Dirección", details, link: getGoogleMapsSearchUrl(address) })
+          if (details.length) items.push({ icon: MapPin, title: "Dirección", details, link: getGoogleMapsSearchUrl(address, geo) })
         }
         items.push({ icon: Clock, title: "Horario de Atención", details: [horario], link: null })
         if (items.length) setContactInfo(items)
