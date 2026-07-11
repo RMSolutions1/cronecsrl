@@ -3,6 +3,7 @@
  * Usa DATABASE_URL o POSTGRES_URL en .env.local (nunca subas la URL al repositorio).
  */
 import { Pool } from "pg"
+import { normalizePostgresConnectionString, postgresPoolSsl } from "@/lib/postgres-connection"
 
 let pool: Pool | null = null
 
@@ -21,12 +22,13 @@ export function getPool(): Pool {
     if (!isPostgresConfigured()) {
       throw new Error("Postgres no configurado: definid DATABASE_URL o POSTGRES_URL en .env")
     }
+    const raw = getConnectionString()
     pool = new Pool({
-      connectionString: getConnectionString(),
+      connectionString: normalizePostgresConnectionString(raw),
       max: 10,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
-      ssl: /sslmode=(require|verify-full)/.test(process.env.DATABASE_URL || process.env.POSTGRES_URL || "") ? { rejectUnauthorized: true } : undefined,
+      ssl: postgresPoolSsl(raw),
     })
   }
   return pool
