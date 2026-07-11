@@ -2,6 +2,11 @@
 
 import { readData, writeData, generateId } from "@/lib/data"
 import { getCurrentUser } from "@/lib/auth"
+import { isPostgresConfigured } from "@/lib/db-pg"
+import { isMySQLConfigured } from "@/lib/db-mysql"
+import * as pgData from "@/lib/data-pg"
+import * as mysqlData from "@/lib/data-mysql"
+import { assertDbWritable, formatAdminPersistError } from "@/lib/admin-persist"
 
 export type Client = {
   id: string
@@ -11,9 +16,19 @@ export type Client = {
   updated_at?: string
 }
 
+async function readClientsList(): Promise<Client[]> {
+  if (isPostgresConfigured()) {
+    return (await pgData.readClients()) as Client[]
+  }
+  if (isMySQLConfigured()) {
+    return (await mysqlData.readClients()) as Client[]
+  }
+  return await readData<Client[]>("clients.json")
+}
+
 export async function getClientsPublic() {
   try {
-    const list = await readData<Client[]>("clients.json")
+    const list = await readClientsList()
     return (list || []).sort((a, b) => a.order_index - b.order_index)
   } catch {
     return []
@@ -24,7 +39,7 @@ export async function getClientsAdmin() {
   try {
     const user = await getCurrentUser()
     if (!user || !["admin", "superadmin"].includes(user.role)) return []
-    const list = await readData<Client[]>("clients.json")
+    const list = await readClientsList()
     return (list || []).sort((a, b) => a.order_index - b.order_index)
   } catch {
     return []
@@ -35,28 +50,36 @@ export async function saveClient(data: Record<string, unknown>): Promise<{ ok: t
   try {
     const user = await getCurrentUser()
     if (!user || !["admin", "superadmin"].includes(user.role)) return { ok: false, error: "No autorizado" }
-    const list = await readData<Client[]>("clients.json")
+    assertDbWritable()
+
     const id = (data.id as string) ?? generateId()
-    const order = Number(data.order_index ?? data.order ?? list.length)
     const record: Client = {
       id,
       name: (data.name as string) ?? "",
       logo_url: (data.logo_url as string) ?? null,
-      order_index: order,
+      order_index: Number(data.order_index ?? data.order ?? 0),
       updated_at: new Date().toISOString(),
     }
-    const idx = list.findIndex((c) => c.id === id)
-    if (idx >= 0) {
-      list[idx] = { ...list[idx], ...record }
-    } else {
-      list.push(record)
+
+    if (isPostgresConfigured()) {
+      await pgData.upsertClient(record as unknown as Record<string, unknown>)
+      return { ok: true, id }
     }
+    if (isMySQLConfigured()) {
+      await mysqlData.upsertClient(record as unknown as Record<string, unknown>)
+      return { ok: true, id }
+    }
+
+    const list = await readData<Client[]>("clients.json")
+    const idx = list.findIndex((c) => c.id === id)
+    if (idx >= 0) list[idx] = { ...list[idx], ...record }
+    else list.push(record)
     list.sort((a, b) => a.order_index - b.order_index)
     await writeData("clients.json", list)
     return { ok: true, id }
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    return { ok: false, error: process.env.VERCEL ? "No se pudo guardar. Configurá DATABASE_URL (Neon) en Vercel para persistir datos." : msg }
+    console.error("saveClient:", e)
+    return { ok: false, error: formatAdminPersistError(e, "guardar") }
   }
 }
 
@@ -64,11 +87,22 @@ export async function deleteClient(id: string): Promise<{ ok: boolean; error?: s
   try {
     const user = await getCurrentUser()
     if (!user || !["admin", "superadmin"].includes(user.role)) return { ok: false, error: "No autorizado" }
+    assertDbWritable()
+
+    if (isPostgresConfigured()) {
+      await pgData.deleteClientById(id)
+      return { ok: true }
+    }
+    if (isMySQLConfigured()) {
+      await mysqlData.deleteClientById(id)
+      return { ok: true }
+    }
+
     const list = await readData<Client[]>("clients.json")
     await writeData("clients.json", list.filter((c) => c.id !== id))
     return { ok: true }
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    return { ok: false, error: process.env.VERCEL ? "No se pudo eliminar. Configurá DATABASE_URL en Vercel." : msg }
+    console.error("deleteClient:", e)
+    return { ok: false, error: formatAdminPersistError(e, "eliminar") }
   }
 }

@@ -22,3 +22,6 @@ CREATE TABLE IF NOT EXISTS team_members (
 
 CREATE INDEX IF NOT EXISTS idx_team_members_order ON team_members(order_index);
 CREATE INDEX IF NOT EXISTS idx_team_members_active ON team_members(active);
+
+-- Si certifications viene de un esquema viejo (con image_url), agregar logo_url y copiar datos
+ALTER TABLE certifications ADD COLUMN IF NOT EXISTS logo_url TEXT;

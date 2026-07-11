@@ -33,6 +33,12 @@ CREATE TABLE IF NOT EXISTS team_members (
 );
 `)
     steps.push("team_members")
+    // La tabla certifications puede venir de un esquema viejo sin logo_url (usaba image_url)
+    await p.query(`ALTER TABLE certifications ADD COLUMN IF NOT EXISTS logo_url TEXT`)
+    await p.query(`UPDATE certifications SET logo_url = image_url WHERE logo_url IS NULL AND image_url IS NOT NULL`).catch(() => {
+      /* image_url no existe en esquemas nuevos: nada que copiar */
+    })
+    steps.push("certifications.logo_url")
     return { ok: true, steps }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)

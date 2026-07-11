@@ -54,6 +54,9 @@ async function readFromFile<T>(filename: string): Promise<T> {
 }
 
 async function writeToFile(filename: string, data: unknown): Promise<void> {
+  if (process.env.VERCEL) {
+    throw new Error("VERCEL_DB_MISSING")
+  }
   await ensureDataDir()
   const filePath = getDataPath(filename)
   await writeFile(filePath, JSON.stringify(data, null, 2), "utf-8")

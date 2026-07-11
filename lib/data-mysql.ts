@@ -371,6 +371,20 @@ export async function writeCertifications(list: unknown[]): Promise<void> {
   }
 }
 
+export async function upsertCertification(record: Record<string, unknown>): Promise<void> {
+  const updated = record.updated_at ?? new Date().toISOString()
+  await query(
+    `INSERT INTO certifications (id, name, logo_url, order_index, updated_at)
+     VALUES (?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE name = VALUES(name), logo_url = VALUES(logo_url), order_index = VALUES(order_index), updated_at = VALUES(updated_at)`,
+    [record.id, record.name ?? "", record.logo_url ?? null, record.order_index ?? 0, updated]
+  )
+}
+
+export async function deleteCertificationById(id: string): Promise<void> {
+  await query("DELETE FROM certifications WHERE id = ?", [id])
+}
+
 // --- clients
 export async function readClients(): Promise<unknown[]> {
   const rows = await query<RowDataPacket[]>("SELECT * FROM clients ORDER BY order_index ASC")
@@ -393,6 +407,20 @@ export async function writeClients(list: unknown[]): Promise<void> {
       [r.id, r.name, r.logo_url ?? null, r.order_index ?? 0, r.updated_at ?? new Date().toISOString()]
     )
   }
+}
+
+export async function upsertClient(record: Record<string, unknown>): Promise<void> {
+  const updated = record.updated_at ?? new Date().toISOString()
+  await query(
+    `INSERT INTO clients (id, name, logo_url, order_index, updated_at)
+     VALUES (?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE name = VALUES(name), logo_url = VALUES(logo_url), order_index = VALUES(order_index), updated_at = VALUES(updated_at)`,
+    [record.id, record.name ?? "", record.logo_url ?? null, record.order_index ?? 0, updated]
+  )
+}
+
+export async function deleteClientById(id: string): Promise<void> {
+  await query("DELETE FROM clients WHERE id = ?", [id])
 }
 
 // --- admins (users) - solo para listado; login se hace en auth
