@@ -210,7 +210,7 @@ export function ServiciosPageContent({
                                 </Link>
                                 <Link href="/contacto">
                                   <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
-                                    Solicitar Cotizacion
+                                    Solicitar Cotización
                                     <ArrowRight className="ml-2 h-5 w-5" />
                                   </Button>
                                 </Link>

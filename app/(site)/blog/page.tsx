@@ -13,13 +13,13 @@ import { resolveHeroSlides } from "@/lib/hero-images"
 
 
 const heroFallbacks = [
-  { src: images.heroBlog[0], alt: "Construccion CRONEC" },
+  { src: images.heroBlog[0], alt: "Construcción CRONEC" },
   { src: images.heroBlog[1], alt: "Obra civil CRONEC" },
   { src: images.heroBlog[2], alt: "Instalaciones industriales CRONEC" },
 ]
 
 export const metadata = {
-  title: "Noticias y Blog | CRONEC SRL - Actualidad en Construccion",
+  title: "Noticias y Blog | CRONEC SRL - Actualidad en Construcción",
   description: "Manténgase informado sobre las últimas noticias, proyectos y novedades de CRONEC SRL en el sector de la construcción en Salta.",
 }
 
@@ -74,7 +74,7 @@ export default async function BlogPage() {
           images={heroSlides}
           badge="Blog y Noticias"
           title="Actualidad de CRONEC"
-          subtitle="Mantengase informado sobre nuestros proyectos, novedades del sector y el crecimiento de nuestra empresa."
+          subtitle="Manténgase informado sobre nuestros proyectos, novedades del sector y el crecimiento de nuestra empresa."
           primaryAction={{ label: "Ver Noticias", href: "#noticias" }}
           secondaryAction={{ label: "Suscribirse", href: "#newsletter" }}
         />
@@ -126,7 +126,7 @@ export default async function BlogPage() {
                     </p>
                     <Button variant="ghost" className="p-0 h-auto text-primary hover:text-primary/80 group/btn" asChild>
                       <Link href={`/blog/${article.slug}`}>
-                        Leer mas
+                        Leer más
                         <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Link>
                     </Button>
@@ -141,7 +141,7 @@ export default async function BlogPage() {
         <section className="py-16" id="noticias">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold">Ultimas Noticias</h2>
+              <h2 className="text-2xl font-bold">Últimas Noticias</h2>
               <div className="hidden md:flex items-center gap-2">
                 {categories.map((cat) => (
                   <Button 
@@ -195,7 +195,7 @@ export default async function BlogPage() {
                     </CardDescription>
                     <Button variant="link" className="p-0 h-auto text-primary" asChild>
                       <Link href={`/blog/${article.slug}`}>
-                        Leer articulo
+                        Leer artículo
                         <ArrowRight className="ml-1 h-4 w-4" />
                       </Link>
                     </Button>
@@ -218,7 +218,7 @@ export default async function BlogPage() {
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto text-center space-y-6">
               <Building2 className="h-12 w-12 mx-auto text-accent" />
-              <h2 className="text-3xl font-bold">Suscribase a nuestro boletin</h2>
+              <h2 className="text-3xl font-bold">Suscríbase a nuestro boletín</h2>
               <p className="text-primary-foreground/80">
                 Reciba las ultimas noticias sobre proyectos, novedades del sector 
                 y actualizaciones de CRONEC directamente en su correo.
@@ -226,7 +226,7 @@ export default async function BlogPage() {
               <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                 <input
                   type="email"
-                  placeholder="Su correo electronico"
+                  placeholder="Su correo electrónico"
                   className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">

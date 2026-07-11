@@ -124,13 +124,13 @@ export function ProyectosClient({ initialProjects, heroSlides }: ProyectosClient
               <span className="text-accent">Mente</span>?
             </h2>
             <p className="text-lg text-white/80 leading-relaxed">
-              Cuentenos sobre su proyecto y descubra como podemos ayudarlo a convertirlo 
+              Cuéntenos sobre su proyecto y descubra cómo podemos ayudarlo a convertirlo 
               en realidad con nuestra experiencia y compromiso.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Link href="/contacto">
                 <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg">
-                  Solicitar Cotizacion
+                  Solicitar Cotización
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>

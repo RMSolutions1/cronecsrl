@@ -133,7 +133,7 @@ export function ServicesSection({ servicesFromDb = [] }: { servicesFromDb?: Serv
                         variant="ghost" 
                         className="w-full justify-between text-primary hover:bg-primary/5 p-0"
                       >
-                        Ver mas detalles
+                        Ver más detalles
                         <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>

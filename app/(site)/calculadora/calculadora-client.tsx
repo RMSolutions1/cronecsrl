@@ -137,7 +137,7 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
                 <span className="text-primary">Proyecto</span>
               </h1>
               <p className="text-lg text-muted-foreground">
-                Obtenga una estimacion rapida y gratuita en solo 4 pasos
+                Obtenga una estimación rápida y gratuita en solo 4 pasos
               </p>
             </div>
           </div>
@@ -303,7 +303,7 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
                           <Input id="calc-name" value={contactInfo.name} onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })} placeholder="Juan Perez" required />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="calc-phone">Telefono</Label>
+                          <Label htmlFor="calc-phone">Teléfono</Label>
                           <Input id="calc-phone" type="tel" value={contactInfo.phone} onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })} placeholder="+54 387 123-4567" required />
                         </div>
                       </div>
@@ -313,7 +313,7 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="calc-details">Detalles adicionales (opcional)</Label>
-                        <Textarea id="calc-details" value={contactInfo.details} onChange={(e) => setContactInfo({ ...contactInfo, details: e.target.value })} placeholder="Cuentenos mas sobre su proyecto..." rows={4} />
+                        <Textarea id="calc-details" value={contactInfo.details} onChange={(e) => setContactInfo({ ...contactInfo, details: e.target.value })} placeholder="Cuéntenos más sobre su proyecto..." rows={4} />
                       </div>
                     </div>
                   )}
@@ -357,7 +357,7 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
                           disabled={isSubmitting || !contactInfo.name || !contactInfo.email || !contactInfo.phone}
                           className="bg-accent hover:bg-accent/90 text-accent-foreground"
                         >
-                          {isSubmitting ? "Enviando..." : "Solicitar cotizacion"} <Send className="h-4 w-4 ml-2" />
+                          {isSubmitting ? "Enviando..." : "Solicitar cotización"} <Send className="h-4 w-4 ml-2" />
                         </Button>
                       )}
                     </div>
@@ -367,7 +367,7 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
 
               {step < 5 && (
                 <div className="mt-8 text-center">
-                  <p className="text-muted-foreground mb-4">Prefiere hablar con un asesor directamente?</p>
+                  <p className="text-muted-foreground mb-4">¿Prefiere hablar con un asesor directamente?</p>
                   <a href="tel:+5493875361210">
                     <Button variant="outline" size="lg"><Phone className="h-4 w-4 mr-2" /> +54 9 387 536-1210</Button>
                   </a>
@@ -380,26 +380,26 @@ export default function CalculadoraPageClient({ config }: { config: CalculadoraD
         <section className="py-16 bg-muted/50 border-t">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold text-center mb-8">Por que usar nuestro cotizador</h2>
+              <h2 className="text-2xl font-bold text-center mb-8">Por qué usar nuestro cotizador</h2>
               <div className="grid sm:grid-cols-3 gap-6 text-center">
                 <div className="p-4 rounded-xl bg-card border">
                   <Calculator className="h-10 w-10 mx-auto mb-3 text-primary" />
-                  <h3 className="font-semibold mb-1">Estimacion rapida</h3>
+                  <h3 className="font-semibold mb-1">Estimación rápida</h3>
                   <p className="text-sm text-muted-foreground">Obtenga un rango de presupuesto en minutos sin compromiso.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-card border">
                   <CheckCircle2 className="h-10 w-10 mx-auto mb-3 text-primary" />
                   <h3 className="font-semibold mb-1">Sin compromiso</h3>
-                  <p className="text-sm text-muted-foreground">Envie su consulta y reciba una cotizacion detallada a la brevedad.</p>
+                  <p className="text-sm text-muted-foreground">Envíe su consulta y reciba una cotización detallada a la brevedad.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-card border">
                   <Info className="h-10 w-10 mx-auto mb-3 text-primary" />
                   <h3 className="font-semibold mb-1">Asesoramiento incluido</h3>
-                  <p className="text-sm text-muted-foreground">Nuestro equipo lo contactara para afinar detalles y ofrecerle la mejor opcion.</p>
+                  <p className="text-sm text-muted-foreground">Nuestro equipo lo contactará para afinar detalles y ofrecerle la mejor opción.</p>
                 </div>
               </div>
               <p className="text-center text-muted-foreground mt-6 text-sm">
-                La estimacion es orientativa. Una vez enviados sus datos, un profesional revisara su proyecto y le enviara una propuesta formal.
+                La estimación es orientativa. Una vez enviados sus datos, un profesional revisará su proyecto y le enviará una propuesta formal.
               </p>
             </div>
           </div>

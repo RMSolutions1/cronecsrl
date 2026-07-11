@@ -173,7 +173,7 @@ export function Footer() {
                     <Phone className="h-4 w-4 text-accent" />
                   </div>
                   <div>
-                    <p className="text-white/90 font-medium">Telefono</p>
+                    <p className="text-white/90 font-medium">Teléfono</p>
                     <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-white/60 hover:text-accent transition-colors">{phone}</a>
                   </div>
                 </div>

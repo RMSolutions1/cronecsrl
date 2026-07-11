@@ -4,7 +4,7 @@ import { resolveHeroSlides } from "@/lib/hero-images"
 import { images } from "@/lib/images"
 
 export const metadata = {
-  title: "Servicios | CRONEC SRL - Obras Civiles, Electricas e Industriales",
+  title: "Servicios | CRONEC SRL - Obras Civiles, Eléctricas e Industriales",
   description: "Servicios integrales de construcción civil, obras eléctricas, arquitectura e ingeniería, instalaciones industriales y más. Salta, Argentina.",
 }
 

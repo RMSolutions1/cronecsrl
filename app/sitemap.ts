@@ -1,16 +1,12 @@
 import { MetadataRoute } from "next"
 import { getServicesPublic, getBlogPostsPublic } from "@/lib/data-read"
+import { getSiteUrl } from "@/lib/site-url"
 
-export const dynamic = "force-dynamic"
-
-function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return "https://cronecsrl.com.ar"
-}
+/** ISR sitemap: URLs estables, revalidación cada hora. */
+export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = getBaseUrl()
+  const baseUrl = getSiteUrl()
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 1 },

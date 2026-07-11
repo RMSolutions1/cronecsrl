@@ -9,6 +9,7 @@ import { CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { images, defaultServiceImages } from "@/lib/images"
 import type { Metadata } from "next"
+import { getSiteUrl } from "@/lib/site-url"
 
 
 const defaultServiceSlugs = Object.keys(defaultServiceImages)
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const desc = service.short_description ?? service.description
   const description = typeof desc === "string" ? desc : `Servicio ${title} - CRONEC SRL Salta`
   const imageUrl = (service.image_url && String(service.image_url).trim()) ? String(service.image_url) : (defaultServiceImages[slug] ?? undefined)
-  const fullImageUrl = imageUrl?.startsWith("http") ? imageUrl : imageUrl ? `${typeof process.env.NEXT_PUBLIC_SITE_URL === "string" ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") : "https://cronecsrl.com.ar"}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}` : undefined
+  const fullImageUrl = imageUrl?.startsWith("http") ? imageUrl : imageUrl ? `${getSiteUrl()}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}` : undefined
   return {
     title: `${title} | CRONEC SRL`,
     description,

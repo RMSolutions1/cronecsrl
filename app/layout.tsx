@@ -9,7 +9,10 @@ import { Providers } from "@/components/providers"
 import { getCompanyInfo } from "@/lib/data-read"
 import { getServicesPublic } from "@/lib/data-read"
 import { CRONEC_OFFICIAL, getCompanyFullAddress, resolveCompanyGeo } from "@/lib/company-defaults"
+import { getSiteUrl } from "@/lib/site-url"
 import "./globals.css"
+
+const siteUrl = getSiteUrl()
 
 const inter = Inter({
   subsets: ["latin"],
@@ -48,14 +51,14 @@ export const metadata: Metadata = {
   authors: [{ name: "CRONEC SRL" }],
   creator: "CRONEC SRL",
   publisher: "CRONEC SRL",
-  metadataBase: new URL("https://cronecsrl.com.ar"),
+  metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://cronecsrl.com.ar",
+    url: siteUrl,
     title: "CRONEC SRL | Construcción Civil e Instalaciones Eléctricas en Salta",
     description:
       "Empresa Salteña especializada en Obras Públicas, construcción civil e instalaciones eléctricas. 15+ años de experiencia en el noroeste argentino.",
@@ -94,6 +97,7 @@ export const metadata: Metadata = {
 }
 
 function buildJsonLd(settings: Record<string, unknown> | null) {
+  const siteUrl = getSiteUrl()
   const name = (settings?.company_name as string) ?? "CRONEC SRL"
   const desc = (settings?.description as string) ?? "Empresa constructora especializada en obras civiles, instalaciones eléctricas e infraestructura industrial en Salta, Argentina."
   const tel = (settings?.phone as string) ?? "+54-9-387-536-1210"
@@ -111,11 +115,11 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://cronecsrl.com.ar",
+    "@id": siteUrl,
     name,
     alternateName: name,
     description: desc,
-    url: "https://cronecsrl.com.ar",
+    url: siteUrl,
     telephone: tel.replace(/\s/g, ""),
     email,
     address: {
@@ -132,7 +136,7 @@ function buildJsonLd(settings: Record<string, unknown> | null) {
     priceRange: "$$",
     image: "https://images.unsplash.com/photo-1504309092620-4d0e8a54959e?w=1200&h=630&fit=crop&q=80",
     areaServed: { "@type": "GeoCircle", geoMidpoint: { "@type": "GeoCoordinates", latitude: lat, longitude: lng }, geoRadius: "500000" },
-    serviceType: ["Construccion Civil", "Instalaciones Electricas", "Obras Publicas", "Infraestructura Industrial"],
+    serviceType: ["Construcción Civil", "Instalaciones Eléctricas", "Obras Públicas", "Infraestructura Industrial"],
     foundingDate: String(founding),
     numberOfEmployees: { "@type": "QuantitativeValue", minValue: 50, maxValue: 100 },
   }
