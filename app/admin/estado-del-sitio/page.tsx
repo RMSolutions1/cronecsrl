@@ -289,25 +289,47 @@ export default async function EstadoDelSitioPage() {
         </CardContent>
       </Card>
 
-      {/* Certificaciones y clientes */}
+      {/* Certificaciones */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
               <Award className="h-5 w-5" />
-              Certificaciones y clientes
+              Certificaciones
             </CardTitle>
-            <CardDescription>Logos y marcas</CardDescription>
+            <CardDescription>ISO y cumplimiento normativo</CardDescription>
           </div>
           <Button asChild size="sm">
-            <Link href="/admin/certificaciones-clientes" className="gap-2">
+            <Link href="/admin/certificaciones" className="gap-2">
               <Edit className="h-4 w-4" />
               Editar
             </Link>
           </Button>
         </CardHeader>
         <CardContent>
-          <p className="text-sm">Certificaciones: <strong>{certifications.length}</strong> · Clientes: <strong>{clients.length}</strong></p>
+          <p className="text-sm"><strong>{certifications.length}</strong> certificaciones publicadas</p>
+        </CardContent>
+      </Card>
+
+      {/* Clientes */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Clientes
+            </CardTitle>
+            <CardDescription>Logos de clientes en inicio</CardDescription>
+          </div>
+          <Button asChild size="sm">
+            <Link href="/admin/clientes" className="gap-2">
+              <Edit className="h-4 w-4" />
+              Editar
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm"><strong>{clients.length}</strong> clientes publicados</p>
         </CardContent>
       </Card>
 

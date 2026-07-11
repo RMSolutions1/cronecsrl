@@ -17,6 +17,7 @@ import {
   LayoutTemplate as SectionsIcon,
   MessageSquare,
   Award,
+  Building2,
   Phone,
   FileText,
   Menu,
@@ -90,9 +91,14 @@ export default async function ContenidoInicioAdminPage() {
       links: [{ label: "Editar testimonios", href: "/admin/testimonios", icon: MessageSquare }],
     },
     {
-      title: "Certificaciones y Clientes",
-      description: "Logos de certificaciones ISO y clientes",
-      links: [{ label: "Editar certificaciones y clientes", href: "/admin/certificaciones-clientes", icon: Award }],
+      title: "Certificaciones",
+      description: "Logos ISO y sellos de cumplimiento normativo",
+      links: [{ label: "Editar certificaciones", href: "/admin/certificaciones", icon: Award }],
+    },
+    {
+      title: "Clientes",
+      description: "Organizaciones que confían en CRONEC (logos en inicio)",
+      links: [{ label: "Editar clientes", href: "/admin/clientes", icon: Building2 }],
     },
     {
       title: "Bloque CTA y contacto",
